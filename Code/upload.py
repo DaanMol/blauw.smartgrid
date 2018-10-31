@@ -70,7 +70,10 @@ class Grid():
     def distances(self):
         """
         Calculate manhatten distances between
-        houses and batteries.
+        houses and every battery, add these
+        distances to a dictionary.
+        Return list with a distance dictionary
+        for every battery.
         """
         # list for distance dictionaries
         items = []
