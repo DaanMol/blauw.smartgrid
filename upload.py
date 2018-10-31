@@ -1,3 +1,8 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.image import BboxImage
+from matplotlib.transforms import Bbox, TransformedBbox
+
 class Grid():
     """
     Grid class, contains all information
@@ -64,9 +69,30 @@ class Grid():
         # return list of houses
         return houses_list
 
+    def plot_grid(self):
+        """
+        Make a picture of the Grid
+        """
+        # add houses to image
+        for house in self.houses:
+            plt.plot(house[0], house[1], 'ro')
+        # add batteries to image
+        for battery in self.batteries:
+            plt.plot(battery[0], battery[1], 'bo')
+        # show image
+        plt.show()
 
 # run
 if __name__ == "__main__":
-    grid = Grid(2)
-    print(f"batteries:{grid.batteries}")
-    print(f"houses:{grid.houses}")
+    grid = Grid(1)
+    # print(f"batteries:{grid.batteries}")
+    # print(f"houses:{grid.houses}")
+    grid.plot_grid()
+
+    # total_battery = 0
+    # total_houses = 0
+    # for i in grid.batteries:
+    #     total_battery += i[2]
+    # for i in grid.houses:
+    #     total_houses += i[2]
+    # print(total_battery - total_houses)
