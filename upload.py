@@ -1,7 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.image import BboxImage
-from matplotlib.transforms import Bbox, TransformedBbox
 
 class Grid():
     """
