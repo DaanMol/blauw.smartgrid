@@ -1,0 +1,6 @@
+class Battery():
+
+    def __init__(self, x, y, capacity):
+        self.x = x
+        self.y = y
+        self.capicity = capacity
