@@ -144,7 +144,8 @@ class Grid():
         for i in self.houses:
             list.append(i[2])
         print("houses =", len(list))
-        print("possibilities(without capacity) =", len(list)**len(self.batteries))
+        print("batteries =", len(self.batteries))
+        print(f"possibilities(without capacity) = {len(self.batteries)}^{len(list)}")
         plt.figure("histogram")
         plt.title("house output distribution")
         plt.hist(list, bins=5)

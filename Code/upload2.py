@@ -46,7 +46,6 @@ class Grid():
                     # variables
                     x = int(pos[0])
                     y = int(pos[-1])
-                    print(x, y)
                     capacity = float(line[-1])
                     # add Battery to batteries_list
                     batteries_list.append(Battery(x, y, capacity))
