@@ -26,11 +26,28 @@ class Algorithm():
             battery.connections = connections
             battery.capacity = capacity
 
+    def algorithm_1(self):
+        used = []
+        for battery in self.grid.batteries:
+            capacity = battery.capacity
+            connections = []
+            distances = battery.distances
+            houses = self.grid.houses
+            sorted_houses = [x for (y,x) in sorted(zip(distances,houses), key=lambda pair: pair[0])]
+            for house in sorted_houses:
+                if house not in used and capacity - house.output > 0:
+                    connections.append(house)
+                    capacity -= house.output
+                    used.append(house)
+                    house.connection = self.grid.batteries.index(battery)
+            battery.connections = connections
+            battery.capacity = capacity
+
 # run
 if __name__ == "__main__":
     algo = Algorithm(1)
-    
-    algo.algorithm_0()
+
+    algo.algorithm_1()
 
     plt.figure("algorithm_0")
     counter = 0
