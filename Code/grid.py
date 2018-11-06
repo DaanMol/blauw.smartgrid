@@ -17,9 +17,6 @@ class Grid():
         self.batteries = self.load_batteries(f"Huizen&Batterijen/wijk{district}_batterijen.txt")
         self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
 
-        self.distances_battery = self.distances('battery')
-        self.distances_houses = self.distances('house')
-
     def load_batteries(self, filename):
         """
         Open .txt file of batteries
@@ -78,6 +75,27 @@ class Grid():
         # return list of House items
         return houses_list
 
+    def distances(self):
+        """
+        Calculate distances between batteries and
+        houses.
+        Update distances in House and Battery items.
+        """
+        # iterate over houses and batteries
+        for house in self.houses:
+            # coordinates house
+            x1 = house.x
+            y1 = house.y
+            for battery in self.batteries:
+                # coordinates battery
+                x2 = battery.x
+                y2 = battery.y
+                # calculate manhatten distance and add to items
+                manhatten_distance =  abs(x1 - x2) + abs(y1 - y2)
+                house.distances.append(manhatten_distance)
+                battery.distances.append(manhatten_distance)
+
 # run
 if __name__ == "__main__":
     grid = Grid(1)
+    grid.distances()
