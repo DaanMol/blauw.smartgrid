@@ -29,22 +29,23 @@ class Algorithm():
 # run
 if __name__ == "__main__":
     algo = Algorithm(1)
-
+    
     algo.algorithm_0()
 
     plt.figure("algorithm_0")
     counter = 0
+    cost = 0
     colors = ['r', 'b', 'g', 'y', 'm']
     for battery in algo.grid.batteries:
         x = []
         y = []
         for house in battery.connections:
+            cost += house.distances[house.connection] * 9
             x.append(house.x)
             y.append(house.y)
             plt.plot([house.x, battery.x], [house.y, battery.y], color=colors[counter], linewidth=.25)
         plt.scatter(x, y, marker='p', color=colors[counter])
         plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
         counter += 1
-
     print("cost =", cost)
     plt.show()
