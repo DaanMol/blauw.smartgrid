@@ -1,7 +1,5 @@
 from houses import House
 from batteries import Battery
-import matplotlib.pyplot as plt
-import numpy as np
 
 class Grid():
     """
@@ -12,16 +10,17 @@ class Grid():
     def __init__(self, district):
         """
         Create objects for Grid class:
-        batteries and houses
+        batteries and houses.
         """
         self.batteries = self.load_batteries(f"Huizen&Batterijen/wijk{district}_batterijen.txt")
         self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
+        self.distances()
 
     def load_batteries(self, filename):
         """
-        Open .txt file of batteries
-        Read the file and get pos and cap info
-        Return list with pos and cap of batteries
+        Open .txt file of batteries.
+        Read the file and get pos and cap info.
+        Return list with pos and cap of batteries.
         """
         # make batteries list
         batteries_list = []
@@ -51,9 +50,9 @@ class Grid():
 
     def load_houses(self, filename):
         """
-        Open .csv file of houses
-        Read the file and get x,y,max.output info
-        Return list with pos and max output
+        Open .csv file of houses.
+        Read the file and get x,y,max.output info.
+        Return list with pos and max output.
         """
         # make houses list
         houses_list = []
@@ -94,8 +93,3 @@ class Grid():
                 manhatten_distance =  abs(x1 - x2) + abs(y1 - y2)
                 house.distances.append(manhatten_distance)
                 battery.distances.append(manhatten_distance)
-
-# run
-if __name__ == "__main__":
-    grid = Grid(1)
-    grid.distances()
