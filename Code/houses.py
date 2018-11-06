@@ -12,6 +12,7 @@ class House():
         self.y = y
         self.output = output
         self.distances = []
+        self.connection = None
 
     def __str__(self):
         return f"{self.x}, {self.y}, {self.output}, {self.distances}"

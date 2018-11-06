@@ -78,7 +78,7 @@ class Grid():
         """
         Calculate distances between batteries and
         houses.
-        Update distances in House and Battery items.
+        Update distances in House and Battery objects.
         """
         # iterate over houses and batteries
         for house in self.houses:
@@ -89,7 +89,7 @@ class Grid():
                 # coordinates battery
                 x2 = battery.x
                 y2 = battery.y
-                # calculate manhatten distance and add to items
+                # calculate manhatten distance and add to objects
                 manhatten_distance =  abs(x1 - x2) + abs(y1 - y2)
                 house.distances.append(manhatten_distance)
                 battery.distances.append(manhatten_distance)
