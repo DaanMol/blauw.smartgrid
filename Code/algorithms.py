@@ -65,4 +65,35 @@ if __name__ == "__main__":
         plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
         counter += 1
     print("cost =", cost)
+
+    plt.figure("tryout_xfirst")
+    counter = 0
+    colors = ['r', 'b', 'g', 'y', 'm']
+    for battery in algo.grid.batteries:
+        x = []
+        y = []
+        for house in battery.connections:
+            x.append(house.x)
+            y.append(house.y)
+            plt.plot([house.x, battery.x], [house.y, house.y], color=colors[counter], linewidth=.3)
+            plt.plot([battery.x, battery.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
+        plt.scatter(x, y, marker='p', color=colors[counter])
+        plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+        counter += 1
+
+    plt.figure("tryout_yfirst")
+    counter = 0
+    colors = ['r', 'b', 'g', 'y', 'm']
+    for battery in algo.grid.batteries:
+        x = []
+        y = []
+        for house in battery.connections:
+            x.append(house.x)
+            y.append(house.y)
+            plt.plot([house.x, house.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
+            plt.plot([house.x, battery.x], [battery.y, battery.y], color=colors[counter], linewidth=.3)
+        plt.scatter(x, y, marker='p', color=colors[counter])
+        plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+        counter += 1
+
     plt.show()
