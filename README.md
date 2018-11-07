@@ -12,3 +12,5 @@ Zodra de capaciteit van de batterij bereikt is worden huizen aan de volgende bat
 Het tweede algoritme dat geprogrammeerd is sorteert de huizen zodat de afstanden van een batterij tot een huis van klein naar groot staan.
 Vervolgens wordt elk huis aan de dichtstbijzijnde batterij verbonden. Als de capaciteit van de batterij bereikt is worden huizen aan de volgende batterij gekoppeld.
 ![Algoritme 2](/Presentation/Images/tryout_yfirst.png)
+
+De afbeeldingen zijn gemaakt door gebruik te maken van matplotlib.pylot. 
