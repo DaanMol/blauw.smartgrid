@@ -16,6 +16,7 @@ class Grid():
         self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
         self.distances_battery = self.distances('battery')
         self.distances_houses = self.distances()
+        self.district = district
 
 
     def load_batteries(self, filename):
@@ -122,33 +123,48 @@ class Grid():
         """
         Make a picture of the Grid
         """
-        plt.figure(0)
+        plt.figure()
 
         # add houses to image
+        x = []
+        y = []
         for house in self.houses:
-            plt.plot(house[0], house[1], 'ro')
+            x.append(house[0])
+            y.append(house[1])
+        plt.plot(x, y, 'ro')
 
         # add batteries to image
+        x = []
+        y = []
         for battery in self.batteries:
-            plt.plot(battery[0], battery[1], 'bo')
+            x.append(battery[0])
+            y.append(battery[1])
+        plt.plot(x, y, 'bo')
+
+        plt.title(f"Grid {self.district}: houses (red) and batteries (blue)")
+        plt.xlabel("x-position")
+        plt.ylabel("y-position")
+        plt.savefig(f"Graphs/grid_{self.district}.png")
 
 
     def matrix(self):
         """
         Create matrix
         """
+        plt.figure()
         matrix_house = np.zeros([51, 51])
         matrix_battery = np.zeros([51, 51])
         for i in self.houses:
             matrix_house[i[1]][i[0]] = i[2]
         for i in self.batteries:
-            matrix_battery[i[1]][i[0]] = i[2]
-        plt.figure("houses")
+            plt.plot(i[0], i[1], 'ro')
         plt.imshow(matrix_house, origin='lower')
-        plt.colorbar()
-        plt.figure("batteries")
-        plt.imshow(matrix_battery, origin='lower')
-        plt.colorbar()
+        plt.title(f"Grid {self.district}: house output and batteries (red)")
+        cbar = plt.colorbar()
+        cbar.set_label('Output house')
+        plt.xlabel("x-position")
+        plt.ylabel("y-position")
+        plt.savefig(f"Graphs/matrix_{self.district}.png")
 
 
     def graphs(self):
@@ -162,37 +178,44 @@ class Grid():
         print("houses =", len(list))
         print("batteries =", len(self.batteries))
         print(f"possibilities(without capacity) = {len(self.batteries)}^{len(list)}")
-        plt.figure("histogram")
-        plt.title("house output distribution")
-        plt.hist(list, bins=5)
+        plt.figure()
+        plt.title("House output distribution")
+        plt.hist(list, bins=30)
+        plt.xlabel("Output house")
+        plt.ylabel("Number of houses")
+        plt.savefig(f"Graphs/histogram_{self.district}.png")
 
 
 # run
 if __name__ == "__main__":
-    grid = Grid(1)
+    for i in range(3):
 
-    """"calculate min/max cost (if batteries had infinite capacity)"""
-    total_min_distance = 0
-    total_max_distance = 0
-    for i in grid.distances_houses:
-        total_min_distance += min(i)
-        total_max_distance += max(i)
-    print("min cost cables =", total_min_distance*9)
-    print("max cost cables =", total_max_distance*9)
+        grid = Grid(i + 1)
 
-    """Calculate leftover total battery capacity"""
-    # print(f"batteries:{grid.batteries}")
-    # print(f"houses:{grid.houses}")
-    total_battery = 0
-    total_houses = 0
-    for i in grid.batteries:
-        total_battery += i[2]
-    for i in grid.houses:
-        total_houses += i[2]
-    print("Leftover battery capacity =", total_battery - total_houses)
+        print("District:", grid.district)
 
-    """"Show graphs"""
-    grid.matrix()
-    grid.plot_grid()
-    grid.graphs()
-    plt.show()
+        """"calculate min/max cost (if batteries had infinite capacity)"""
+        total_min_distance = 0
+        total_max_distance = 0
+        for i in grid.distances_houses:
+            total_min_distance += min(i)
+            total_max_distance += max(i)
+        print("min cost cables =", total_min_distance*9)
+        print("max cost cables =", total_max_distance*9)
+
+        """Calculate leftover total battery capacity"""
+        # print(f"batteries:{grid.batteries}")
+        # print(f"houses:{grid.houses}")
+        print("Battery capacity:", grid.batteries[1][2])
+        total_battery = 0
+        total_houses = 0
+        for i in grid.batteries:
+            total_battery += i[2]
+        for i in grid.houses:
+            total_houses += i[2]
+        print("Leftover battery capacity =", total_battery - total_houses)
+
+        """"Show graphs"""
+        grid.matrix()
+        grid.plot_grid()
+        grid.graphs()

@@ -1,0 +1,26 @@
+District: 1
+min cost cables = 28188
+max cost cables = 78030
+Battery capacity: 1507.0
+Leftover battery capacity = 35.00000000000182
+houses = 150
+batteries = 5
+possibilities(without capacity) = 5^150
+
+District: 2
+min cost cables = 20268
+max cost cables = 71253
+Battery capacity: 1508.25
+Leftover battery capacity = 41.24999998000203
+houses = 150
+batteries = 5
+possibilities(without capacity) = 5^150
+
+District: 3
+min cost cables = 17757
+max cost cables = 76491
+Battery capacity: 1506.75
+Leftover battery capacity = 33.75000000000182
+houses = 150
+batteries = 5
+possibilities(without capacity) = 5^150
