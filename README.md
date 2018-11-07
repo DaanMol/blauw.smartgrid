@@ -7,8 +7,8 @@ In de code worden huizen en batterijen ingeladen waarna deze kunnen worden weerg
 
 Het eerste algoritme dat geprogrammeerd is verbindt alle huizen aan een batterij, zonder de capaciteit van een batterij te overschrijden.
 Zodra de capaciteit van de batterij bereikt is worden huizen aan de volgende batterij gekoppeld.
-[Algoritme 1](/Presentation/Images/tryout_yfirst_alg0.png)
+![Algoritme 1](/Presentation/Images/tryout_yfirst_alg0.png)
 
 Het tweede algoritme dat geprogrammeerd is sorteert de huizen zodat de afstanden van een batterij tot een huis van klein naar groot staan.
 Vervolgens wordt elk huis aan de dichtstbijzijnde batterij verbonden. Als de capaciteit van de batterij bereikt is worden huizen aan de volgende batterij gekoppeld.
-[Algoritme 2](/Presentation/Images/tryout_yfirst.png)
+![Algoritme 2](/Presentation/Images/tryout_yfirst.png)
