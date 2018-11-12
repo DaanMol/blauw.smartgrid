@@ -46,21 +46,39 @@ class Algorithm():
     def algorithm_2(self):
         used = []
         relatives = []
-        for i in self.grid.houses:
-            c_1 = sorted(i.distances)[1] - sorted(i.distances)[0]
+        for house in self.grid.houses:
+            c_1 = sorted(house.distances)[1] - sorted(house.distances)[0]
             relatives.append(c_1)
         sorted_houses = [x for (y,x) in sorted(zip(relatives,self.grid.houses),
                          key=lambda pair: pair[0], reverse=True)]
-        for i, k in zip(sorted_houses, sorted(relatives, reverse=True)):
-            sorted_batteries = [x for (y,x) in sorted(zip(i.distances,self.grid.batteries),
+        for house in sorted_houses:
+            sorted_batteries = [x for (y,x) in \
+                                sorted(zip(house.distances, self.grid.batteries),
                                 key=lambda pair: pair[0])]
-            for j in sorted_batteries:
-                if j.capacity - i.output > 0:
-                    j.capacity = j.capacity - i.output
-                    j.connections.append(i)
-                    i.connection = self.grid.batteries.index(j)
-                    used.append(i)
-                    break
+
+            for i in range(len(sorted_batteries)):
+                batt_now = sorted_batteries[i]
+                batt_next = sorted_batteries[i + 1]
+                # skip when capacity is larger than the next in list
+                if batt_next.capacity - batt_now.capacity > 0 and \
+                   batt_next.capacity < batt_now.capacity:
+                    if i < 3:
+                        continue
+                    else:
+                        batt_now = batt_next
+                # continue if capacity too small
+                if batt_now.capacity - house.output < 0:
+                    if i < 3:
+                        continue
+                    else:
+                        batt_now = batt_next
+                # update
+                batt_now.capacity -= house.output
+                batt_now.connect(house)
+                house.connect(self.grid.batteries.index(batt_now))
+                used.append(house)
+                break
+
         if len(used) < 150:
             self.swapper(used)
 
@@ -116,7 +134,7 @@ class Algorithm():
 
             # clear battery connectoins
             for battery in self.grid.batteries:
-                battery.connections = None
+                battery.connections = []
             for house in self.grid.houses:
                 distances = house.distances
                 batteries = self.grid.batteries
@@ -150,104 +168,113 @@ class Algorithm():
             print('------')
         print('iterations: ', iterations)
 
+    def line_figure(self):
+        plt.figure()
+        counter = 0
+        cost = 0
+        colors = ['r', 'b', 'g', 'y', 'm']
+        for battery in algo.grid.batteries:
+            x = []
+            y = []
+            for house in battery.connections:
+                cost += house.distances[house.connection] * 9
+                x.append(house.x)
+                y.append(house.y)
+                plt.plot([house.x, battery.x], [house.y, battery.y], color=colors[counter], linewidth=.25)
+            plt.scatter(x, y, marker='p', color=colors[counter])
+            plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+            counter += 1
+        print("cost =", cost)
 
+    def random_simulation(self, simulation):
+        counter = 0
+        plt.figure()
+        colors = ['r', 'b', 'g', 'y', 'm']
+        for battery in algo.grid.batteries:
+            plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+            x = []
+            y = []
+            for house in battery.connections:
+                x.append(house.x)
+                y.append(house.y)
+            plt.scatter(x, y, marker='p', color=colors[counter])
+            counter += 1
+
+        counter = 0
+        for battery in algo.grid.batteries:
+            for house in battery.connections:
+                curr_x, curr_y = house.x, house.y
+                end_x, end_y = battery.x, battery.y
+                if curr_x > end_x:
+                    x_step = -1
+                else:
+                    x_step = 1
+                if curr_y > end_y:
+                    y_step = -1
+                else:
+                    y_step = 1
+                while not curr_x == end_x and not curr_y == end_y:
+                    if random.random() < 0.5:
+                        plt.plot([curr_x, curr_x], [curr_y, curr_y + y_step], color=colors[counter], linewidth=.3)
+                        curr_y = curr_y + y_step
+                    else:
+                        plt.plot([curr_x, curr_x + x_step], [curr_y, curr_y], color=colors[counter], linewidth=.3)
+                        curr_x = curr_x + x_step
+                plt.plot([curr_x, end_x], [curr_y, end_y], color=colors[counter], linewidth=.3)
+            counter += 1
+            if simulation:
+                plt.pause(1)
+                plt.draw()
+
+    def x_or_y_first(self, x_first):
+        plt.figure()
+        if x_first:
+            counter = 0
+            colors = ['r', 'b', 'g', 'y', 'm']
+            for battery in algo.grid.batteries:
+                x = []
+                y = []
+                for house in battery.connections:
+                    x.append(house.x)
+                    y.append(house.y)
+                    plt.plot([house.x, battery.x], [house.y, house.y], color=colors[counter], linewidth=.3)
+                    plt.plot([battery.x, battery.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
+                plt.scatter(x, y, marker='p', color=colors[counter])
+                plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+                counter += 1
+        else:
+            counter = 0
+            colors = ['r', 'b', 'g', 'y', 'm']
+            for battery in algo.grid.batteries:
+                x = []
+                y = []
+                for house in battery.connections:
+                    x.append(house.x)
+                    y.append(house.y)
+                    plt.plot([house.x, house.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
+                    plt.plot([house.x, battery.x], [battery.y, battery.y], color=colors[counter], linewidth=.3)
+                plt.scatter(x, y, marker='p', color=colors[counter])
+                plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+                counter += 1
 
 # run
 if __name__ == "__main__":
-    # for i in range(3):
-    #     algo = Algorithm(i+1)
+    algo = Algorithm(1)
 
-        # algo.algorithm_0()
-        # algo.algorithm_1()
-        # algo.algorithm_2()
+    """
+    Algorithms
+    """
+    # algo.algorithm_0()
+    # algo.algorithm_1()
+    algo.algorithm_2()
     # algo.hillclimber(100)
+    # algo.k_means()
 
-    algo = Algorithm(3)
+    """
+    Plots
+    """
+    # algo.random_simulation(False)
+    algo.x_or_y_first(False)
+    # algo.line_figure(self)
 
-    algo.k_means()
-
-    # plt.figure("algorithm_0")
-    # counter = 0
-    # cost = 0
-    # colors = ['r', 'b', 'g', 'y', 'm']
-    # for battery in algo.grid.batteries:
-    #     x = []
-    #     y = []
-    #     for house in battery.connections:
-    #         cost += house.distances[house.connection] * 9
-    #         x.append(house.x)
-    #         y.append(house.y)
-    #         plt.plot([house.x, battery.x], [house.y, battery.y], color=colors[counter], linewidth=.25)
-    #     plt.scatter(x, y, marker='p', color=colors[counter])
-    #     plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
-    #     counter += 1
-    # print("cost =", cost)
-    #
-    # plt.figure("tryout_xfirst")
-    # counter = 0
-    # colors = ['r', 'b', 'g', 'y', 'm']
-    # for battery in algo.grid.batteries:
-    #     x = []
-    #     y = []
-    #     for house in battery.connections:
-    #         x.append(house.x)
-    #         y.append(house.y)
-    #         plt.plot([house.x, battery.x], [house.y, house.y], color=colors[counter], linewidth=.3)
-    #         plt.plot([battery.x, battery.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
-    #     plt.scatter(x, y, marker='p', color=colors[counter])
-    #     plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
-    #     counter += 1
-    #
-    plt.figure("tryout_yfirst")
-    counter = 0
-    colors = ['r', 'b', 'g', 'y', 'm']
-    for battery in algo.grid.batteries:
-        x = []
-        y = []
-        for house in battery.connections:
-            x.append(house.x)
-            y.append(house.y)
-            plt.plot([house.x, house.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
-            plt.plot([house.x, battery.x], [battery.y, battery.y], color=colors[counter], linewidth=.3)
-        plt.scatter(x, y, marker='p', color=colors[counter])
-        plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
-        counter += 1
-
-    # counter = 0
-    # plt.figure("tryout_random")
-    # colors = ['r', 'b', 'g', 'y', 'm']
-    # for battery in algo.grid.batteries:
-    #     plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
-    #     x = []
-    #     y = []
-    #     for house in battery.connections:
-    #         x.append(house.x)
-    #         y.append(house.y)
-    #     plt.scatter(x, y, marker='p', color=colors[counter])
-    #     counter += 1
-    #
-    # counter = 0
-    # for battery in algo.grid.batteries:
-    #     for house in battery.connections:
-    #         curr_x, curr_y = house.x, house.y
-    #         end_x, end_y = battery.x, battery.y
-    #         if curr_x > end_x:
-    #             x_step = -1
-    #         else:
-    #             x_step = 1
-    #         if curr_y > end_y:
-    #             y_step = -1
-    #         else:
-    #             y_step = 1
-    #         while not curr_x == end_x and not curr_y == end_y:
-    #             if random.random() < 0.5:
-    #                 plt.plot([curr_x, curr_x], [curr_y, curr_y + y_step], color=colors[counter], linewidth=.3)
-    #                 curr_y = curr_y + y_step
-    #             else:
-    #                 plt.plot([curr_x, curr_x + x_step], [curr_y, curr_y], color=colors[counter], linewidth=.3)
-    #                 curr_x = curr_x + x_step
-    #         plt.plot([curr_x, end_x], [curr_y, end_y], color=colors[counter], linewidth=.3)
-    #     counter += 1
-    #     plt.pause(1)
-    #     plt.draw()
-plt.show()
+    plt.show()

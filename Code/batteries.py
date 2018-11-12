@@ -21,8 +21,8 @@ class Battery():
         self.x = x
         self.y = y
         self.capacity = capacity
-        self.distances = np.zeros(150)
-        self.connections = None
+        self.distances = []
+        self.connections = []
 
     def connect(self, house):
         """
@@ -30,10 +30,7 @@ class Battery():
         Input: house object
         Output: updated self.connections
         """
-        if self.connections:
-            np.append(self.connections, house)
-        else:
-            self.connections = np.array(house)
+        self.connections.append(house)
 
     def __str__(self):
         """

@@ -90,7 +90,7 @@ class Grid():
                     houses_list.append(House(x, y, output))
 
         # return list of House items
-        return np.array(houses_list)
+        return houses_list
 
 
     def distances(self):
@@ -99,7 +99,6 @@ class Grid():
         houses.
         Update distances in House and Battery objects.
         """
-        house_nr = 0
         # iterate over houses and batteries
         for house in self.houses:
 
@@ -116,7 +115,4 @@ class Grid():
                 # calculate manhatten distance and add to objects
                 manhatten_distance =  abs(x1 - x2) + abs(y1 - y2)
                 house.distances.append(manhatten_distance)
-                battery.distances[house_nr] = manhatten_distance
-
-            # iterate
-            house_nr += 1
+                battery.distances.append(manhatten_distance)
