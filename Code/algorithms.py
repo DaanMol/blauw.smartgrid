@@ -113,43 +113,58 @@ class Algorithm():
         while changes > 0:
             iterations += 1
             changes = 0
+
+            # clear battery connectoins
+            for battery in self.grid.batteries:
+                battery.connections = None
             for house in self.grid.houses:
-                old_connection = house.connection
                 distances = house.distances
                 batteries = self.grid.batteries
                 sorted_batteries = [x for (y,x) in sorted(zip(distances,batteries),
                                     key=lambda pair: pair[0])]
-                house.connection = self.grid.batteries.index(sorted_batteries[0])
-                if house.connection != old_connection:
-                    changes +=1
+                if house.connection != self.grid.batteries.index(sorted_batteries[0]):
+                    changes += 1
+                house.connect(self.grid.batteries.index(sorted_batteries[0]))
+
+                # check if the connections have changed
                 for battery in self.grid.batteries:
                     if sorted_batteries[0] == battery:
-                        battery.connections.append(house)
+                        battery.connect(house)
 
+            # reposition battery according to average xy
             for battery in self.grid.batteries:
                 x, y = 0, 0
+                print(battery.connections)
                 for house in battery.connections:
                     x += house.x
                     y += house.y
                 battery.x = round(x / len(battery.connections))
                 battery.y = round(y / len(battery.connections))
+
+            # clear distances and calculate new ones
             for house in self.grid.houses:
                 house.distances = []
             for battery in self.grid.batteries:
                 battery.distances = []
             self.grid.distances()
-        print(iterations)
+            print('------')
+        print('iterations: ', iterations)
+
 
 
 # run
 if __name__ == "__main__":
-    for i in range(3):
-        algo = Algorithm(i+1)
+    # for i in range(3):
+    #     algo = Algorithm(i+1)
 
-        algo.algorithm_0()
-        algo.algorithm_1()
-        algo.algorithm_2()
+        # algo.algorithm_0()
+        # algo.algorithm_1()
+        # algo.algorithm_2()
     # algo.hillclimber(100)
+
+    algo = Algorithm(3)
+
+    algo.k_means()
 
     # plt.figure("algorithm_0")
     # counter = 0
@@ -183,20 +198,20 @@ if __name__ == "__main__":
     #     plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
     #     counter += 1
     #
-    # plt.figure("tryout_yfirst")
-    # counter = 0
-    # colors = ['r', 'b', 'g', 'y', 'm']
-    # for battery in algo.grid.batteries:
-    #     x = []
-    #     y = []
-    #     for house in battery.connections:
-    #         x.append(house.x)
-    #         y.append(house.y)
-    #         plt.plot([house.x, house.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
-    #         plt.plot([house.x, battery.x], [battery.y, battery.y], color=colors[counter], linewidth=.3)
-    #     plt.scatter(x, y, marker='p', color=colors[counter])
-    #     plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
-    #     counter += 1
+    plt.figure("tryout_yfirst")
+    counter = 0
+    colors = ['r', 'b', 'g', 'y', 'm']
+    for battery in algo.grid.batteries:
+        x = []
+        y = []
+        for house in battery.connections:
+            x.append(house.x)
+            y.append(house.y)
+            plt.plot([house.x, house.x], [house.y, battery.y], color=colors[counter], linewidth=.3)
+            plt.plot([house.x, battery.x], [battery.y, battery.y], color=colors[counter], linewidth=.3)
+        plt.scatter(x, y, marker='p', color=colors[counter])
+        plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+        counter += 1
 
     # counter = 0
     # plt.figure("tryout_random")
@@ -235,4 +250,4 @@ if __name__ == "__main__":
     #     counter += 1
     #     plt.pause(1)
     #     plt.draw()
-# plt.show()
+plt.show()
