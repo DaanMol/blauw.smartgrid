@@ -15,4 +15,4 @@ class House():
         self.connection = None
 
     def __str__(self):
-        return f"{self.x}, {self.y}, {self.output}, {self.distances}"
+        return f"{self.x}, {self.y}, {self.output}, {self.distances}, {self.connection}"
