@@ -1,1 +1,1 @@
-This map is map in which all images shown in the several README's in this git are stored. 
+All files in this map are representations of the dataframe of the code displayed in the submap 'Code'. All classes, their accessory functions and the relations between classes are represented in the UML's. These UML's demonstrate an overview of structural parts out of which the code exists.
