@@ -21,7 +21,7 @@ class House():
         self.x = x
         self.y = y
         self.output = output
-        self.distances = np.array()
+        self.distances = []
         self.connection = None
 
     def connect(self, battery):

@@ -1,5 +1,6 @@
 from houses import House
 from batteries import Battery
+import numpy as np
 
 class Grid():
     """
@@ -24,7 +25,7 @@ class Grid():
         Return list with pos and cap of batteries.
         """
         # make batteries list
-        batteries_list = np.array()
+        batteries_list = []
 
         # read and strip file
         with open(filename, "r") as f:
@@ -52,7 +53,7 @@ class Grid():
                     capacity = float(line[-1])
 
                     # add Battery to batteries_list
-                    np.append(batteries_list, Battery(x, y, capacity))
+                    batteries_list.append(Battery(x, y, capacity))
 
         # return list of Battery items
         return batteries_list
@@ -65,7 +66,7 @@ class Grid():
         Return list with pos and max output.
         """
         # make houses list
-        houses_list = np.array()
+        houses_list = []
 
         # read and strip file
         with open(filename, "r") as f:
@@ -86,10 +87,10 @@ class Grid():
                     output = float(line[2])
 
                     # add House to houses_list
-                    np.append(houses_list, House(x, y, output))
+                    houses_list.append(House(x, y, output))
 
         # return list of House items
-        return houses_list
+        return np.array(houses_list)
 
 
     def distances(self):
@@ -98,6 +99,7 @@ class Grid():
         houses.
         Update distances in House and Battery objects.
         """
+        house_nr = 0
         # iterate over houses and batteries
         for house in self.houses:
 
@@ -113,5 +115,8 @@ class Grid():
 
                 # calculate manhatten distance and add to objects
                 manhatten_distance =  abs(x1 - x2) + abs(y1 - y2)
-                np.append(house.distances, manhatten_distance)
-                np.append(battery.distances, manhatten_distance)
+                house.distances.append(manhatten_distance)
+                battery.distances[house_nr] = manhatten_distance
+
+            # iterate
+            house_nr += 1
