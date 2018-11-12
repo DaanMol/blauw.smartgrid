@@ -27,7 +27,6 @@ class Battery():
     def connect(self, house):
         """
         Connect houses to battery:
-
         Input: house object
         Output: updated self.connections
         """
