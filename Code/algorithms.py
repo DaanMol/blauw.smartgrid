@@ -2,6 +2,7 @@ from grid import Grid
 import matplotlib.pyplot as plt
 import random
 import time
+import numpy as np
 
 class Algorithm():
     """
@@ -17,13 +18,12 @@ class Algorithm():
         used = already_used
         for battery in self.grid.batteries:
             capacity = battery.capacity
-            connections = battery.connections
             for house in self.grid.houses:
                 if house not in used and capacity - house.output > 0:
-                    connections.append(house)
+                    battery.connect(house)
                     capacity -= house.output
                     used.append(house)
-                    house.connection = self.grid.batteries.index(battery)
+                    house.connect(self.grid.batteries.index(battery))
         if len(used) < 150:
             self.swapper(used)
 
@@ -31,16 +31,15 @@ class Algorithm():
         used = already_used
         for battery in self.grid.batteries:
             capacity = battery.capacity
-            connections = battery.connections
             distances = battery.distances
             houses = self.grid.houses
             sorted_houses = [x for (y,x) in sorted(zip(distances,houses), key=lambda pair: pair[0])]
             for house in sorted_houses:
                 if house not in used and capacity - house.output > 0:
-                    connections.append(house)
+                    battery.connect(house)
                     capacity -= house.output
                     used.append(house)
-                    house.connection = self.grid.batteries.index(battery)
+                    house.connect(self.grid.batteries.index(battery))
         if len(used) < 150:
             self.swapper(used)
 
@@ -50,9 +49,11 @@ class Algorithm():
         for i in self.grid.houses:
             c_1 = sorted(i.distances)[1] - sorted(i.distances)[0]
             relatives.append(c_1)
-        sorted_houses = [x for (y,x) in sorted(zip(relatives,self.grid.houses), key=lambda pair: pair[0], reverse=True)]
+        sorted_houses = [x for (y,x) in sorted(zip(relatives,self.grid.houses),
+                         key=lambda pair: pair[0], reverse=True)]
         for i, k in zip(sorted_houses, sorted(relatives, reverse=True)):
-            sorted_batteries = [x for (y,x) in sorted(zip(i.distances,self.grid.batteries), key=lambda pair: pair[0])]
+            sorted_batteries = [x for (y,x) in sorted(zip(i.distances,self.grid.batteries),
+                                key=lambda pair: pair[0])]
             for j in sorted_batteries:
                 if j.capacity - i.output > 0:
                     j.capacity = j.capacity - i.output
@@ -101,6 +102,43 @@ class Algorithm():
             battery_1.connections.append(house_2)
             battery_1.connections.append(house_1)
 
+    def k_means(self):
+        """
+        Apply a K-means algorithm to the grid
+        Currently neglects the capacity of the battery
+        """
+        changes = 1
+        iterations = 0
+        old_connection = None
+        while changes > 0:
+            iterations += 1
+            changes = 0
+            for house in self.grid.houses:
+                old_connection = house.connection
+                distances = house.distances
+                batteries = self.grid.batteries
+                sorted_batteries = [x for (y,x) in sorted(zip(distances,batteries),
+                                    key=lambda pair: pair[0])]
+                house.connection = self.grid.batteries.index(sorted_batteries[0])
+                if house.connection != old_connection:
+                    changes +=1
+                for battery in self.grid.batteries:
+                    if sorted_batteries[0] == battery:
+                        battery.connections.append(house)
+
+            for battery in self.grid.batteries:
+                x, y = 0, 0
+                for house in battery.connections:
+                    x += house.x
+                    y += house.y
+                battery.x = round(x / len(battery.connections))
+                battery.y = round(y / len(battery.connections))
+            for house in self.grid.houses:
+                house.distances = []
+            for battery in self.grid.batteries:
+                battery.distances = []
+            self.grid.distances()
+        print(iterations)
 
 
 # run

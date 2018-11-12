@@ -1,3 +1,5 @@
+import numpy as np
+
 class Battery():
     """
     All information belonging to a battery.
@@ -14,5 +16,8 @@ class Battery():
         self.distances = []
         self.connections = []
 
-    # def __str__(self):
-    #     return f"{self.x}, {self.y}, {self.capacity}"
+    def connect(self, house):
+        self.connections.append(house)
+
+    def __str__(self):
+        return f"{self.x}, {self.y}, {self.capacity}"
