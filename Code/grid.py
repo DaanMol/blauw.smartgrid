@@ -24,7 +24,7 @@ class Grid():
         Return list with pos and cap of batteries.
         """
         # make batteries list
-        batteries_list = []
+        batteries_list = np.array()
 
         # read and strip file
         with open(filename, "r") as f:
@@ -52,7 +52,7 @@ class Grid():
                     capacity = float(line[-1])
 
                     # add Battery to batteries_list
-                    batteries_list.append(Battery(x, y, capacity))
+                    np.append(batteries_list, Battery(x, y, capacity))
 
         # return list of Battery items
         return batteries_list
@@ -65,7 +65,7 @@ class Grid():
         Return list with pos and max output.
         """
         # make houses list
-        houses_list = []
+        houses_list = np.array()
 
         # read and strip file
         with open(filename, "r") as f:
@@ -86,7 +86,7 @@ class Grid():
                     output = float(line[2])
 
                     # add House to houses_list
-                    houses_list.append(House(x, y, output))
+                    np.append(houses_list, House(x, y, output))
 
         # return list of House items
         return houses_list
@@ -104,6 +104,7 @@ class Grid():
             # coordinates house
             x1 = house.x
             y1 = house.y
+
             for battery in self.batteries:
 
                 # coordinates battery
@@ -112,5 +113,5 @@ class Grid():
 
                 # calculate manhatten distance and add to objects
                 manhatten_distance =  abs(x1 - x2) + abs(y1 - y2)
-                house.distances.append(manhatten_distance)
-                battery.distances.append(manhatten_distance)
+                np.append(house.distances, manhatten_distance)
+                np.append(battery.distances, manhatten_distance)
