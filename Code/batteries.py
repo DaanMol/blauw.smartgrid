@@ -2,22 +2,39 @@ import numpy as np
 
 class Battery():
     """
-    All information belonging to a battery.
+    Class containing all information
+    belonging to a battery:
+
+    - Initialisation: position, capacity,
+                      distances to houses,
+                      connections with houses
+    - Connect method
+    - Print method
     """
 
     def __init__(self, x, y, capacity):
         """
-        Position, capacity and distances
-        to all houses from the battery.
+        Position, capacity, distances
+        to all houses, connections list
+        with connected houses.
         """
         self.x = x
         self.y = y
         self.capacity = capacity
-        self.distances = []
-        self.connections = []
+        self.distances = np.array()
+        self.connections = np.array()
 
     def connect(self, house):
-        self.connections.append(house)
+        """
+        Connect houses to battery:
+
+        Input: house object
+        Output: updated self.connections
+        """
+        np.append(self.connections, house)
 
     def __str__(self):
+        """
+        Print statement for battery object.
+        """
         return f"{self.x}, {self.y}, {self.capacity}"
