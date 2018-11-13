@@ -126,17 +126,7 @@ class Algorithm():
         """
         print(f"Error: {150 - len(used)} houses not connected.")
 
-    def random_hillclimber(self, N):
-        """Random input for hillclimber"""
-        iterations = N
-        while iterations > 0:
-            iterations -= 1
-            index_1 = int(random.uniform(0, 149))
-            index_2 = int(random.uniform(0, 149))
-            if self.hillclimber(index_1, index_2):
-                iterations = N
-
-    def hillclimber(self, index_1, index_2):
+    def swap_connection(self, index_1, index_2):
         """
         Checks if swapping two house-battery
         connections is possible and decreases the
@@ -171,6 +161,43 @@ class Algorithm():
             return True
 
         return False
+
+    def random_hillclimber(self, N):
+        """Random input for swap_connection"""
+        iterations = N
+        while iterations > 0:
+            iterations -= 1
+            index_1 = int(random.uniform(0, 149))
+            index_2 = int(random.uniform(0, 149))
+            if self.hillclimber(index_1, index_2):
+                iterations = N
+
+    def depth_first(self, plot):
+        """Depth first algorithm"""
+
+        def depth_first_helper(index_1):
+            """"Helper for depth_first"""
+            for index_2 in range(150):
+                if index_1 == index_2:
+                    continue
+                if self.swap_connection(index_1, index_2):
+                    
+        # start conditions
+        not_done = True
+        end_best = [self.grid, plot.cost()]
+        index_1 = 0
+
+        # continue until every option of start_point is checked
+        while not_done:
+            depth_first_helper(index_1)
+
+            if end_cost < end_best[1]:
+                end_best = [self.grid, end_cost]
+            if end_counter == 150:
+                not_done = False
+
+        if current_start_point < 0:
+            self.depth_first(current_start_point + 1, 0)
 
     def k_means(self):
         """
@@ -236,16 +263,17 @@ if __name__ == "__main__":
     algo.algorithm_0()
     # algo.algorithm_1()
     # algo.algorithm_2()
-    cost_1 = plot.cost()
-    print("start =", cost_1)
-
-    algo.random_hillclimber(1000)
-    cost_2 = plot.cost()
-    print("improvement =", cost_1 - cost_2)
-    print("end =", cost_2)
+    # cost_1 = plot.cost()
+    # print("start =", cost_1)
+    #
+    # algo.random_hillclimber(1000)
+    # cost_2 = plot.cost()
+    # print("improvement =", cost_1 - cost_2)
+    # print("end =", cost_2)
 
     # algo.k_means()
 
+    algo.depth_first(0)
     """Plots"""
     # plots
     # plot.line_figure()
