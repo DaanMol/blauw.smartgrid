@@ -16,7 +16,10 @@ The current code exists of the creation of a grid in which the houses and batter
 The first algorithm that we've programmed connects all houses to batteries without exceeding the capacity of the batteries. This because as soon as the maximum capacity of a battery is achieved, houses are connected to the next battery in line.
 ![Algoritme 1](/Presentation/Images/tryout_yfirst_alg0.png)
 
-The second algorithm sorts houses based on distance with respect to the nearest battery. Houses with the smallest distance to a battery are first in the list, houses with larger distances to batteries are positioned later on. Batteries are connected to houses subsequently. When capacity of a battery is exceed or close to maximum, houses are tied to the next battery. 
+The second algorithm sorts houses based on distance with respect to the nearest battery. Houses with the smallest distance to a battery are first in the list, houses with larger distances to batteries are positioned later on. Batteries are connected to houses subsequently. When capacity of a battery is exceed or close to maximum, houses are tied to the next battery.
 ![Algoritme 2](/Presentation/Images/tryout_yfirst.png)
 
 The images shown above were created using matplotlib.pylot.
+
+**Packages installed**
+To run our code, several packages need to be installed. These packages are Bokeh, Numpy and Matplotlib.  
