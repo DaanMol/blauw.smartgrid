@@ -188,7 +188,7 @@ class Grid():
         plt.savefig(f"Graphs/histogram_{self.district}.png")
 
 
-    def plot_districts(self):
+    def plot_histograms_bokeh(self):
         # plot grid using bokeh
         # histogram house output distribution
         list = []
@@ -216,6 +216,11 @@ class Grid():
 
         show(p)
         return p
+
+    def plot_grid_bokeh(self):
+        """
+        Make a picture of the Grid
+        """
 
 
 # run
@@ -252,4 +257,4 @@ if __name__ == "__main__":
         grid.plot_grid()
         grid.graphs()
         #plt.show()
-        grid.plot_districts()
+        grid.plot_histograms_bokeh()
