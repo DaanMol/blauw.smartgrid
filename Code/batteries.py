@@ -24,16 +24,21 @@ class Battery():
         self.distances = []
         self.connections = []
 
-    def connect(self, house):
+    def connect(self, house, connect=True):
         """
-        Connect houses to battery:
-        Input: house object
+        (dis)Connect houses - battery:
+        Input: - House object (house)
+               - Boolian (connect), disconnects
+                 when False.
         Output: updated self.connections
         """
-        self.connections.append(house)
+        if connect == True:
+            self.connections.append(house)
+        elif connect == False:
+            self.connections.remove(house)
 
     def __str__(self):
         """
         Print statement for battery object.
         """
-        return f"{self.x}, {self.y}, {self.capacity}"
+        return f"{self.connections}"

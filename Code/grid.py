@@ -2,6 +2,7 @@ from houses import House
 from batteries import Battery
 import numpy as np
 
+
 class Grid():
     """
     Grid class, contains all information
@@ -17,7 +18,6 @@ class Grid():
         self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
         self.distances()
 
-
     def load_batteries(self, filename):
         """
         Open .txt file of batteries.
@@ -30,18 +30,12 @@ class Grid():
         # read and strip file
         with open(filename, "r") as f:
             text = f.read().strip().split('\n')
-
-            # iterate over lines and append to batteries_list
             for line in text:
 
-                # split items in line
+                # take relevant parts
                 line = line.split('\t')
-
-                # take relevant items
                 if line[0][0] == '[':
                     pos = line[0]
-
-                    # remove signs from pos
                     for char in pos:
                         if char in "[,]":
                             pos = pos.replace(char, '')
@@ -58,7 +52,6 @@ class Grid():
         # return list of Battery items
         return batteries_list
 
-
     def load_houses(self, filename):
         """
         Open .csv file of houses.
@@ -71,14 +64,10 @@ class Grid():
         # read and strip file
         with open(filename, "r") as f:
             text = f.read().strip().split('\n')
-
-            # iterate over lines and append to houses_list
             for line in text:
 
-                # split items in line
-                line = line.split(',')
-
                 # take relevant items
+                line = line.split(',')
                 if line[0].isdigit():
 
                     # variables
@@ -92,27 +81,42 @@ class Grid():
         # return list of House items
         return houses_list
 
-
     def distances(self):
         """
         Calculate distances between batteries and
         houses.
         Update distances in House and Battery objects.
         """
-        # iterate over houses and batteries
+        # iterate over houses + batteries for coordinates
         for house in self.houses:
-
-            # coordinates house
             x1 = house.x
             y1 = house.y
-
             for battery in self.batteries:
-
-                # coordinates battery
                 x2 = battery.x
                 y2 = battery.y
 
                 # calculate manhatten distance and add to objects
-                manhatten_distance =  abs(x1 - x2) + abs(y1 - y2)
+                manhatten_distance = abs(x1 - x2) + abs(y1 - y2)
                 house.distances.append(manhatten_distance)
                 battery.distances.append(manhatten_distance)
+
+    def swap(self, house_1, house_2):
+        """
+        Swaps the connection of two houses
+        """
+        # take batteries
+        battery_1 = self.batteries[house_1.connection]
+        battery_2 = self.batteries[house_2.connection]
+
+        # swap the connections
+        battery_1.connect(house_1, False)
+        battery_2.connect(house_2, False)
+        temp = house_1.connection
+        house_1.connect(house_2.connection)
+        house_2.connect(temp)
+        battery_1.connect(house_2)
+        battery_2.connect(house_1)
+
+        # update capacity batteries
+        battery_1.capacity -= (house_1.output - house_2.output)
+        battery_2.capacity -= (house_2.output - house_1.output)

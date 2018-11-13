@@ -32,8 +32,8 @@ class House():
         """
         self.connection = battery
 
-    def __str__(self):
-        """
-        Print statement for house object.
-        """
-        return f"{self.x}, {self.y}, {self.output}, {self.distances}, {self.connection}"
+    # def __str__(self):
+    #     """
+    #     Print statement for house object.
+    #     """
+    #     return f"connection = {self.connection}"
