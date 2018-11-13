@@ -203,7 +203,6 @@ class Algorithm():
             # reposition battery according to average xy
             for battery in self.grid.batteries:
                 x, y = 0, 0
-                print(battery.connections)
                 for house in battery.connections:
                     x += house.x
                     y += house.y
@@ -216,7 +215,7 @@ class Algorithm():
             for battery in self.grid.batteries:
                 battery.distances = []
             self.grid.distances()
-            print('------')
+            
         print('iterations: ', iterations)
 
 
@@ -231,16 +230,16 @@ if __name__ == "__main__":
     """Algorithms"""
     # algo.algorithm_0()
     # algo.algorithm_1()
-    algo.algorithm_2()
-    cost_1 = plot.cost()
-    print("start =", cost_1)
+    # algo.algorithm_2()
+    # cost_1 = plot.cost()
+    # print("start =", cost_1)
 
-    algo.hillclimber(10000000)
-    cost_2 = plot.cost()
-    print("improvement =", cost_1 - cost_2)
-    print("end =", cost_2)
+    # algo.hillclimber(10000000)
+    # cost_2 = plot.cost()
+    # print("improvement =", cost_1 - cost_2)
+    # print("end =", cost_2)
 
-    # algo.k_means()
+    algo.k_means()
 
     """Plots"""
     # plots
