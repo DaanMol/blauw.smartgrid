@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from bokeh.plotting import figure, output_file, show
+from bokeh.layouts import gridplot
 
 class Grid():
     """
@@ -186,6 +188,36 @@ class Grid():
         plt.savefig(f"Graphs/histogram_{self.district}.png")
 
 
+    def plot_districts(self):
+        # plot grid using bokeh
+        # histogram house output distribution
+        list = []
+        for i in self.houses:
+            list.append(i[2])
+
+        hist, edges = np.histogram(list, bins=30)
+
+        # output to static HTML file
+        output_file("histograms.html")
+
+        TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
+
+        p = figure(title="House output distribution", tools=TOOLS,
+                   background_fill_color="#fafafa", toolbar_location="below")
+        p.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
+               fill_color="navy", line_color="blue", alpha=1)
+
+        p.y_range.start = 0
+        p.legend.location = "center_right"
+        p.legend.background_fill_color = "#fefefe"
+        p.xaxis.axis_label = "output house"
+        p.yaxis.axis_label = "number of houses"
+        p.grid.grid_line_color="white"
+
+        show(p)
+        return p
+
+
 # run
 if __name__ == "__main__":
     for i in range(3):
@@ -219,3 +251,5 @@ if __name__ == "__main__":
         grid.matrix()
         grid.plot_grid()
         grid.graphs()
+        #plt.show()
+        grid.plot_districts()
