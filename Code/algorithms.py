@@ -1,5 +1,6 @@
 from grid import Grid
 from actions import Plots
+from bokeh import Bokeh
 import matplotlib.pyplot as plt
 import random
 import time
@@ -215,7 +216,7 @@ class Algorithm():
             for battery in self.grid.batteries:
                 battery.distances = []
             self.grid.distances()
-            
+
         print('iterations: ', iterations)
 
 
@@ -226,6 +227,10 @@ if __name__ == "__main__":
 
     # create plots Object
     plot = Plots(algo.grid)
+
+    # create bokeh object
+    bokeh = Bokeh(algo.grid)
+    bokeh.simple_plot()
 
     """Algorithms"""
     # algo.algorithm_0()
@@ -239,16 +244,16 @@ if __name__ == "__main__":
     # print("improvement =", cost_1 - cost_2)
     # print("end =", cost_2)
 
-    algo.k_means()
+    # algo.k_means()
 
     """Plots"""
     # plots
     # plot.line_figure()
-    plot.x_or_y_first(False)
+    # plot.x_or_y_first(False)
     # plot.random_simulation(False)
 
     # calculate cost
     # print("cost =", plot.cost())
 
     # show plots
-    plt.show()
+    # plt.show()
