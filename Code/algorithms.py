@@ -57,8 +57,7 @@ class Algorithm():
             # sort houses by distances to current battery
             distances = battery.distances
             houses = self.grid.houses
-            sorted_houses = [x for (y, x) in sorted(zip(distances, houses),
-                                                    key=lambda pair: pair[0])]
+            sorted_houses = self.sort(distances, houses)
             # iterate over the sorted houses
             for house in sorted_houses:
                 # add the house when it fits in the capacity
@@ -87,9 +86,7 @@ class Algorithm():
         for house in self.grid.houses:
             difference = sorted(house.distances)[1] - sorted(house.distances)[0]
             relatives.append(difference)
-        sorted_house = [x for (y, x) in sorted(zip(relatives, self.grid.houses),
-                                               key=lambda pair: pair[0],
-                                               reverse=True)]
+        sorted_house = self.sort(relatives, self.grid.houses, True)
         # iterate over sorted houses
         for house in sorted_house:
             # sort the batteries by distance
@@ -127,10 +124,7 @@ class Algorithm():
             available_capacity = []
             for battery in self.grid.batteries:
                 available_capacity.append(battery.capacity)
-            sorted_batt = [x for (y, x) in sorted(zip(available_capacity,
-                                                      self.grid.batteries),
-                                                  key=lambda pair: pair[0],
-                                                  reverse=True)]
+            sorted_batt = self.sort(available_capacity, self.grid.batteries, True)
             swapped = False
             while not swapped:
                 for battery in sorted_batt[1:]:
@@ -140,11 +134,9 @@ class Algorithm():
                     outputs_2 = []
                     for i in battery.connections:
                         outputs_2.append(i.output)
-                    sorted_house_1 = [x for (y, x) in sorted(zip(outputs_1, sorted_batt[0].connections),
-                                                             key=lambda pair: pair[0],
-                                                             reverse=True)]
-                    sorted_house_2 = [x for (y, x) in sorted(zip(outputs_2, battery.connections),
-                                                             key=lambda pair: pair[0])]
+
+                    sorted_house_1 = self.sort(outputs_1, sorted_batt[0].connections, True)
+                    sorted_house_2 = self.sort(outputs_2, battery.connections)
 
                     for house_1 in sorted_house_1:
                         for house_2 in sorted_house_2:
@@ -168,6 +160,12 @@ class Algorithm():
         Error message when houses not connected
         """
         print(f"Error: {150 - len(used)} houses not connected.")
+
+    def sort(self, in1, in2, reverse=False):
+        sorting = [x for (y, x) in sorted(zip(in1, in2),
+                                                 key=lambda pair: pair[0],
+                                                 reverse=reverse)]
+        return sorting
 
     def swap_connection(self, index_1, index_2):
         """
@@ -233,8 +231,7 @@ class Algorithm():
             for house in self.grid.houses:
                 distances = house.distances
                 batteries = self.grid.batteries
-                sorted_batteries = [x for (y, x) in sorted(zip(distances, batteries),
-                                                           key=lambda pair: pair[0])]
+                sorted_batteries = self.sort(distances, batteries)
                 if house.connection != self.grid.batteries.index(sorted_batteries[0]):
                     changes += 1
                 house.connect(self.grid.batteries.index(sorted_batteries[0]))
@@ -278,7 +275,7 @@ if __name__ == "__main__":
     """Algorithms"""
     # algo.algorithm_0()
     # algo.algorithm_1()
-    algo.algorithm_2()
+    # algo.algorithm_2()
     # cost_1 = plot.cost()
     # print("start =", cost_1)
     #
@@ -287,7 +284,7 @@ if __name__ == "__main__":
     # print("improvement =", cost_1 - cost_2)
     # print("end =", cost_2)
 
-    # algo.k_means()
+    algo.k_means()
 
     """Plots"""
     # plots
