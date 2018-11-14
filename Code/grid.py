@@ -118,5 +118,5 @@ class Grid():
         battery_2.connect(house_1)
 
         # update capacity batteries
-        battery_1.capacity -= (house_1.output - house_2.output)
-        battery_2.capacity -= (house_2.output - house_1.output)
+        battery_1.capacity += (house_1.output - house_2.output)
+        battery_2.capacity += (house_2.output - house_1.output)
