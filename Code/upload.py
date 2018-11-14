@@ -189,7 +189,10 @@ class Grid():
 
 
     def plot_histograms_bokeh(self):
-        # plot grid using bokeh
+        """
+        Plot histograms using Bokeh
+        """
+
         # histogram house output distribution
         list = []
         for i in self.houses:
@@ -219,10 +222,41 @@ class Grid():
 
     def plot_grid_bokeh(self):
         """
-        Make a picture of the Grid
+        Make a picture of the Grid using Bokeh
         """
 
+        # output to static HTML file
+        output_file("layout_grid.html")
 
+        # add houses to image
+        x = []
+        y = []
+        for house in self.houses:
+            x.append(house[0])
+            y.append(house[1])
+
+        # add batteries to image
+        x = []
+        y = []
+        for battery in self.batteries:
+            x.append(battery[0])
+            y.append(battery[1])
+
+        input, edges = x, y
+
+        TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
+
+        p = figure(title(f"Grid {self.district}: houses (red) and batteries (blue)"),
+                   tools=TOOLS, background_fill_color="#fafafa", toolbar_location="below")
+
+        p.xaxis.axis_label("x-position")
+        p.yaxis.axis_label("y-position")
+
+        # make a grid
+        grid = gridplot(input, plot_width=50, plot_height=50)
+
+        # show the results
+        show(grid)
 # run
 if __name__ == "__main__":
     for i in range(3):
@@ -258,3 +292,4 @@ if __name__ == "__main__":
         grid.graphs()
         #plt.show()
         grid.plot_histograms_bokeh()
+        grid.plot_grid_bokeh()
