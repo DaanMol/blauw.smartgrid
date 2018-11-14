@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from bokeh.plotting import figure, output_file, show
 from bokeh.layouts import gridplot
+from bokeh.models import Legend
+
 
 class Grid():
     """
@@ -19,7 +21,6 @@ class Grid():
         self.distances_battery = self.distances('battery')
         self.distances_houses = self.distances()
         self.district = district
-
 
     def load_batteries(self, filename):
         """
@@ -50,7 +51,6 @@ class Grid():
         # return list of batteries
         return batteries_list
 
-
     def load_houses(self, filename):
         """
         Open .csv file of houses
@@ -73,7 +73,6 @@ class Grid():
                                         float(line[2])])
         # return list of houses
         return houses_list
-
 
     def distances(self, option=None):
         """
@@ -120,7 +119,6 @@ class Grid():
         # return list of dictionaries
         return items
 
-
     def plot_grid(self):
         """
         Make a picture of the Grid
@@ -148,7 +146,6 @@ class Grid():
         plt.ylabel("y-position")
         plt.savefig(f"Graphs/grid_{self.district}.png")
 
-
     def matrix(self):
         """
         Create matrix
@@ -168,7 +165,6 @@ class Grid():
         plt.ylabel("y-position")
         plt.savefig(f"Graphs/matrix_{self.district}.png")
 
-
     def graphs(self):
         """
         Create some graphs showing information
@@ -186,7 +182,6 @@ class Grid():
         plt.xlabel("Output house")
         plt.ylabel("Number of houses")
         plt.savefig(f"Graphs/histogram_{self.district}.png")
-
 
     def plot_histograms_bokeh(self):
         """
@@ -215,7 +210,7 @@ class Grid():
         p.legend.background_fill_color = "#fefefe"
         p.xaxis.axis_label = "output house"
         p.yaxis.axis_label = "number of houses"
-        p.grid.grid_line_color="white"
+        p.grid.grid_line_color = "white"
 
         show(p)
         return p
@@ -229,11 +224,11 @@ class Grid():
         output_file("layout_grid.html")
 
         # add houses to image
-        x = []
-        y = []
+        x_h = []
+        y_h = []
         for house in self.houses:
-            x.append(house[0])
-            y.append(house[1])
+            x_h.append(house[0])
+            y_h.append(house[1])
 
         # add batteries to image
         x = []
@@ -242,21 +237,28 @@ class Grid():
             x.append(battery[0])
             y.append(battery[1])
 
-        input, edges = x, y
-
         TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
 
-        p = figure(title(f"Grid {self.district}: houses (red) and batteries (blue)"),
-                   tools=TOOLS, background_fill_color="#fafafa", toolbar_location="below")
+        p = figure(title=(f"Grid {self.district}: houses and batteries"),
+                   tools=TOOLS, background_fill_color="#fafafa", toolbar_location="right")
+        r0 = p.circle(x,y, color='red', size=10)
+        r1 = p.square(x_h,y_h, color='blue')
 
-        p.xaxis.axis_label("x-position")
-        p.yaxis.axis_label("y-position")
+        legend = Legend(items=[
+                        ('Battery', [r0]),
+                        ('House', [r1]),
+                        ],)
 
-        # make a grid
-        grid = gridplot(input, plot_width=50, plot_height=50)
+        p.add_layout(legend, 'below')
+        p.legend.click_policy="hide"
+        p.xaxis.axis_label = 'x position'
+        p.yaxis.axis_label = 'y position'
 
         # show the results
-        show(grid)
+        show(p)
+
+
+
 # run
 if __name__ == "__main__":
     for i in range(3):
@@ -290,6 +292,6 @@ if __name__ == "__main__":
         grid.matrix()
         grid.plot_grid()
         grid.graphs()
-        #plt.show()
-        grid.plot_histograms_bokeh()
+        # plt.show()
+        # grid.plot_histograms_bokeh()
         grid.plot_grid_bokeh()
