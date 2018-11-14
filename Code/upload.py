@@ -256,27 +256,31 @@ class Grid():
         # show the results
         show(p)
 
-    def plot_matrix_bokeh():
+    def plot_matrix_bokeh(self):
         """
         Plot matrixes using Bokeh
         """
         # output to static HTML file
         output_file("matrixes.html")
 
-        plt.figure()
+        TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo,\
+                 reset,tap,save,box_select,poly_select,lasso_select"
+                 
+        colors = ["#%02x%02x%02x" % (int(r), int(g), 150) for r, g in zip(50+2*x, 30+2*y)]
+
+        p = figure(title=(f"Grid {self.district}: house output and batteries (red)"),
+                   tools=TOOLS, toolbar_location="right")
+
         matrix_house = np.zeros([51, 51])
         matrix_battery = np.zeros([51, 51])
         for i in self.houses:
             matrix_house[i[1]][i[0]] = i[2]
         for i in self.batteries:
-            plt.plot(i[0], i[1], 'ro')
-        plt.imshow(matrix_house, origin='lower')
-        plt.title(f"Grid {self.district}: house output and batteries (red)")
-        cbar = plt.colorbar()
-        cbar.set_label('Output house')
-        plt.xlabel("x-position")
-        plt.ylabel("y-position")
-        plt.savefig(f"Graphs/matrix_{self.district}.png")
+            p.scatter(i[0], i[1], fill_color=colors, fill_alpha=0.6,
+                      line_color=None)
+
+        p.xaxis.axis_label = 'x position'
+        p.yaxis.axis_label = 'y position'
 
 
 # run
