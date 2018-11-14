@@ -221,13 +221,15 @@ class Algorithm():
         changes = 1
         iterations = 0
         old_connection = None
-        while changes > 0:
+        for i in range(100):
             iterations += 1
             changes = 0
+            used = []
 
             # clear battery connectoins
             for battery in self.grid.batteries:
                 battery.connections = []
+                battery.capacity = battery.max_cap
             for house in self.grid.houses:
                 distances = house.distances
                 batteries = self.grid.batteries
@@ -236,10 +238,16 @@ class Algorithm():
                     changes += 1
                 house.connect(self.grid.batteries.index(sorted_batteries[0]))
 
-                # check if the connections have changed
-                for battery in self.grid.batteries:
-                    if sorted_batteries[0] == battery:
+                # select closest battery
+                # check if battery capacity is sufficient
+                # else select next closest battery
+                for battery in sorted_batteries:
+                    if (battery.capacity - house.output) > 0:
+                        battery.capacity -= house.output
+                        house.connect(self.grid.batteries.index(battery))
+                        used.append(house)
                         battery.connect(house)
+                        break
 
             # reposition battery according to average xy
             for battery in self.grid.batteries:
@@ -257,7 +265,28 @@ class Algorithm():
                 battery.distances = []
             self.grid.distances()
 
-        print('iterations: ', iterations)
+            # print('changes:', changes)
+            print(iterations)
+
+
+            not_used = []
+            for house in self.grid.houses:
+                # print(house.connection)
+                if not house.connection:
+                    # print('noconnection')
+                    not_used.append(house)
+
+
+        # print('iterations: ', iterations)
+        print(len(used))
+        print(len(not_used))
+        self.error_message(used)
+        print(not_used)
+        if len(used) < 150:
+            self.capacity_fixer(not_used)
+
+        for i in self.grid.batteries:
+            print(i.capacity)
 
 
 # run

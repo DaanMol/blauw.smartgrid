@@ -21,6 +21,7 @@ class Battery():
         self.x = x
         self.y = y
         self.capacity = capacity
+        self.max_cap = capacity
         self.distances = []
         self.connections = []
 
