@@ -213,7 +213,6 @@ class Grid():
         p.grid.grid_line_color = "white"
 
         show(p)
-        return p
 
     def plot_grid_bokeh(self):
         """
@@ -257,6 +256,27 @@ class Grid():
         # show the results
         show(p)
 
+    def plot_matrix_bokeh():
+        """
+        Plot matrixes using Bokeh
+        """
+        # output to static HTML file
+        output_file("matrixes.html")
+
+        plt.figure()
+        matrix_house = np.zeros([51, 51])
+        matrix_battery = np.zeros([51, 51])
+        for i in self.houses:
+            matrix_house[i[1]][i[0]] = i[2]
+        for i in self.batteries:
+            plt.plot(i[0], i[1], 'ro')
+        plt.imshow(matrix_house, origin='lower')
+        plt.title(f"Grid {self.district}: house output and batteries (red)")
+        cbar = plt.colorbar()
+        cbar.set_label('Output house')
+        plt.xlabel("x-position")
+        plt.ylabel("y-position")
+        plt.savefig(f"Graphs/matrix_{self.district}.png")
 
 
 # run
@@ -294,4 +314,5 @@ if __name__ == "__main__":
         grid.graphs()
         # plt.show()
         # grid.plot_histograms_bokeh()
-        grid.plot_grid_bokeh()
+        #grid.plot_grid_bokeh()
+        grid.plot_matrix_bokeh()
