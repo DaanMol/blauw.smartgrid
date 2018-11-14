@@ -57,8 +57,7 @@ class Algorithm():
             # sort houses by distances to current battery
             distances = battery.distances
             houses = self.grid.houses
-            sorted_houses = [x for (y, x) in sorted(zip(distances, houses),
-                                                    key=lambda pair: pair[0])]
+            sorted_houses = self.sort(distances, houses)
             # iterate over the sorted houses
             for house in sorted_houses:
                 # add the house when it fits in the capacity
@@ -76,38 +75,35 @@ class Algorithm():
         """
         Iterates over houses sorted by the
         difference between the two closest batteries.
-        When difference equals zero, makes use of
-        best fit bin packing.
+        When houses not used, use capacity_creator
         """
         # lists for connected houses and relative distances
-        used = []
+        not_used = []
         relatives = []
+        used = []
 
         # sort houses by the difference between two closest batteries
         for house in self.grid.houses:
             difference = sorted(house.distances)[1] - sorted(house.distances)[0]
             relatives.append(difference)
-        sorted_houses = [x for (y, x) in sorted(zip(relatives, self.grid.houses),
-                                                key=lambda pair: pair[0], reverse=True)]
+        sorted_house = self.sort(relatives, self.grid.houses, True)
         # iterate over sorted houses
-        for house in sorted_houses:
+        for house in sorted_house:
             # sort the batteries by distance
             sorted_bat = [x for (y, x) in
                           sorted(zip(house.distances, self.grid.batteries),
                                  key=lambda pair: pair[0])]
+            sorted_dis = sorted(house.distances)
+
             # iterate over the batteries
             for i in range(len(sorted_bat)):
                 batt_now = sorted_bat[i]
-                batt_next = sorted_bat[i + 1]
 
-                # best fit bin packing or capacity too small (skip battery)
-                if (batt_next.capacity - batt_now.capacity > 0 and
-                        batt_next.capacity < batt_now.capacity) or \
-                        batt_now.capacity - house.output < 0:
-                    if i < 3:
-                        continue
-                    else:
-                        batt_now = batt_next
+                # check current capacity
+                if batt_now.capacity - house.output < 0:
+                    if i == len(sorted_bat) - 1:
+                        not_used.append(house)
+                    continue
 
                 # update
                 batt_now.capacity -= house.output
@@ -116,15 +112,60 @@ class Algorithm():
                 used.append(house)
                 break
 
-        # error message when not all houses connected
-        if len(used) < 150:
-            self.error_message(used)
+        # fix that sh*@!$
+        if len(not_used) > 0:
+            self.capacity_fixer(not_used)
+
+
+    def capacity_fixer(self, not_used):
+        """Creates space for not used houses"""
+        for house in not_used:
+            needed_space = house.output
+            available_capacity = []
+            for battery in self.grid.batteries:
+                available_capacity.append(battery.capacity)
+            sorted_batt = self.sort(available_capacity, self.grid.batteries, True)
+            swapped = False
+            while not swapped:
+                for battery in sorted_batt[1:]:
+                    outputs_1 = []
+                    for i in sorted_batt[0].connections:
+                        outputs_1.append(i.output)
+                    outputs_2 = []
+                    for i in battery.connections:
+                        outputs_2.append(i.output)
+
+                    sorted_house_1 = self.sort(outputs_1, sorted_batt[0].connections, True)
+                    sorted_house_2 = self.sort(outputs_2, battery.connections)
+
+                    for house_1 in sorted_house_1:
+                        for house_2 in sorted_house_2:
+                            output_diff = house_1.output - house_2.output
+                            if output_diff - (needed_space - sorted_batt[0].capacity) > 0 and battery.capacity - output_diff > 0:
+                                self.grid.swap(house_1, house_2)
+                                swapped = True
+                                break
+                        if swapped:
+                            break
+                    if swapped:
+                        break
+
+            # connect not used house
+            house.connect(self.grid.batteries.index(sorted_batt[0]))
+            sorted_batt[0].connect(house)
+            sorted_batt[0].capacity -= house.output
 
     def error_message(self, used):
         """
         Error message when houses not connected
         """
         print(f"Error: {150 - len(used)} houses not connected.")
+
+    def sort(self, in1, in2, reverse=False):
+        sorting = [x for (y, x) in sorted(zip(in1, in2),
+                                                 key=lambda pair: pair[0],
+                                                 reverse=reverse)]
+        return sorting
 
     def swap_connection(self, index_1, index_2):
         """
@@ -172,33 +213,6 @@ class Algorithm():
             if self.hillclimber(index_1, index_2):
                 iterations = N
 
-    def depth_first(self, plot):
-        """Depth first algorithm"""
-
-        def depth_first_helper(index_1):
-            """"Helper for depth_first"""
-            for index_2 in range(150):
-                if index_1 == index_2:
-                    continue
-                if self.swap_connection(index_1, index_2):
-                    
-        # start conditions
-        not_done = True
-        end_best = [self.grid, plot.cost()]
-        index_1 = 0
-
-        # continue until every option of start_point is checked
-        while not_done:
-            depth_first_helper(index_1)
-
-            if end_cost < end_best[1]:
-                end_best = [self.grid, end_cost]
-            if end_counter == 150:
-                not_done = False
-
-        if current_start_point < 0:
-            self.depth_first(current_start_point + 1, 0)
-
     def k_means(self):
         """
         Apply a K-means algorithm to the grid
@@ -207,26 +221,33 @@ class Algorithm():
         changes = 1
         iterations = 0
         old_connection = None
-        while changes > 0:
+        for i in range(100):
             iterations += 1
             changes = 0
+            used = []
 
             # clear battery connectoins
             for battery in self.grid.batteries:
                 battery.connections = []
+                battery.capacity = battery.max_cap
             for house in self.grid.houses:
                 distances = house.distances
                 batteries = self.grid.batteries
-                sorted_batteries = [x for (y, x) in sorted(zip(distances, batteries),
-                                                           key=lambda pair: pair[0])]
+                sorted_batteries = self.sort(distances, batteries)
                 if house.connection != self.grid.batteries.index(sorted_batteries[0]):
                     changes += 1
                 house.connect(self.grid.batteries.index(sorted_batteries[0]))
 
-                # check if the connections have changed
-                for battery in self.grid.batteries:
-                    if sorted_batteries[0] == battery:
+                # select closest battery
+                # check if battery capacity is sufficient
+                # else select next closest battery
+                for battery in sorted_batteries:
+                    if (battery.capacity - house.output) > 0:
+                        battery.capacity -= house.output
+                        house.connect(self.grid.batteries.index(battery))
+                        used.append(house)
                         battery.connect(house)
+                        break
 
             # reposition battery according to average xy
             for battery in self.grid.batteries:
@@ -244,7 +265,28 @@ class Algorithm():
                 battery.distances = []
             self.grid.distances()
 
-        print('iterations: ', iterations)
+            # print('changes:', changes)
+            print(iterations)
+
+
+            not_used = []
+            for house in self.grid.houses:
+                # print(house.connection)
+                if not house.connection:
+                    # print('noconnection')
+                    not_used.append(house)
+
+
+        # print('iterations: ', iterations)
+        print(len(used))
+        print(len(not_used))
+        self.error_message(used)
+        print(not_used)
+        if len(used) < 150:
+            self.capacity_fixer(not_used)
+
+        for i in self.grid.batteries:
+            print(i.capacity)
 
 
 # run
@@ -260,7 +302,7 @@ if __name__ == "__main__":
     # bokeh.simple_plot()
 
     """Algorithms"""
-    algo.algorithm_0()
+    # algo.algorithm_0()
     # algo.algorithm_1()
     # algo.algorithm_2()
     # cost_1 = plot.cost()
@@ -271,17 +313,16 @@ if __name__ == "__main__":
     # print("improvement =", cost_1 - cost_2)
     # print("end =", cost_2)
 
-    # algo.k_means()
+    algo.k_means()
 
-    algo.depth_first(0)
     """Plots"""
     # plots
     # plot.line_figure()
-    # plot.x_or_y_first(False)
+    plot.x_or_y_first(False)
     # plot.random_simulation(False)
 
     # calculate cost
-    # print("cost =", plot.cost())
+    print("cost =", plot.cost())
 
     # show plots
-    # plt.show()
+    plt.show()
