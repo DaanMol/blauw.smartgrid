@@ -1,6 +1,6 @@
 from grid import Grid
 from actions import Plots
-from bokeh import Bokeh
+# from bokeh import Bokeh
 import matplotlib.pyplot as plt
 import random
 import time
@@ -126,51 +126,78 @@ class Algorithm():
         """
         print(f"Error: {150 - len(used)} houses not connected.")
 
-    def hillclimber(self, boundary):
+    def swap_connection(self, index_1, index_2):
         """
         Checks if swapping two house-battery
         connections is possible and decreases the
-        total cost. (does this until nothing changes)
+        total cost.
         Swaps when favourable.
         """
-        # take length houses list
-        length = len(self.grid.houses)
+        # take the two houses and their batteries
+        house_1 = self.grid.houses[index_1]
+        house_2 = self.grid.houses[index_2]
+        battery_1 = self.grid.batteries[house_1.connection]
+        battery_2 = self.grid.batteries[house_2.connection]
 
-        # continue until nothing changed
-        changed = boundary
-        while changed is not 0:
-            changed -= 1
+        # skip when both on same battery
+        if battery_1 == battery_2:
+            return False
 
-            # take two random house index
+        # skip when swapping is not possible capacity wise
+        if battery_1.capacity - house_1.output + house_2.output < 0:
+            return False
+        if battery_2.capacity - house_2.output + house_1.output < 0:
+            return False
+
+        # calculate old and new distances
+        dist_1 = house_1.distances[house_1.connection]
+        dist_2 = house_2.distances[house_2.connection]
+        dist_1_new = house_1.distances[house_2.connection]
+        dist_2_new = house_2.distances[house_1.connection]
+
+        # swap when total distance decreases
+        if dist_1 + dist_2 > dist_1_new + dist_2_new:
+            self.grid.swap(house_1, house_2)
+            return True
+
+        return False
+
+    def random_hillclimber(self, N):
+        """Random input for swap_connection"""
+        iterations = N
+        while iterations > 0:
+            iterations -= 1
             index_1 = int(random.uniform(0, 149))
             index_2 = int(random.uniform(0, 149))
+            if self.hillclimber(index_1, index_2):
+                iterations = N
 
-            # take the two houses and their batteries
-            house_1 = self.grid.houses[index_1]
-            house_2 = self.grid.houses[index_2]
-            battery_1 = self.grid.batteries[house_1.connection]
-            battery_2 = self.grid.batteries[house_2.connection]
+    def depth_first(self, plot):
+        """Depth first algorithm"""
 
-            # skip when both on same battery
-            if battery_1 == battery_2:
-                continue
+        def depth_first_helper(index_1):
+            """"Helper for depth_first"""
+            for index_2 in range(150):
+                if index_1 == index_2:
+                    continue
+                if self.swap_connection(index_1, index_2):
+                    
+        # start conditions
+        not_done = True
+        end_best = [self.grid, plot.cost()]
+        index_1 = 0
 
-            # skip when swapping is not possible capacity wise
-            if battery_1.capacity - house_1.output + house_2.output < 0:
-                continue
-            if battery_2.capacity - house_2.output + house_1.output < 0:
-                continue
+        # continue until every option of start_point is checked
+        while not_done:
+            depth_first_helper(index_1)
 
-            # calculate old and new distances
-            dist_1 = house_1.distances[house_1.connection]
-            dist_2 = house_2.distances[house_2.connection]
-            dist_1_new = house_1.distances[house_2.connection]
-            dist_2_new = house_2.distances[house_1.connection]
+            if end_cost < end_best[1]:
+                end_best = [self.grid, end_cost]
+            if end_counter == 150:
+                not_done = False
 
-            # swap when total distance decreases
-            if dist_1 + dist_2 > dist_1_new + dist_2_new:
-                self.grid.swap(house_1, house_2)
-                changed = boundary
+        if current_start_point < 0:
+            self.depth_first(current_start_point + 1, 0)
 
     def k_means(self):
         """
@@ -229,23 +256,24 @@ if __name__ == "__main__":
     plot = Plots(algo.grid)
 
     # create bokeh object
-    bokeh = Bokeh(algo.grid)
-    bokeh.simple_plot()
+    # bokeh = Bokeh(algo.grid)
+    # bokeh.simple_plot()
 
     """Algorithms"""
-    # algo.algorithm_0()
+    algo.algorithm_0()
     # algo.algorithm_1()
     # algo.algorithm_2()
     # cost_1 = plot.cost()
     # print("start =", cost_1)
-
-    # algo.hillclimber(10000000)
+    #
+    # algo.random_hillclimber(1000)
     # cost_2 = plot.cost()
     # print("improvement =", cost_1 - cost_2)
     # print("end =", cost_2)
 
     # algo.k_means()
 
+    algo.depth_first(0)
     """Plots"""
     # plots
     # plot.line_figure()
