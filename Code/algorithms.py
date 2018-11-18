@@ -277,6 +277,31 @@ class Algorithm():
         if len(used) < 150:
             self.capacity_fixer(not_used)
 
+    def house_to_bat(self):
+        """
+        Connects houses to batteries
+        From houses to batteries
+        """
+        used = []
+        not_used = []
+        count = 0
+
+        for house in self.grid.houses:
+            sorted_bat = self.sort_zip(house.distances, self.grid.batteries)
+            for battery in sorted_bat:
+                count += 1
+                if (battery.capacity - house.output) > 0:
+                    battery.capacity -= house.output
+                    house.connect(self.grid.batteries.index(battery))
+                    used.append(house)
+                    battery.connect(house)
+                    break
+                if count == 5:
+                    not_used.append(house)
+
+        if len(used) < 150:
+            self.capacity_fixer(not_used)
+
     def depth_first(self, best_value):
         # reset grid
         for house in self.grid.houses:
@@ -312,6 +337,7 @@ if __name__ == "__main__":
     # print("end =", cost_2)
 
     # algo.k_means()
+    algo.house_to_bat()
 
     # cost = []
     # for i in range(1000):
@@ -324,22 +350,23 @@ if __name__ == "__main__":
     #     # print(cost)
     # plt.hist(cost)
 
-    # algo.random_hillclimber(100000)
+    algo.random_hillclimber(100000)
+
 
 
 
     """Plots"""
     # plots
     # plot.line_figure()
-    # plot.x_or_y_first(False)
+    plot.x_or_y_first(False)
     # plot.random_simulation(False)
 
     # calculate cost
     # print("cost =", plot.cost())
 
     # show plots
-    # plt.show()
+    plt.show()
 
-    plot.plot_histograms_bokeh()
-    plot.plot_grid_bokeh()
+    # plot.plot_histograms_bokeh()
+    # plot.plot_grid_bokeh()
     # plot.plot_matrix_bokeh()
