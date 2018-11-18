@@ -21,7 +21,7 @@ class Algorithm():
         """
         self.grid = Grid(district)
 
-    def algorithm_0(self, already_used=[]):
+    def random_cap(self, already_used=[]):
         """
         Connects houses to batteries, only
         taking capacity into mind.
@@ -44,7 +44,7 @@ class Algorithm():
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
 
-    def algorithm_1(self, already_used=[]):
+    def proximity_first(self, already_used=[]):
         """
         Iterates over batteries, adds
         the closest houses to the current
@@ -73,7 +73,7 @@ class Algorithm():
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
 
-    def algorithm_2(self):
+    def priority_first(self):
         """
         Iterates over houses sorted by the
         difference between the two closest batteries.
@@ -240,7 +240,6 @@ class Algorithm():
                 sorted_batteries = self.sort_zip(distances, batteries)
                 if not house.connection == self.grid.batteries.index(sorted_batteries[0]):
                     changes += 1
-                # house.connect(self.grid.batteries.index(sorted_batteries[0]))
 
                 # select closest battery
                 # check if battery capacity is sufficient
@@ -273,13 +272,7 @@ class Algorithm():
                 battery.distances = []
             self.grid.distances()
 
-            # print('changes:', changes)
-            # print(iterations)
-
         # print('iterations: ', iterations)
-        # print(len(used))
-        # print(len(not_used))
-        # self.error_message(used)
 
         if len(used) < 150:
             self.capacity_fixer(not_used)
@@ -305,13 +298,13 @@ if __name__ == "__main__":
     # bokeh.simple_plot()
 
     """Algorithms"""
-    # algo.algorithm_0()
-    # algo.algorithm_1()
-    algo.algorithm_2()
+    # algo.random_cap()
+    # algo.proximity_first()
+    # algo.priority_first()
     # cost_1 = plot.cost()
     # print("start =", cost_1)
     #
-    algo.random_hillclimber(1000000)
+    # algo.random_hillclimber(1000000)
     # for i in algo.grid.batteries:
     #     print(i.capacity)
     # cost_2 = plot.cost()
@@ -345,4 +338,8 @@ if __name__ == "__main__":
     # print("cost =", plot.cost())
 
     # show plots
-    plt.show()
+    # plt.show()
+
+    plot.plot_histograms_bokeh()
+    plot.plot_grid_bokeh()
+    # plot.plot_matrix_bokeh()
