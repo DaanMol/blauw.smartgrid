@@ -21,13 +21,16 @@ class Algorithm():
         """
         self.grid = Grid(district)
 
-    def random_cap(self, already_used=[]):
+    def random_cap(self):
         """
         Connects houses to batteries, only
         taking capacity into mind.
         """
         # list with connected houses
-        used = already_used
+        used = []
+
+        # random sorted list houses
+        random.shuffle(self.grid.houses)
 
         # iterate over batteries and houses
         for battery in self.grid.batteries:
@@ -44,14 +47,14 @@ class Algorithm():
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
 
-    def proximity_first(self, already_used=[]):
+    def proximity_first(self):
         """
         Iterates over batteries, adds
         the closest houses to the current
         battery.
         """
         # list of connected houses
-        used = already_used
+        used = []
 
         # iterate over batteries
         for battery in self.grid.batteries:
@@ -121,41 +124,46 @@ class Algorithm():
     def capacity_fixer(self, not_used):
         """Creates space for not used houses"""
         for house in not_used:
-            needed_space = house.output
-            available_capacity = []
-            for battery in self.grid.batteries:
-                available_capacity.append(battery.capacity)
-            sorted_batt = self.sort_zip(available_capacity, self.grid.batteries, True)
+            offset = 0
             swapped = False
-            for battery in sorted_batt[1:]:
-                outputs_1 = []
-                for i in sorted_batt[0].connections:
-                    outputs_1.append(i.output)
-                outputs_2 = []
-                for i in battery.connections:
-                    outputs_2.append(i.output)
+            while not swapped:
+                needed_space = house.output
+                available_capacity = []
+                for battery in self.grid.batteries:
+                    available_capacity.append(battery.capacity)
+                sorted_batt = self.sort_zip(available_capacity, self.grid.batteries, True)
+                for battery in sorted_batt[1:]:
+                    outputs_1 = []
+                    for i in sorted_batt[0].connections:
+                        outputs_1.append(i.output)
+                    outputs_2 = []
+                    for i in battery.connections:
+                        outputs_2.append(i.output)
 
-                sorted_house_1 = self.sort_zip(outputs_1, sorted_batt[0].connections, True)
-                sorted_house_2 = self.sort_zip(outputs_2, battery.connections)
+                    sorted_house_1 = self.sort_zip(outputs_1, sorted_batt[0].connections, True)
+                    sorted_house_2 = self.sort_zip(outputs_2, battery.connections)
 
-                for house_1 in sorted_house_1:
-                    for house_2 in sorted_house_2:
-                        output_diff = house_1.output - house_2.output
-                        if output_diff - (needed_space - sorted_batt[0].capacity) > 0 and battery.capacity - output_diff > 0:
-                            self.grid.swap(house_1, house_2)
-                            swapped = True
+                    for house_1 in sorted_house_1:
+                        for house_2 in sorted_house_2:
+                            output_diff = house_1.output - house_2.output
+                            if output_diff - (needed_space - offset - sorted_batt[0].capacity) > 0 and battery.capacity - output_diff > 0:
+                                self.grid.swap(house_1, house_2)
+                                for i in algo.grid.batteries:
+                                    if i.capacity < 0:
+                                        print("error")
+                                if sorted_batt[0].capacity > needed_space:
+                                    swapped = True
+                                break
+                        if swapped:
                             break
                     if swapped:
                         break
                 if swapped:
-                    break
-            if swapped:
-                # connect not used house
-                house.connect(self.grid.batteries.index(sorted_batt[0]))
-                sorted_batt[0].connect(house)
-                sorted_batt[0].capacity -= house.output
-            else:
-                print("error")
+                    # connect not used house
+                    house.connect(self.grid.batteries.index(sorted_batt[0]))
+                    sorted_batt[0].connect(house)
+                    sorted_batt[0].capacity -= house.output
+                offset += 10
 
     def error_message(self, used):
         """
@@ -164,12 +172,18 @@ class Algorithm():
         print(f"Error: {150 - len(used)} houses not connected.")
 
     def sort_zip(self, in1, in2, reverse=False):
+        """
+        Sorts in2 by in1 smallest to
+        biggest values.
+        If reverse == true biggest to
+        smallest.
+        """
         sorting = [x for (y, x) in sorted(zip(in1, in2),
                                                  key=lambda pair: pair[0],
                                                  reverse=reverse)]
         return sorting
 
-    def swap_connection(self, index_1, index_2):
+    def profitable_swap(self, index_1, index_2):
         """
         Checks if swapping two house-battery
         connections is possible and decreases the
@@ -202,18 +216,29 @@ class Algorithm():
         if dist_1 + dist_2 > dist_1_new + dist_2_new:
             self.grid.swap(house_1, house_2)
             return True
-
         return False
 
-    def random_hillclimber(self, N):
-        """Random input for swap_connection"""
-        iterations = N
-        while iterations > 0:
-            iterations -= 1
-            index_1 = int(random.uniform(0, 149))
-            index_2 = int(random.uniform(0, 149))
-            if self.swap_connection(index_1, index_2):
-                iterations = N
+    def random_hillclimber(self):
+        """Random input for profitable_swap"""
+        swapped = True
+        # plot = Plots(self.grid)
+        # cost_list = []
+        # climb until nothing changes
+        while swapped == True:
+            swapped = False
+            # create two random index lists
+            index_list_1 = list(range(1, 150))
+            index_list_2 = list(range(1, 150))
+            random.shuffle(index_list_1)
+            random.shuffle(index_list_2)
+
+            # try all possibilities
+            for index_1 in index_list_1:
+                for index_2 in index_list_2:
+                    if self.profitable_swap(index_1, index_2):
+                        swapped = True
+                    # cost_list.append(plot.cost())
+        # plt.plot(cost_list)
 
     def k_means(self):
         """
@@ -313,10 +338,10 @@ class Algorithm():
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    algo = Algorithm(1)
+    # algo = Algorithm(1)
 
     # create plots Object
-    plot = Plots(algo.grid)
+    # plot = Plots(algo.grid)
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
@@ -325,11 +350,11 @@ if __name__ == "__main__":
     """Algorithms"""
     # algo.random_cap()
     # algo.proximity_first()
-    # algo.priority_first()
+    # # algo.priority_first()
     # cost_1 = plot.cost()
     # print("start =", cost_1)
     #
-    # algo.random_hillclimber(1000000)
+    # algo.random_hillclimber()
     # for i in algo.grid.batteries:
     #     print(i.capacity)
     # cost_2 = plot.cost()
@@ -337,20 +362,25 @@ if __name__ == "__main__":
     # print("end =", cost_2)
 
     # algo.k_means()
-    algo.house_to_bat()
+    # algo.house_to_bat()
 
-    # cost = []
-    # for i in range(1000):
-    #     algo = Algorithm(1)
-    #     plot = Plots(algo.grid)
-    #     algo.k_means()
-    #     # print(plot.cost())
-    #     algo.random_hillclimber(100000)
-    #     cost.append(plot.cost())
-    #     # print(cost)
-    # plt.hist(cost)
+    cost = []
+    for i in range(100):
+        algo = Algorithm(1)
+        plot = Plots(algo.grid)
+        algo.random_cap()
+        # algo.priority_first()
+        # print(plot.cost())
+        algo.random_hillclimber()
+        cost.append(plot.cost())
+    plt.figure()
+    plt.hist(cost, bins=100)
+    print(cost)
+    print("min =", min(cost))
+    print("max =", max(cost))
 
-    algo.random_hillclimber(100000)
+
+    # algo.random_hillclimber(100000)
 
 
 
@@ -358,7 +388,7 @@ if __name__ == "__main__":
     """Plots"""
     # plots
     # plot.line_figure()
-    plot.x_or_y_first(False)
+    # plot.x_or_y_first(False)
     # plot.random_simulation(False)
 
     # calculate cost
