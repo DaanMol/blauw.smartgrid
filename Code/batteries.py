@@ -24,6 +24,7 @@ class Battery():
         self.max_cap = capacity
         self.distances = []
         self.connections = []
+        # self.cost = cost
 
     def connect(self, house, connect=True):
         """
