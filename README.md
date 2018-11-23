@@ -25,15 +25,15 @@ The random algorithm connects houses to batteries at random. This gives a repres
 
 *Greedy*
 
-A greedy algorithm is an algorithmic strategy that makes the optimal choice at each small stage with the goal of this eventually leading to a global optimum. This means that the algorithm picks the best immediate output without taking future outputs into consideration.
+A greedy algorithm is an algorithmic strategy that makes the optimal choice at each small stage with the goal of this eventually leading to a global optimum. This means that the algorithm picks the best immediate output without taking future outputs into consideration. The algorithm is separated into two modes; proximity first and priority first.
 
-__Proximity first__
+*Proximity first*
 
 The proximity first algorithm connects houses to batteries based on the distance of the house to the battery. Houses who are closest are connected before houses that are farther away.
 
 ![Proximity first plot](/Presentation/Images/tryout_yfirst_alg0.png)
 
-__Priority first__
+*Priority first*
 
 The priority first algorithm connects houses to batteries based on the output of the houses. Houses whose output is high are connected before houses whose output is lower. The output differentiates from 20 to 70.
 
