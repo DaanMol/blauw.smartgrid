@@ -13,7 +13,7 @@ class Plots():
     def __init__(self, grid):
         self.grid = grid
 
-    def line_figure(self):
+    def line_figure(self, title):
         plt.figure()
         counter = 0
         colors = ['r', 'b', 'g', 'y', 'm']
@@ -28,8 +28,9 @@ class Plots():
             plt.scatter(x, y, marker='p', color=colors[counter])
             plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
             counter += 1
+        plt.title(f"{title} algorithm. Cost: {self.cost()}")
 
-    def random_simulation(self, simulation):
+    def random_simulation(self, simulation, title):
         counter = 0
         plt.figure()
         colors = ['r', 'b', 'g', 'y', 'm']
@@ -71,7 +72,7 @@ class Plots():
                 plt.pause(1)
                 plt.draw()
 
-    def x_or_y_first(self, x_first):
+    def x_or_y_first(self, x_first, title):
         plt.figure()
         if x_first:
             counter = 0
@@ -105,6 +106,7 @@ class Plots():
                 plt.scatter(x, y, marker='p', color=colors[counter])
                 plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
                 counter += 1
+        plt.title(f"{title} algorithm. Cost: {self.cost()}")
 
     def plot_histograms_bokeh(self):
         """

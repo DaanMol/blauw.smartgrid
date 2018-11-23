@@ -332,23 +332,23 @@ class Algorithm():
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    # algo = Algorithm(1)
+    algo = Algorithm(1)
 
     # create plots Object
-    # plot = Plots(algo.grid)
+    plot = Plots(algo.grid)
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
     # bokeh.simple_plot()
 
     """Algorithms"""
-    # algo.random_cap()
+    algo.random_cap()
     # algo.proximity_first()
     # # algo.priority_first()
     # cost_1 = plot.cost()
     # print("start =", cost_1)
     #
-    # algo.random_hillclimber()
+    algo.random_hillclimber()
     # for i in algo.grid.batteries:
     #     print(i.capacity)
     # cost_2 = plot.cost()
@@ -358,35 +358,35 @@ if __name__ == "__main__":
     # algo.k_means()
     # algo.house_to_bat()
 
-    cost = []
-    for i in range(100000):
-        algo = Algorithm(1)
-        plot = Plots(algo.grid)
-        algo.random_cap()
-        # algo.k_means()
-        # algo.priority_first()
-        # print(plot.cost())
-        # algo.random_hillclimber()
-        curr_cost = plot.cost()
-        cost.append(curr_cost)
-        if i%500 == 0:
-            print("check", i/500)
-    plt.figure()
-    plt.hist(cost, bins=100)
-    print(cost)
-    print("min =", min(cost))
-    print("max =", max(cost))
-    with open("text_info_random.txt", 'w') as f:
-        for i in cost:
-            f.write(f"{i}\n")
+    # cost = []
+    # for i in range(100000):
+    #     algo = Algorithm(1)
+    #     plot = Plots(algo.grid)
+    #     algo.random_cap()
+    #     # algo.k_means()
+    #     # algo.priority_first()
+    #     # print(plot.cost())
+    #     # algo.random_hillclimber()
+    #     curr_cost = plot.cost()
+    #     cost.append(curr_cost)
+    #     if i%500 == 0:
+    #         print("check", i/500)
+    # plt.figure()
+    # plt.hist(cost, bins=100)
+    # print(cost)
+    # print("min =", min(cost))
+    # print("max =", max(cost))
+    # with open("text_info_random.txt", 'w') as f:
+    #     for i in cost:
+    #         f.write(f"{i}\n")
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
 
     """Plots"""
     # plots
-    # plot.line_figure()
-    # plot.x_or_y_first(False)
-    # plot.random_simulation(False)
+    plot.line_figure("hillclimber")
+    # plot.x_or_y_first(False, "hillclimber")
+    # plot.random_simulation(False, "hillclimber")
 
     # calculate cost
     # print("cost =", plot.cost())
