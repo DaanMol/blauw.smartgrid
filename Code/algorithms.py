@@ -4,6 +4,7 @@ from actions import Plots
 import matplotlib.pyplot as plt
 import random
 import time
+import math
 
 
 class Algorithm():
@@ -202,12 +203,13 @@ class Algorithm():
                                                  reverse=reverse)]
         return sorting
 
-    def profitable_swap(self, index_1, index_2):
+    def profitable_swap(self, index_1, index_2, temperature=1):
         """
         Checks if swapping two house-battery
         connections is possible and decreases the
         total cost.
         Swaps when favourable.
+        Possibility to activate simulated annealing.
         """
         # if in archive skip
         if index_1 and index_2 in self.previous:
@@ -234,51 +236,65 @@ class Algorithm():
         dist_2 = house_2.distances[house_2.connection]
         dist_1_new = house_1.distances[house_2.connection]
         dist_2_new = house_2.distances[house_1.connection]
+        distance_change = (dist_1 + dist_2) - (dist_1_new + dist_2_new)
 
-        # swap when total distance decreases
-        if dist_1 + dist_2 >= dist_1_new + dist_2_new:
+        # create archive to prevent back and forward walking
+        if distance_change == 0:
+            self.previous.append(index_1)
+            self.previous.append(index_2)
+        elif distance_change > 0:
+            self.previous = []
+
+        # swap when profitable
+        if distance_change >= 0:
             self.grid.swap(house_1, house_2)
-
-            # create archive to prevent back and forward walking
-            if dist_1 + dist_2 == dist_1_new + dist_2_new:
-                self.previous.append(index_1)
-                self.previous.append(index_2)
-            else:
-                self.previous = []
             return True
+
+        # simulated annealing
+        random_number = random.random()
+        if temperature > 1 and math.exp(distance_change / temperature) >= random_number:
+            self.grid.swap(house_1, house_2)
+            self.previous = []
+            return True
+        # elif distance_change >= 0:
+        #     self.grid.swap(house_1, house_2)
+        #     return True
         return False
 
-    def random_hillclimber(self, lineplot=False):
+    def random_hillclimber(self, lineplot=False, annealing=False):
         """
         Search local optimum by random profitable
         swapping.
         When lineplot = True: plot a lineplot
         """
 
-        # swapped = True
-        cap = 22500
+        # variables
+        temperature = 1
+        cap = 22350
         swapped = 0
-
-        # list for plot
-        if lineplot:
-            plot = Plots(self.grid)
-            cost_list = []
-            swapped_list = []
+        plot = Plots(self.grid)
+        cost_list = []
+        swapped_list = []
+        N = cap
 
         # climb until nothing changes for 22500 iterations
         while cap > 0:
+            # temperature for annealing
+            if annealing:
+                temperature = self.temp_function(len(cost_list), 50000, 'exp')
+                # print(temperature)
+
             cap -= 1;
             index_1 = random.randint(0, 149)
             index_2 = random.randint(0, 149)
-            if self.profitable_swap(index_1, index_2):
+            if self.profitable_swap(index_1, index_2, temperature):
                 swapped += 1
-            if lineplot:
-                cost_list.append(plot.cost())
+            cost_list.append(plot.cost())
                 # swapped_list.append(swapped)
             if len(cost_list) > 2 and cost_list[-1] == cost_list[-2]:
                 continue
             else:
-                cap = 22500
+                cap = 22350
 
         # plot lineplot
         if lineplot:
@@ -348,6 +364,17 @@ class Algorithm():
         if len(used) < 150:
             self.capacity_fixer(not_used)
 
+    def temp_function(self, i, N, type):
+        T_0 = 500
+        T_N = 1
+        if type == 'exp':
+            T = T_0 * (T_N / T_0) ** (i / N)
+        elif type == 'sig':
+            T = T_N + (T_0 - T_N) / (1 + math.exp(0.3 (i - N / 2)))
+        elif type == 'lin':
+            T = T_0 - i * (T_0 - T_N) / N
+        return T
+
 
 # run
 if __name__ == "__main__":
@@ -379,20 +406,23 @@ if __name__ == "__main__":
     # algo.house_to_bat()
 
     cost = []
-    for i in range(10):
+    for i in range(1):
         algo = Algorithm(1)
         plot = Plots(algo.grid)
-        # algo.random_cap()
+        algo.random_cap()
         # algo.k_means()
-        algo.priority_first()
+        # algo.priority_first()
         # print(plot.cost())
-        print("in")
-        algo.random_hillclimber(True)
-        print("out")
+        algo.random_hillclimber(True, True)
+        print(plot.cost())
+        algo.random_hillclimber(True, True)
+        print(plot.cost())
+        algo.random_hillclimber(True, True)
+        print(plot.cost())
         curr_cost = plot.cost()
         cost.append(curr_cost)
-        if i%1 == 0:
-            print("check", i/1)
+        # if i%1 == 0:
+        #     print("check", i/1)
         # for i in algo.grid.batteries:
         #     print(i.capacity)
     plt.figure()
