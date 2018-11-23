@@ -19,7 +19,7 @@ The upper and lower bounds of this case are defined in the amount of cost of the
 
 *Random*
 
-The random algorithm connects houses to batteries at random. This gives a representation of possible solutions for the problem. The graph has been run 10.000 times. The goal is to create algorithms that better the optimal outcome of this random walk.
+The random algorithm connects houses to batteries at random. This gives a representation of possible solutions for the problem of grid 1. The graph has been run 10.000 times. The goal is to create algorithms that better the optimal outcome of this random walk.
 
 ![Random plot](/Presentation/Images/rw100khisto.png)
 
