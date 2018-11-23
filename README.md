@@ -31,13 +31,13 @@ A greedy algorithm is an algorithmic strategy that makes the optimal choice at e
 
 The proximity first algorithm connects houses to batteries based on the distance of the house to the battery. Houses who are closest are connected before houses that are farther away.
 
-![Proximity first plot](/Presentation/Images/proximity first title+cost.png)
+![Proximity first plot](/Presentation/Images/proftitle+cost.png)
 
 *Priority first*
 
 The priority first algorithm connects houses to batteries based on the output of the houses. Houses whose output is high are connected before houses whose output is lower. The output differentiates from 20 to 70.
 
-![Priority first plot](/Presentation/Images/priority first title+cost.png)
+![Priority first plot](/Presentation/Images/priftitel+cost.png)
 
 **Iterative algorithms**
 
