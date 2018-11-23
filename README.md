@@ -31,13 +31,13 @@ A greedy algorithm is an algorithmic strategy that makes the optimal choice at e
 
 The proximity first algorithm connects houses to batteries based on the distance of the house to the battery. Houses who are closest are connected before houses that are farther away.
 
-![Proximity first plot](/Presentation/Images/tryout_yfirst_alg0.png)
+![Proximity first plot](/Presentation/Images/proximity first title+cost.png)
 
 *Priority first*
 
 The priority first algorithm connects houses to batteries based on the output of the houses. Houses whose output is high are connected before houses whose output is lower. The output differentiates from 20 to 70.
 
-![Priority first plot](/Presentation/Images/tryout_yfirst.png)
+![Priority first plot](/Presentation/Images/priority first title+cost.png)
 
 **Iterative algorithms**
 
@@ -55,9 +55,9 @@ Simulated annealing is a algorithm in which worse solutions are accepted in orde
 
 *K-means*
 
-This is an algorithm that is useful just for the third goal of this project. The K-means algorithm is a cluster algorithm. It calculates the average of all the points in a cluster and moves the centroid to that average location. This continues until there is no more change in the clusters.
+This is an algorithm that is useful just for the third goal of this project. The K-means algorithm is a cluster algorithm. It calculates the average of all the points in a cluster and moves the centroid to that average location. This continues until there is no more change in the clusters.  
 
-Shown below is an plot that represents ten runs of the K-means. It renders the relative quality of the solutions in regard to each other.
+Shown below is an plot that represents ten runs of the K-means after which the hillclimber is run. It renders the relative quality of the solutions in regard to each other.
 
 ![K-means algorithm relative quality](/Presentation/Images/kmeansx10.png)
 
