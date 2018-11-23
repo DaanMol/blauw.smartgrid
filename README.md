@@ -19,7 +19,7 @@ The upper and lower bounds of this case are defined in the amount of cost of the
 
 *Random*
 
-The random algorithm connects houses to batteries at random. This gives a representation of possible solutions for the problem. The graph has been run 10.000 times. The goal is to create algorithms that better the optimal outcome of this random walk.
+The random algorithm connects houses to batteries at random. This gives a representation of possible solutions for the problem of grid 1. The graph has been run 10.000 times. The goal is to create algorithms that better the optimal outcome of this random walk.
 
 ![Random plot](/Presentation/Images/rw100khisto.png)
 
@@ -45,7 +45,7 @@ The priority first algorithm connects houses to batteries based on the output of
 
 A hillclimber is an algorithm that tries to find a sufficiently good solution to the problem. This solution may be a local optimal maximum instead of the global optimal maximum. The code accepts similar or better situations than the previous. If the proposed situation is not similar to or better than the last; the situation will be discarded. This will continue as long as no more than 10.000 situations are better or similar to the previous circumstances, to ensure a local maximum is reached. This situation will be rendered as the solution.
 
-Shown below is an plot that represents ten runs of the hillclimber. It renders the relative quality of the solutions in regard to each other.
+Shown below is a line plot that represents ten runs of the hillclimber. It renders the relative quality of the solutions in regard to each other.
 
 ![Hillclimber relative quality](/Presentation/Images/10xpriorityfirstwithhillclimber.png)
 
@@ -57,9 +57,10 @@ Simulated annealing is a algorithm in which worse solutions are accepted in orde
 
 This is an algorithm that is useful just for the third goal of this project. The K-means algorithm is a cluster algorithm. It calculates the average of all the points in a cluster and moves the centroid to that average location. This continues until there is no more change in the clusters.  
 
-Shown below is an plot that represents ten runs of the K-means after which the hillclimber is run. It renders the relative quality of the solutions in regard to each other.
+Shown below is an plot that represents ten runs of the K-means after which the hillclimber is run. It renders the relative quality of the solutions in regard to each other. The histogram renders the cost of different possible solutions.
 
 ![K-means algorithm relative quality](/Presentation/Images/10xkmeanswithhillclimber.png)
+![Hillclimber histogram](/Presentation/Images/100kkmeanswithhillclimber.png)
 
 
 The images shown above are created using matplotlib.pylot and Bokeh.
