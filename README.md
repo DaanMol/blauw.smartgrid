@@ -45,9 +45,10 @@ The priority first algorithm connects houses to batteries based on the output of
 
 A hillclimber is an algorithm that tries to find a sufficiently good solution to the problem. This solution may be a local optimal maximum instead of the global optimal maximum. The code accepts similar or better situations than the previous. If the proposed situation is not similar to or better than the last; the situation will be discarded. This will continue as long as no more than 10.000 situations are better or similar to the previous circumstances, to ensure a local maximum is reached. This situation will be rendered as the solution.
 
-Shown below is an plot that represents ten runs of the hillclimber. It renders the relative quality of the solutions in regard to each other.
+Shown below is a line plot that represents ten runs of the hillclimber. It renders the relative quality of the solutions in regard to each other. The histogram renders the cost of different possible solutions.
 
 ![Hillclimber relative quality](/Presentation/Images/10xpriorityfirstwithhillclimber.png)
+![Hillclimber histogram](/Presentation/Images/100kkmeanswithhillclimber.png)
 
 *Simulated annealing*
 
