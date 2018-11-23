@@ -359,14 +359,14 @@ if __name__ == "__main__":
     # algo.house_to_bat()
 
     cost = []
-    for i in range(10):
+    for i in range(100000):
         algo = Algorithm(1)
         plot = Plots(algo.grid)
         algo.random_cap()
         # algo.k_means()
         # algo.priority_first()
         # print(plot.cost())
-        algo.random_hillclimber()
+        # algo.random_hillclimber()
         curr_cost = plot.cost()
         cost.append(curr_cost)
         if i%500 == 0:
@@ -376,7 +376,9 @@ if __name__ == "__main__":
     print(cost)
     print("min =", min(cost))
     print("max =", max(cost))
-
+    with open("text_info_random.txt", 'w') as f:
+        for i in cost:
+            f.write(f"{i}\n")
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
 
