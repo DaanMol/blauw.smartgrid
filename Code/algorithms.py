@@ -20,7 +20,7 @@ class Algorithm():
                 - List with battery objects
         """
         self.grid = Grid(district)
-
+        self.previous = []
     def random_cap(self):
         """
         Connects houses to batteries, only
@@ -209,6 +209,10 @@ class Algorithm():
         total cost.
         Swaps when favourable.
         """
+        # if in archive skip
+        if index_1 and index_2 in self.previous:
+            return False
+
         # take the two houses and their batteries
         house_1 = self.grid.houses[index_1]
         house_2 = self.grid.houses[index_2]
@@ -232,39 +236,55 @@ class Algorithm():
         dist_2_new = house_2.distances[house_1.connection]
 
         # swap when total distance decreases
-        if dist_1 + dist_2 > dist_1_new + dist_2_new:
+        if dist_1 + dist_2 >= dist_1_new + dist_2_new:
             self.grid.swap(house_1, house_2)
+
+            # create archive to prevent back and forward walking
+            if dist_1 + dist_2 == dist_1_new + dist_2_new:
+                self.previous.append(index_1)
+                self.previous.append(index_2)
+            else:
+                self.previous = []
             return True
         return False
 
     def random_hillclimber(self, lineplot=False):
-        """Random input for profitable_swap"""
-        swapped = True
+        """
+        Search local optimum by random profitable
+        swapping.
+        When lineplot = True: plot a lineplot
+        """
+
+        # swapped = True
+        cap = 22500
+        swapped = 0
 
         # list for plot
         if lineplot:
             plot = Plots(self.grid)
             cost_list = []
+            swapped_list = []
 
-        # climb until nothing changes
-        while swapped == True:
-            swapped = False
+        # climb until nothing changes for 22500 iterations
+        while cap > 0:
+            cap -= 1;
+            index_1 = random.randint(0, 149)
+            index_2 = random.randint(0, 149)
+            if self.profitable_swap(index_1, index_2):
+                swapped += 1
+            if lineplot:
+                cost_list.append(plot.cost())
+                # swapped_list.append(swapped)
+            if len(cost_list) > 2 and cost_list[-1] == cost_list[-2]:
+                continue
+            else:
+                cap = 22500
 
-            # create two random index lists
-            index_list_1 = list(range(1, 150))
-            index_list_2 = list(range(1, 150))
-            random.shuffle(index_list_1)
-            random.shuffle(index_list_2)
-
-            # try all possibilities
-            for index_1 in index_list_1:
-                for index_2 in index_list_2:
-                    if self.profitable_swap(index_1, index_2):
-                        swapped = True
-                    if lineplot:
-                        cost_list.append(plot.cost())
+        # plot lineplot
         if lineplot:
             plt.plot(cost_list)
+            plt.title("hillclimber: cost vs iterations")
+            # plt.plot(swapped_list)
 
     def k_means(self):
         """
@@ -332,23 +352,23 @@ class Algorithm():
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    algo = Algorithm(1)
+    # algo = Algorithm(1)
 
     # create plots Object
-    plot = Plots(algo.grid)
+    # plot = Plots(algo.grid)
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
     # bokeh.simple_plot()
 
     """Algorithms"""
-    algo.random_cap()
+    # algo.random_cap()
     # algo.proximity_first()
     # # algo.priority_first()
     # cost_1 = plot.cost()
     # print("start =", cost_1)
     #
-    algo.random_hillclimber()
+    # algo.random_hillclimber()
     # for i in algo.grid.batteries:
     #     print(i.capacity)
     # cost_2 = plot.cost()
@@ -358,24 +378,28 @@ if __name__ == "__main__":
     # algo.k_means()
     # algo.house_to_bat()
 
-    # cost = []
-    # for i in range(100000):
-    #     algo = Algorithm(1)
-    #     plot = Plots(algo.grid)
-    #     algo.random_cap()
-    #     # algo.k_means()
-    #     # algo.priority_first()
-    #     # print(plot.cost())
-    #     # algo.random_hillclimber()
-    #     curr_cost = plot.cost()
-    #     cost.append(curr_cost)
-    #     if i%500 == 0:
-    #         print("check", i/500)
-    # plt.figure()
-    # plt.hist(cost, bins=100)
-    # print(cost)
-    # print("min =", min(cost))
-    # print("max =", max(cost))
+    cost = []
+    for i in range(10):
+        algo = Algorithm(1)
+        plot = Plots(algo.grid)
+        # algo.random_cap()
+        # algo.k_means()
+        algo.priority_first()
+        # print(plot.cost())
+        print("in")
+        algo.random_hillclimber(True)
+        print("out")
+        curr_cost = plot.cost()
+        cost.append(curr_cost)
+        if i%1 == 0:
+            print("check", i/1)
+        # for i in algo.grid.batteries:
+        #     print(i.capacity)
+    plt.figure()
+    plt.hist(cost, bins=10)
+    print(cost)
+    print("min =", min(cost))
+    print("max =", max(cost))
     # with open("text_info_random.txt", 'w') as f:
     #     for i in cost:
     #         f.write(f"{i}\n")
@@ -384,7 +408,7 @@ if __name__ == "__main__":
 
     """Plots"""
     # plots
-    plot.line_figure("hillclimber")
+    # plot.line_figure("hillclimber")
     # plot.x_or_y_first(False, "hillclimber")
     # plot.random_simulation(False, "hillclimber")
 
