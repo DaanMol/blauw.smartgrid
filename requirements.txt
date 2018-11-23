@@ -1,0 +1,3 @@
+pip install bokeh
+pip install numpy
+pip install matplotlib
