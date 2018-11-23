@@ -263,10 +263,8 @@ class Grid():
         # output to static HTML file
         output_file("matrixes.html")
 
-        TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo,\
+        TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo\,
                  reset,tap,save,box_select,poly_select,lasso_select"
-                 
-        colors = ["#%02x%02x%02x" % (int(r), int(g), 150) for r, g in zip(50+2*x, 30+2*y)]
 
         p = figure(title=(f"Grid {self.district}: house output and batteries (red)"),
                    tools=TOOLS, toolbar_location="right")
@@ -276,8 +274,11 @@ class Grid():
         for i in self.houses:
             matrix_house[i[1]][i[0]] = i[2]
         for i in self.batteries:
-            p.scatter(i[0], i[1], fill_color=colors, fill_alpha=0.6,
-                      line_color=None)
+            plt.plot(i[0], i[1])
+        plt.imshow(matrix_house, origin='lower')
+
+        cbar = plt.colorbar()
+        cbar.set_label('Output house')
 
         p.xaxis.axis_label = 'x position'
         p.yaxis.axis_label = 'y position'
