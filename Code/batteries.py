@@ -12,7 +12,7 @@ class Battery():
     - Print method
     """
 
-    def __init__(self, x, y, capacity):
+    def __init__(self, x, y, capacity, cost):
         """
         Position, capacity, distances
         to all houses, connections list
@@ -24,7 +24,7 @@ class Battery():
         self.max_cap = capacity
         self.distances = []
         self.connections = []
-        # self.cost = cost
+        self.cost = cost
 
     def connect(self, house, connect=True):
         """

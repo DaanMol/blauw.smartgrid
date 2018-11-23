@@ -47,7 +47,7 @@ class Grid():
                     capacity = float(line[-1])
 
                     # add Battery to batteries_list
-                    batteries_list.append(Battery(x, y, capacity))
+                    batteries_list.append(Battery(x, y, capacity, 5000))
 
         # return list of Battery items
         return batteries_list

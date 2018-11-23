@@ -210,4 +210,5 @@ class Plots():
         for battery in self.grid.batteries:
             for house in battery.connections:
                 cost += house.distances[house.connection] * 9
+            cost += battery.cost
         return cost
