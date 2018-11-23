@@ -47,7 +47,7 @@ A hillclimber is an algorithm that tries to find a sufficiently good solution to
 
 Shown below is an plot that represents ten runs of the hillclimber. It renders the relative quality of the solutions in regard to each other.
 
-![Hillclimber relative quality](/Presentation/Images/hillclimberx10.png)
+![Hillclimber relative quality](/Presentation/Images/10xpriorityfirstwithhillclimber.png)
 
 *Simulated annealing*
 
@@ -59,7 +59,7 @@ This is an algorithm that is useful just for the third goal of this project. The
 
 Shown below is an plot that represents ten runs of the K-means after which the hillclimber is run. It renders the relative quality of the solutions in regard to each other.
 
-![K-means algorithm relative quality](/Presentation/Images/kmeansx10.png)
+![K-means algorithm relative quality](/Presentation/Images/10xkmeanswithhillclimber.png)
 
 
 The images shown above are created using matplotlib.pylot and Bokeh.
