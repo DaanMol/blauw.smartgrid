@@ -385,8 +385,8 @@ if __name__ == "__main__":
     """Plots"""
     # plots
     plot.line_figure("hillclimber")
-    # plot.x_or_y_first(False, "hillclimber")
-    # plot.random_simulation(False, "hillclimber")
+    plot.x_or_y_first(False, "Random simulation")
+    plot.random_simulation(False, "Random simulation")
 
     # calculate cost
     # print("cost =", plot.cost())
