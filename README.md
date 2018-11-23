@@ -60,7 +60,7 @@ This is an algorithm that is useful just for the third goal of this project. The
 Shown below is an plot that represents ten runs of the K-means after which the hillclimber is run. It renders the relative quality of the solutions in regard to each other. The histogram renders the cost of different possible solutions.
 
 ![K-means algorithm relative quality](/Presentation/Images/10xkmeanswithhillclimber.png)
-![Hillclimber histogram](/Presentation/Images/100kkmeanswithhillclimber.png)
+![Hillclimber histogram](/Presentation/Images/10kkmeanswithhillclimber.png)
 
 
 The images shown above are created using matplotlib.pylot and Bokeh.
