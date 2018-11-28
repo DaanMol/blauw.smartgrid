@@ -395,23 +395,119 @@ class Algorithm():
                     x2 = cluster[cluster2][0].x
                     y2 = cluster[cluster2][0].y
 
-        # print(clusters)
+    def arrr_starrr(self, house, battery):
+
+        # cost of stepping somewhere
+        cost_step = 9
+        cost_house = 5000
+        cost_battery = 10000
+
+        # locations houses and batteries
+        house_locations = []
+        battery_locations = []
+        for house in self.grid.houses:
+            house_locations.append((house.x, house.y))
+        for battery in self.grid.batteries:
+            battery_locations.append((battery.x, battery.y))
+
+        # start and end conditions
+        x_house = house.x
+        y_house = house.y
+        x_battery = battery.x
+        y_battery = battery.y
+        start = (x_house, y_house)
+        end = (x_battery, y_battery)
+
+        # open and closed set
+        open_set = {}
+        closed_set = {}
+        parents = {}
+
+        # start sets
+        open_set[start] = [(abs(start[1] - end[1]) +
+                            abs(start[0] - end[0])) * cost_step, 0]
+
+        # loop until cheapest route found
+        while len(open_set) < 0:
+
+            # take lowest f-value in open_set
+            node = min(open_set, key=open_set.get)
+            f_node = open_set[node][0]
+            g_node = open_set[node][1]
+            open_set.pop(min(open_set))
+            closed_set[node] = [f_node, g_node]
+
+            # check if found
+            if node == end:
+                print("got em")
+                # return self.make_path(parents)
+
+            # create children current node
+            up = (node[0], node[1] + 1)
+            down = (node[0], node[1] - 1)
+            left = (node[0] - 1, node[1])
+            right = (node[0] + 1, node[1])
+            children = [up, down, left, right]
+
+            # iterate over children
+            for child in children:
+
+                # if already evaluated continue
+                if child in closed_set:
+                    continue
+
+                # check valid location
+                if child[0] < 0:
+                    children.remove(child)
+                    continue
+                if child[1] > 149:
+                    children.remove(child)
+                    continue
+
+                # determine g-value
+                if child in house_locations:
+                    g_new = g_node + cost_house
+                elif child in battery_locations:
+                    g_new = g_node + cost_battery
+                else:
+                    g_new = g_node + cost_step
+
+                # if not visited yet, add to open set
+                if child not in open_set:
+                    open_set[child] = [(abs(child[1] - end[1]) +
+                                        abs(child[0] - end[0])) * cost_step +
+                                       g_old, g_new]
+                elif g_new >= open_set[child][1]:
+                    continue
+
+
+
+            # children investigation
+            for child in children:
+                if child not in open_set:
+                    open_set[child] = f
+
+            closed_set.append(node)
+
+
 
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    # algo = Algorithm(1)
+    algo = Algorithm(1)
     # algo.agg_clust()
 
     # create plots Object
-    # plot = Plots(algo.grid)
+    plot = Plots(algo.grid)
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
     # bokeh.simple_plot()
 
     """Algorithms"""
-    # algo.random_cap()
+    house = algo.grid.houses[0]
+    battery = algo.grid.batteries[0]
+    algo.arrr_starrr(house, battery)
     # algo.proximity_first()
     # # algo.priority_first()
     # cost_1 = plot.cost()
@@ -427,37 +523,37 @@ if __name__ == "__main__":
     # algo.k_means()
     # algo.house_to_bat()
 
-    cost = []
-    for i in range(1):
-        algo = Algorithm(1)
-        plot = Plots(algo.grid)
-        algo.random_cap()
-        # algo.k_means()
-        # algo.priority_first()
-        # print(plot.cost())
-        cost_annealing = []
-        for i in range(1000):
-            algo.random_hillclimber(False, True)
-            print(i/10)
-            cost_annealing.append(plot.cost())
-
-        # algo.random_hillclimber(True, True)
-        # print(plot.cost())
-        # curr_cost = plot.cost()
-        # cost.append(curr_cost)
-        # if i%1 == 0:
-        #     print("check", i/1)
-        # for i in algo.grid.batteries:
-        #     print(i.capacity)
-    plt.figure()
-    plt.hist(cost_annealing, bins=100)
-    print(min(cost_annealing))
-    # print(cost)
-    # print("min =", min(cost))
-    # print("max =", max(cost))
-    with open("text_annealing_exp_1000.txt", 'w') as f:
-        for i in cost_annealing:
-            f.write(f"{i}\n")
+    # cost = []
+    # for i in range(1):
+    #     algo = Algorithm(1)
+    #     plot = Plots(algo.grid)
+    #     algo.random_cap()
+    #     # algo.k_means()
+    #     # algo.priority_first()
+    #     # print(plot.cost())
+    #     cost_annealing = []
+    #     for i in range(1000):
+    #         algo.random_hillclimber(False, True)
+    #         print(i/10)
+    #         cost_annealing.append(plot.cost())
+    #
+    #     # algo.random_hillclimber(True, True)
+    #     # print(plot.cost())
+    #     # curr_cost = plot.cost()
+    #     # cost.append(curr_cost)
+    #     # if i%1 == 0:
+    #     #     print("check", i/1)
+    #     # for i in algo.grid.batteries:
+    #     #     print(i.capacity)
+    # plt.figure()
+    # plt.hist(cost_annealing, bins=100)
+    # print(min(cost_annealing))
+    # # print(cost)
+    # # print("min =", min(cost))
+    # # print("max =", max(cost))
+    # with open("text_annealing_exp_1000.txt", 'w') as f:
+    #     for i in cost_annealing:
+    #         f.write(f"{i}\n")
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
 
