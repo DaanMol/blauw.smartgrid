@@ -4,7 +4,6 @@ from actions import Plots
 import matplotlib.pyplot as plt
 import random
 import time
-import math
 
 
 class Algorithm():
