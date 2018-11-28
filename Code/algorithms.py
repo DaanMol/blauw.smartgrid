@@ -395,7 +395,8 @@ class Algorithm():
                     x2 = cluster[cluster2][0].x
                     y2 = cluster[cluster2][0].y
 
-    def arrr_starrr(self, house, battery):
+    def arrr_starrr(self, house_in, battery_in):
+        """a star"""
 
         # cost of stepping somewhere
         cost_step = 9
@@ -411,10 +412,10 @@ class Algorithm():
             battery_locations.append((battery.x, battery.y))
 
         # start and end conditions
-        x_house = house.x
-        y_house = house.y
-        x_battery = battery.x
-        y_battery = battery.y
+        x_house = house_in.x
+        y_house = house_in.y
+        x_battery = battery_in.x
+        y_battery = battery_in.y
         start = (x_house, y_house)
         end = (x_battery, y_battery)
 
@@ -425,22 +426,21 @@ class Algorithm():
 
         # start sets
         open_set[start] = [(abs(start[1] - end[1]) +
-                            abs(start[0] - end[0])) * cost_step, 0]
+                            abs(start[0] - end[0])) * cost_step, cost_step]
 
         # loop until cheapest route found
-        while len(open_set) < 0:
+        while len(open_set) > 0:
 
             # take lowest f-value in open_set
             node = min(open_set, key=open_set.get)
             f_node = open_set[node][0]
             g_node = open_set[node][1]
-            open_set.pop(min(open_set))
+            open_set.pop(node)
             closed_set[node] = [f_node, g_node]
 
             # check if found
             if node == end:
-                print("got em")
-                # return self.make_path(parents)
+                return [self.make_path(parents, node), g_node - cost_battery]
 
             # create children current node
             up = (node[0], node[1] + 1)
@@ -457,11 +457,9 @@ class Algorithm():
                     continue
 
                 # check valid location
-                if child[0] < 0:
-                    children.remove(child)
+                if child[0] < 0 or child[1] < 0:
                     continue
-                if child[1] > 149:
-                    children.remove(child)
+                if child[0] > 149 or child[1] > 149:
                     continue
 
                 # determine g-value
@@ -476,20 +474,32 @@ class Algorithm():
                 if child not in open_set:
                     open_set[child] = [(abs(child[1] - end[1]) +
                                         abs(child[0] - end[0])) * cost_step +
-                                       g_old, g_new]
+                                       g_node, g_new]
                 elif g_new >= open_set[child][1]:
                     continue
 
+                # record path
+                parents[child] = node
+                open_set[child][0] = g_new + (abs(child[1] - end[1]) +
+                                              abs(child[0] -
+                                                  end[0])) * cost_step
+                open_set[child][1] = g_new
 
+    def make_path(self, parents, node):
+        """Makes path from a star results"""
 
-            # children investigation
-            for child in children:
-                if child not in open_set:
-                    open_set[child] = f
+        # start coordinates in path lists
+        x_values = [node[0]]
+        y_values = [node[1]]
 
-            closed_set.append(node)
+        # trance the path and add coordinates to lists
+        while node in parents:
+            node = parents[node]
+            x_values.append(node[0])
+            y_values.append(node[1])
 
-
+        # return path values
+        return [x_values, y_values]
 
 # run
 if __name__ == "__main__":
@@ -505,9 +515,17 @@ if __name__ == "__main__":
     # bokeh.simple_plot()
 
     """Algorithms"""
-    house = algo.grid.houses[0]
-    battery = algo.grid.batteries[0]
-    algo.arrr_starrr(house, battery)
+    algo.random_cap()
+    algo.random_hillclimber()
+
+    counter = 0
+    for house in algo.grid.houses:
+        battery = algo.grid.batteries[house.connection]
+        house.path = algo.arrr_starrr(house, battery)
+        print(counter, (len(house.path[0][0]) - 1) * 9, house.path[1])
+        counter += 1
+
+    plot.arrr_starrr_graph()
     # algo.proximity_first()
     # # algo.priority_first()
     # cost_1 = plot.cost()
