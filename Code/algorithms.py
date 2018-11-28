@@ -22,6 +22,7 @@ class Algorithm():
         """
         self.grid = Grid(district)
         self.previous = []
+
     def random_cap(self):
         """
         Connects houses to batteries, only
@@ -185,12 +186,6 @@ class Algorithm():
                 else:
                     offset += 10
 
-    def error_message(self, used):
-        """
-        Error message when houses not connected
-        """
-        print(f"Error: {150 - len(used)} houses not connected.")
-
     def sort_zip(self, in1, in2, reverse=False):
         """
         Sorts in2 by in1 smallest to
@@ -270,7 +265,7 @@ class Algorithm():
 
         # variables
         temperature = 1
-        cap = 22350
+        cap = len(self.grid.houses) * (len(self.grid.houses) - 1)
         swapped = 0
         plot = Plots(self.grid)
         cost_list = []
@@ -285,8 +280,8 @@ class Algorithm():
                 # print(temperature)
 
             cap -= 1;
-            index_1 = random.randint(0, 149)
-            index_2 = random.randint(0, 149)
+            index_1 = random.randint(0, (len(self.grid.houses) - 1))
+            index_2 = random.randint(0, (len(self.grid.houses) - 1))
             if self.profitable_swap(index_1, index_2, temperature):
                 swapped += 1
             cost_list.append(plot.cost())
@@ -294,7 +289,7 @@ class Algorithm():
             if len(cost_list) > 2 and cost_list[-1] == cost_list[-2]:
                 continue
             else:
-                cap = 22350
+                cap = len(self.grid.houses) * (len(self.grid.houses) - 1)
 
         # plot lineplot
         if lineplot:
@@ -361,7 +356,7 @@ class Algorithm():
 
         # print('iterations: ', iterations)
 
-        if len(used) < 150:
+        if len(used) < len(self.grid.houses):
             self.capacity_fixer(not_used)
 
     def temp_function(self, i, N, type):
@@ -375,14 +370,41 @@ class Algorithm():
             T = T_0 - i * (T_0 - T_N) / N
         return T
 
+    def agg_clust(self):
+        """
+        Bottom up clustering with a dendrogram
+        """
+        # create cluster dict
+        clusters = {}
+
+        # fill the dict with singleton clusters at each house xy
+        counter = 1
+        for house in self.grid.houses:
+            clusters[counter] = [house]
+            counter += 1
+
+        # while len(clusters) > 1:
+            # find closest pair of clusters
+            distances = []
+            for cluster in clusters:
+                x1 = clusters[cluster][0].x
+                y1 = clusters[cluster][0].y
+                for cluster2 in clusters:
+                    if cluster2 == cluster:
+                        continue
+                    x2 = cluster[cluster2][0].x
+                    y2 = cluster[cluster2][0].y
+
+        # print(clusters)
 
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    # algo = Algorithm(1)
+    algo = Algorithm(1)
+    # algo.agg_clust()
 
     # create plots Object
-    # plot = Plots(algo.grid)
+    plot = Plots(algo.grid)
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
@@ -405,31 +427,31 @@ if __name__ == "__main__":
     # algo.k_means()
     # algo.house_to_bat()
 
-    cost = []
-    for i in range(1):
-        algo = Algorithm(1)
-        plot = Plots(algo.grid)
-        algo.random_cap()
-        # algo.k_means()
-        # algo.priority_first()
-        # print(plot.cost())
-        algo.random_hillclimber(True, True)
-        print(plot.cost())
-        algo.random_hillclimber(True, True)
-        print(plot.cost())
-        algo.random_hillclimber(True, True)
-        print(plot.cost())
-        curr_cost = plot.cost()
-        cost.append(curr_cost)
+    # cost = []
+    # for i in range(1):
+    #     algo = Algorithm(1)
+    #     plot = Plots(algo.grid)
+    #     algo.random_cap()
+    #     # algo.k_means()
+    #     # algo.priority_first()
+    #     # print(plot.cost())
+    #     algo.random_hillclimber(True, True)
+    #     print(plot.cost())
+    #     algo.random_hillclimber(True, True)
+    #     print(plot.cost())
+    #     algo.random_hillclimber(True, True)
+    #     print(plot.cost())
+    #     curr_cost = plot.cost()
+    #     cost.append(curr_cost)
         # if i%1 == 0:
         #     print("check", i/1)
         # for i in algo.grid.batteries:
         #     print(i.capacity)
-    plt.figure()
-    plt.hist(cost, bins=10)
-    print(cost)
-    print("min =", min(cost))
-    print("max =", max(cost))
+    # plt.figure()
+    # plt.hist(cost, bins=10)
+    # print(cost)
+    # print("min =", min(cost))
+    # print("max =", max(cost))
     # with open("text_info_random.txt", 'w') as f:
     #     for i in cost:
     #         f.write(f"{i}\n")
@@ -446,7 +468,7 @@ if __name__ == "__main__":
     # print("cost =", plot.cost())
 
     # show plots
-    plt.show()
+    # plt.show()
 
     # plot.plot_histograms_bokeh()
     # plot.plot_grid_bokeh()

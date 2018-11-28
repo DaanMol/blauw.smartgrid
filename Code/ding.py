@@ -10,4 +10,7 @@ with open("text.txt", "r") as f:
         cost_list.append(int(number))
 print(cost_list)
 plt.hist(cost_list, bins=25)
+plt.title("10k K-Means with hillclimber")
+plt.xlabel("Cost")
+plt.ylabel("Frequency")
 plt.show()
