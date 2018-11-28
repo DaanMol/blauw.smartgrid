@@ -247,7 +247,7 @@ class Algorithm():
 
         # simulated annealing
         random_number = random.random()
-        if temperature > 1 and math.exp(distance_change / temperature) >= random_number:
+        if temperature > 1 and math.exp(distance_change / temperature) > random_number:
             self.grid.swap(house_1, house_2)
             self.previous = []
             return True
@@ -276,8 +276,7 @@ class Algorithm():
         while cap > 0:
             # temperature for annealing
             if annealing:
-                temperature = self.temp_function(len(cost_list), 50000, 'exp')
-                # print(temperature)
+                temperature = self.temp_function(len(cost_list), N, 'exp')
 
             cap -= 1;
             index_1 = random.randint(0, (len(self.grid.houses) - 1))
@@ -289,6 +288,7 @@ class Algorithm():
             if len(cost_list) > 2 and cost_list[-1] == cost_list[-2]:
                 continue
             else:
+                # N += 22350 - cap
                 cap = len(self.grid.houses) * (len(self.grid.houses) - 1)
 
         # plot lineplot
@@ -400,11 +400,11 @@ class Algorithm():
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    algo = Algorithm(1)
+    # algo = Algorithm(1)
     # algo.agg_clust()
 
     # create plots Object
-    plot = Plots(algo.grid)
+    # plot = Plots(algo.grid)
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
@@ -427,34 +427,37 @@ if __name__ == "__main__":
     # algo.k_means()
     # algo.house_to_bat()
 
-    # cost = []
-    # for i in range(1):
-    #     algo = Algorithm(1)
-    #     plot = Plots(algo.grid)
-    #     algo.random_cap()
-    #     # algo.k_means()
-    #     # algo.priority_first()
-    #     # print(plot.cost())
-    #     algo.random_hillclimber(True, True)
-    #     print(plot.cost())
-    #     algo.random_hillclimber(True, True)
-    #     print(plot.cost())
-    #     algo.random_hillclimber(True, True)
-    #     print(plot.cost())
-    #     curr_cost = plot.cost()
-    #     cost.append(curr_cost)
+    cost = []
+    for i in range(1):
+        algo = Algorithm(1)
+        plot = Plots(algo.grid)
+        algo.random_cap()
+        # algo.k_means()
+        # algo.priority_first()
+        # print(plot.cost())
+        cost_annealing = []
+        for i in range(1000):
+            algo.random_hillclimber(False, True)
+            print(i/10)
+            cost_annealing.append(plot.cost())
+
+        # algo.random_hillclimber(True, True)
+        # print(plot.cost())
+        # curr_cost = plot.cost()
+        # cost.append(curr_cost)
         # if i%1 == 0:
         #     print("check", i/1)
         # for i in algo.grid.batteries:
         #     print(i.capacity)
-    # plt.figure()
-    # plt.hist(cost, bins=10)
+    plt.figure()
+    plt.hist(cost_annealing, bins=100)
+    print(min(cost_annealing))
     # print(cost)
     # print("min =", min(cost))
     # print("max =", max(cost))
-    # with open("text_info_random.txt", 'w') as f:
-    #     for i in cost:
-    #         f.write(f"{i}\n")
+    with open("text_annealing_exp_1000.txt", 'w') as f:
+        for i in cost_annealing:
+            f.write(f"{i}\n")
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
 
@@ -468,7 +471,7 @@ if __name__ == "__main__":
     # print("cost =", plot.cost())
 
     # show plots
-    # plt.show()
+    plt.show()
 
     # plot.plot_histograms_bokeh()
     # plot.plot_grid_bokeh()
