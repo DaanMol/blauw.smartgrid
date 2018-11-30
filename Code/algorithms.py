@@ -485,6 +485,7 @@ class Algorithm():
                                                   end[0])) * cost_step
                 open_set[child][1] = g_new
 
+
     def make_path(self, parents, node):
         """Makes path from a star results"""
 
@@ -515,17 +516,9 @@ if __name__ == "__main__":
     # bokeh.simple_plot()
 
     """Algorithms"""
-    algo.random_cap()
-    algo.random_hillclimber()
-
-    counter = 0
-    for house in algo.grid.houses:
-        battery = algo.grid.batteries[house.connection]
-        house.path = algo.arrr_starrr(house, battery)
-        print(counter, (len(house.path[0][0]) - 1) * 9, house.path[1])
-        counter += 1
-
-    plot.arrr_starrr_graph()
+    # algo.random_cap()
+    # algo.random_hillclimber()
+    # plot.arrr_starrr_graph()
     # algo.proximity_first()
     # # algo.priority_first()
     # cost_1 = plot.cost()
@@ -540,38 +533,42 @@ if __name__ == "__main__":
 
     # algo.k_means()
     # algo.house_to_bat()
+    for j in range(1,4):
+        cost = []
+        for i in range(1000):
+            algo = Algorithm(j)
+            plot = Plots(algo.grid)
+            algo.random_cap()
+            # algo.k_means()
+            # algo.priority_first()
+            # print(plot.cost())
+            # cost_annealing = []
+            # for i in range(1000):
+            #     algo.random_hillclimber(False, True)
+            #     print(i/10)
+            #     cost_annealing.append(plot.cost())
 
-    # cost = []
-    # for i in range(1):
-    #     algo = Algorithm(1)
-    #     plot = Plots(algo.grid)
-    #     algo.random_cap()
-    #     # algo.k_means()
-    #     # algo.priority_first()
-    #     # print(plot.cost())
-    #     cost_annealing = []
-    #     for i in range(1000):
-    #         algo.random_hillclimber(False, True)
-    #         print(i/10)
-    #         cost_annealing.append(plot.cost())
-    #
-    #     # algo.random_hillclimber(True, True)
-    #     # print(plot.cost())
-    #     # curr_cost = plot.cost()
-    #     # cost.append(curr_cost)
-    #     # if i%1 == 0:
-    #     #     print("check", i/1)
-    #     # for i in algo.grid.batteries:
-    #     #     print(i.capacity)
-    # plt.figure()
-    # plt.hist(cost_annealing, bins=100)
-    # print(min(cost_annealing))
-    # # print(cost)
-    # # print("min =", min(cost))
-    # # print("max =", max(cost))
-    # with open("text_annealing_exp_1000.txt", 'w') as f:
-    #     for i in cost_annealing:
-    #         f.write(f"{i}\n")
+            algo.k_means()
+            algo.random_hillclimber()
+            # algo.arrr_starrr()
+
+            # print(plot.cost())
+            curr_cost = plot.cost()
+            cost.append(curr_cost)
+            if i%1 == 0:
+                print("check", i/1)
+            # for i in algo.grid.batteries:
+            #     print(i.capacity)
+        with open(f"text_k-means_hill{j}_1000.txt", 'w') as f:
+            for i in cost:
+                f.write(f"{i}\n")
+    plt.figure()
+    plt.hist(cost, bins=100)
+    print(min(cost))
+    # print(cost)
+    print("min =", min(cost))
+    print("max =", max(cost))
+
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
 
