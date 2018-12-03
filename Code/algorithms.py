@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import random
 import time
 import math
+import copy
 
 
 class Algorithm():
@@ -360,12 +361,14 @@ class Algorithm():
             self.capacity_fixer(not_used)
 
     def temp_function(self, i, N, type):
+        """
+        Calculates temperature
+        Source:
+        """
         T_0 = 500
         T_N = 1
         if type == 'exp':
             T = T_0 * (T_N / T_0) ** (i / N)
-        elif type == 'sig':
-            T = T_N + (T_0 - T_N) / (1 + math.exp(0.3 (i - N / 2)))
         elif type == 'lin':
             T = T_0 - i * (T_0 - T_N) / N
         return T
@@ -506,10 +509,25 @@ class Algorithm():
 if __name__ == "__main__":
     # create algorithm Object
     algo = Algorithm(1)
-    # algo.agg_clust()
-
-    # create plots Object
     plot = Plots(algo.grid)
+    algo.random_cap()
+    best_cost = plot.cost()
+    best_algo = copy.deepcopy(algo)
+    current_algo = copy.deepcopy(best_algo)
+
+    for i in range(100):
+        current_algo = copy.deepcopy(best_algo)
+        plot = Plots(current_algo.grid)
+        print(i, plot.cost())
+        current_algo.random_hillclimber(True, True)
+
+        if plot.cost() < best_cost:
+            best_cost = plot.cost()
+            best_algo = copy.deepcopy(current_algo)
+            print(f"Better : {i} {best_cost}")
+
+    plot = Plots(best_algo.grid)
+    plot.x_or_y_first(False, "hillclimber")
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
@@ -533,41 +551,41 @@ if __name__ == "__main__":
 
     # algo.k_means()
     # algo.house_to_bat()
-    for j in range(1,4):
-        cost = []
-        for i in range(1000):
-            algo = Algorithm(j)
-            plot = Plots(algo.grid)
-            algo.random_cap()
-            # algo.k_means()
-            # algo.priority_first()
-            # print(plot.cost())
-            # cost_annealing = []
-            # for i in range(1000):
-            #     algo.random_hillclimber(False, True)
-            #     print(i/10)
-            #     cost_annealing.append(plot.cost())
-
-            algo.k_means()
-            algo.random_hillclimber()
-            # algo.arrr_starrr()
-
-            # print(plot.cost())
-            curr_cost = plot.cost()
-            cost.append(curr_cost)
-            if i%1 == 0:
-                print("check", i/1)
-            # for i in algo.grid.batteries:
-            #     print(i.capacity)
-        with open(f"text_k-means_hill{j}_1000.txt", 'w') as f:
-            for i in cost:
-                f.write(f"{i}\n")
-    plt.figure()
-    plt.hist(cost, bins=100)
-    print(min(cost))
-    # print(cost)
-    print("min =", min(cost))
-    print("max =", max(cost))
+    # for j in range(1,4):
+    #     cost = []
+    #     for i in range(1000):
+    #         algo = Algorithm(j)
+    #         plot = Plots(algo.grid)
+    #         algo.random_cap()
+    #         # algo.k_means()
+    #         # algo.priority_first()
+    #         # print(plot.cost())
+    #         # cost_annealing = []
+    #         # for i in range(1000):
+    #         #     algo.random_hillclimber(False, True)
+    #         #     print(i/10)
+    #         #     cost_annealing.append(plot.cost())
+    #
+    #         algo.k_means()
+    #         algo.random_hillclimber()
+    #         # algo.arrr_starrr()
+    #
+    #         # print(plot.cost())
+    #         curr_cost = plot.cost()
+    #         cost.append(curr_cost)
+    #         if i%1 == 0:
+    #             print("check", i/1)
+    #         # for i in algo.grid.batteries:
+    #         #     print(i.capacity)
+    #     with open(f"text_k-means_hill{j}_1000.txt", 'w') as f:
+    #         for i in cost:
+    #             f.write(f"{i}\n")
+    # plt.figure()
+    # plt.hist(cost, bins=100)
+    # print(min(cost))
+    # # print(cost)
+    # print("min =", min(cost))
+    # print("max =", max(cost))
 
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
