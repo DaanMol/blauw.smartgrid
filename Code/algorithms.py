@@ -535,7 +535,7 @@ if __name__ == "__main__":
     # algo.house_to_bat()
     for j in range(1,4):
         cost = []
-        for i in range(1000):
+        for i in range(10000):
             algo = Algorithm(j)
             plot = Plots(algo.grid)
             algo.random_cap()
@@ -559,7 +559,7 @@ if __name__ == "__main__":
                 print("check", i/1)
             # for i in algo.grid.batteries:
             #     print(i.capacity)
-        with open(f"text_k-means_hill{j}_1000.txt", 'w') as f:
+        with open(f"text_k-means_hill{j}_10000.txt", 'w') as f:
             for i in cost:
                 f.write(f"{i}\n")
     plt.figure()
