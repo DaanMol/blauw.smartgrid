@@ -70,7 +70,7 @@ Shown below is an plot that represents ten runs of the K-means after which the h
 # Comparison
 The plot beneath shows the relative quality of the random and priority first algorithms regarding each other. In the future, all other algorithms will be plotted in this graph as well.
 
-![comparison between random and priority first with hillclimber](Presentation/Images/10kRand1hHill.png)
+![comparison between random and priority first with hillclimber](Presentation/Images/10kRand1kHill3.png)
 
 The images shown above are created using matplotlib.pylot and Bokeh.
 
