@@ -455,7 +455,7 @@ class Algorithm():
         Calculates temperature
         Source:
         """
-        T_0 = 500
+        T_0 = 800
         T_N = 1
         if type == 'exp':
             T = T_0 * (T_N / T_0) ** (i / N)
@@ -620,10 +620,10 @@ if __name__ == "__main__":
 
     algo.random_cap()
 
-    final = algo.simulated_annealing(250)
+    final = algo.simulated_annealing(450)
 
     plot = Plots(final[0].grid)
-    with open(f"simulated_annealing1_1000.txt", 'w') as f:
+    with open(f"simulated_annealing1_450.txt", 'w') as f:
             for i in final[1]:
                 f.write(f"{i}\n")
     plot.x_or_y_first(False, "simulated_annealing")
