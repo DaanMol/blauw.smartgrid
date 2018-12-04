@@ -1,5 +1,5 @@
 from houses import House
-from batteries import Battery
+from batteries import Battery, SmallBattery, MedBattery, LargeBattery
 import numpy as np
 
 
@@ -16,7 +16,7 @@ class Grid():
         """
         self.batteries = self.load_batteries(f"Huizen&Batterijen/wijk{district}_batterijen.txt")
         self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
-        self.distances()
+        self.distances(self.houses, self.batteries)
 
     def load_batteries(self, filename):
         """
@@ -47,7 +47,7 @@ class Grid():
                     capacity = float(line[-1])
 
                     # add Battery to batteries_list
-                    batteries_list.append(Battery(x, y, capacity, 5000))
+                    batteries_list.append(LargeBattery(x, y))
 
         # return list of Battery items
         return batteries_list
@@ -81,17 +81,23 @@ class Grid():
         # return list of House items
         return houses_list
 
-    def distances(self):
+    def distances(self, houses, batteries):
         """
         Calculate distances between batteries and
         houses.
         Update distances in House and Battery objects.
         """
+        # clear distances
+        for house in houses:
+            house.distances = []
+        for battery in batteries:
+            battery.distances = []
+
         # iterate over houses + batteries for coordinates
-        for house in self.houses:
+        for house in houses:
             x1 = house.x
             y1 = house.y
-            for battery in self.batteries:
+            for battery in batteries:
                 x2 = battery.x
                 y2 = battery.y
 
