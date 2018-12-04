@@ -505,29 +505,38 @@ class Algorithm():
         # return path values
         return [x_values, y_values]
 
+    def simulated_annealing(self, N):
+        plot = Plots(self.grid)
+        best_cost = plot.cost()
+        best_algo = copy.deepcopy(algo)
+        list_algo = []
+        for i in range(N):
+            current_algo = copy.deepcopy(best_algo)
+            plot = Plots(current_algo.grid)
+            print(i, plot.cost())
+            current_algo.random_hillclimber(True, True)
+            list_algo.append(plot.cost())
+            if plot.cost() < best_cost:
+                best_cost = plot.cost()
+                best_algo = copy.deepcopy(current_algo)
+                print(f"Better : {i} {best_cost} {len(list_algo)}")
+
+        return [best_algo, list_algo]
+
 # run
 if __name__ == "__main__":
     # create algorithm Object
     algo = Algorithm(1)
-    plot = Plots(algo.grid)
+
     algo.random_cap()
-    best_cost = plot.cost()
-    best_algo = copy.deepcopy(algo)
-    current_algo = copy.deepcopy(best_algo)
 
-    for i in range(100):
-        current_algo = copy.deepcopy(best_algo)
-        plot = Plots(current_algo.grid)
-        print(i, plot.cost())
-        current_algo.random_hillclimber(True, True)
+    final = algo.simulated_annealing(250)
 
-        if plot.cost() < best_cost:
-            best_cost = plot.cost()
-            best_algo = copy.deepcopy(current_algo)
-            print(f"Better : {i} {best_cost}")
-
-    plot = Plots(best_algo.grid)
-    plot.x_or_y_first(False, "hillclimber")
+    plot = Plots(final[0].grid)
+    with open(f"simulated_annealing1_1000.txt", 'w') as f:
+            for i in final[1]:
+                f.write(f"{i}\n")
+    plot.x_or_y_first(False, "simulated_annealing")
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
