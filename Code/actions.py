@@ -214,3 +214,33 @@ class Plots():
                 cost += house.distances[house.connection] * 9
             cost += battery.cost
         return cost
+
+    def arrr_starrr_graph(self):
+        plt.figure()
+        colors = ['r', 'b', 'g', 'y', 'm']
+        total_cost = 0
+
+        # plot batteries
+        counter = 0
+        for batt in self.grid.batteries:
+            plt.plot(batt.x, batt.y, marker='x',
+                     color=colors[counter], markersize=10)
+            counter += 1
+
+        # iterate over houses and path
+        for house in self.grid.houses:
+            battery = self.grid.batteries[house.connection]
+
+            # get path coordinates
+            path_data = house.path
+
+            # plot path and house
+            plt.plot(path_data[0][0], path_data[0][1],
+                     color=colors[house.connection], linewidth=.3)
+            plt.plot(house.x, house.y, marker='p',
+                     color=colors[house.connection])
+            total_cost += path_data[1]
+            plt.draw()
+            plt.pause(0.000000001)
+
+        plt.title(f"total cost = {total_cost}")

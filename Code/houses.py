@@ -1,5 +1,3 @@
-import numpy as np
-
 class House():
     """
     Class containing all information
@@ -17,12 +15,14 @@ class House():
         Position, output, distances
         to all batteries, connections
         list with connected battery.
+        style path = [[[xdata, ydata], cost], ...]
         """
         self.x = x
         self.y = y
         self.output = output
         self.distances = []
         self.connection = None
+        self.path = []
 
     def connect(self, battery):
         """
@@ -36,4 +36,4 @@ class House():
         """
         Print statement for house object.
         """
-        return f"{self.x}"
+        return f"{self.x}, {self.y}"
