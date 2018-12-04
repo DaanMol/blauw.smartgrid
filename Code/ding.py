@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-for i in range(1,4):
+for i in range(1,2):
     cost_list = []
-    with open(f"text_info_random{i}_10k.txt", "r") as f:
+    with open(f"simulated_annealing{i}_1000.txt", "r") as f:
         # text = f.read()
         # cost_list.append(text)
         text = f.read().split('\n')
@@ -20,22 +20,22 @@ for i in range(1,4):
     plt.hist(cost_list, bins=30, alpha=0.5, label=f"Random Wijk {i}")
 
 
-    cost_list = []
-    with open(f"text_info_prior_hill{i}_1k.txt", "r") as f:
-        # text = f.read()
-        # cost_list.append(text)
-        text = f.read().split('\n')
-        for number in text:
-
-            # number = number.replace(' ', '')
-            # number = number.replace('\n', '')
-            # number = number.replace('[', '')
-            # number = number.replace(']', '')
-            if number is not "":
-                cost_list.append(int(number))
-            # print(number, type(number))
-    # bins = np.linspace(min(cost_list), max(cost_list))
-    plt.hist(cost_list, bins=5, alpha=1, label=f"Hill Wijk {i}")
+    # cost_list = []
+    # with open(f"text_info_prior_hill{i}_1k.txt", "r") as f:
+    #     # text = f.read()
+    #     # cost_list.append(text)
+    #     text = f.read().split('\n')
+    #     for number in text:
+    #
+    #         # number = number.replace(' ', '')
+    #         # number = number.replace('\n', '')
+    #         # number = number.replace('[', '')
+    #         # number = number.replace(']', '')
+    #         if number is not "":
+    #             cost_list.append(int(number))
+    #         # print(number, type(number))
+    # # bins = np.linspace(min(cost_list), max(cost_list))
+    # plt.hist(cost_list, bins=5, alpha=1, label=f"Hill Wijk {i}")
 
 plt.title("10k Random walk and 1k prior and hill")
 plt.xlabel("Cost")
