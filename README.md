@@ -19,6 +19,9 @@ The upper and lower bound per grid are calculated including the fixed costs of t
 
 ![Upper and lower bound of the three grids](/Presentation/Images/bounds.png)
 
+# Bottlenecks
+Finding the solutions regarding each subproblem is not without problems. The first is the capacity of each battery. As long as batteries have a maximum capacity, houses won't be connected without setting a capacity fixer. The second problem is the statespace. As the range of solutions is very big, it is difficult to find a proper one. It would take a huge amount of time to try to find the best solution. Another problem is the positioning of the batteries. In step A and B of the problem, the positions are fixed and placement is not a problem. In step C and D however, it is possible to move the batteries. This creates a problem, as there are as many possible locations for batteries as there are locations in the grid, minus the amount of houses. This amounts to 150*150 - 150 = 22350 possible battery positions. The last problem is the output of energy generated per house. As each output is different, calculations are difficult and we are not able to put in into an algorithm. The output has to be approached as an external factor.
+
 # Code
 **Constructive algorithms**
 
@@ -26,11 +29,13 @@ The upper and lower bound per grid are calculated including the fixed costs of t
 
 The random algorithm connects houses to batteries at random. This gives a representation of possible solutions for the problem of grid 1. The graph has been run 10.000 times. The goal is to create algorithms that better the optimal outcome of this random walk.
 
+The random algorithm shows the distribution of random generated solutions. These offer an benchmark to compare other algorithms to.
+
 ![Random plot](/Presentation/Images/rw100khisto.png)
 
 *Greedy*
 
-A greedy algorithm is an algorithmic strategy that makes the optimal choice at each small stage with the goal of this eventually leading to a global optimum. This means that the algorithm picks the best immediate output without taking future outputs into consideration. The algorithm is separated into two modes; proximity first and priority first.
+A greedy algorithm is an algorithmic strategy that makes the optimal choice at each small stage with the goal of this eventually leading to a global optimum. This means that the algorithm picks the best immediate output without taking future outputs into consideration. The algorithm is separated into two modes; proximity first and priority first. Both algorithms answer problem set A: connect all houses in the grid to the batteries.
 
 *Proximity first*
 
@@ -48,13 +53,17 @@ The priority first algorithm connects houses to batteries based on the output of
 
 The A* algorithm is an algorithm that renders the shortest distance between two plots in a graph. Houses are thus connected to batteries with the shortest possible routes. This algorithm checks per house, one by one.
 
+The algorithm answers problem set E: optimize the smart grid for all three districts, taking into account the new compensation scheme. This algorithm finds the best way to connect all houses to the batteries without putting cables under houses. This is done giving values to certain points; one step on the grid costs 9, one house costs 5000 and the batteries cost 10000 as cables can't run under or above batteries.
+
 ![A* algorithm using hillclimber](/Presentation/Images/arrrstarrr_random_hillclimb(E).png)
 
 **Iterative algorithms**
 
 *Hillclimber*
 
-A hillclimber is an algorithm that tries to find a sufficiently good solution to the problem. This solution may be a local optimal maximum instead of the global optimal maximum. The code accepts similar or better situations than the previous. If the proposed situation is not similar to or better than the last; the situation will be discarded. This will continue as long as no more than 10.000 situations are better or similar to the previous circumstances, to ensure a local maximum is reached. This situation will be rendered as the solution.
+A hillclimber is an algorithm that tries to find a sufficiently good solution to the problem. This solution may be a local optimal maximum instead of the global optimal maximum. The code accepts similar or better situations than the previous. If the proposed situation is not similar to or better than the last; the situation will be discarded. This will continue as long as no more than 22350 situations are better or similar to the previous circumstances, to ensure a local maximum is reached. This situation will be rendered as the solution.
+
+The hillclimber is a possible answer to problem set B: Calculate the costs for the district configured in step A and find the best possible configuration of cables. It minimalizes cable costs by switching connections between houses and batteries and performing this until the configuration has not been bettered 22350 times. It sorts the problem of choosing the best solution out of several possible solutions.
 
 Shown below is a line plot that represents ten runs of the hillclimber. It renders the relative quality of the solutions in regard to each other.
 
@@ -64,9 +73,15 @@ Shown below is a line plot that represents ten runs of the hillclimber. It rende
 
 Simulated annealing is a algorithm in which worse solutions are accepted in order to escape a local maximum. This algorithm is not yet ready. It is however a continuation of the process rendered when the hillclimber algorithm runs, as it tries to escape the local maxima the hillclimber can enter.
 
+The simulated annealing is an answer to the problem the hillclimber leaves us with. The hillclimber finds a local minimum, which is the lowest point in a certain area. The simulated annealing finds the global minimum instead of the local minimum the hillclimber finds.
+
+![simulated annealing](/Presentation/Images/lijnen250simulated.png)
+
 *K-means*
 
 This is an algorithm that is useful just for the third goal of this project. The K-means algorithm is a cluster algorithm. It calculates the average of all the points in a cluster and moves the centroid to that average location. This continues until there is no more change in the clusters.  
+
+The K-means algorithm is a possible solution for problem set C: Move the batteries and try to achieve a better result. It answers the question of the optimal placement of the batteries.
 
 Shown below is an plot that represents ten runs of the K-means after which the hillclimber is run. It renders the relative quality of the solutions in regard to each other. The histogram renders the cost of different possible solutions.
 
