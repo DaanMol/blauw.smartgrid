@@ -650,6 +650,43 @@ if __name__ == "__main__":
 
     # algo.k_means()
     # algo.house_to_bat()
+<<<<<<< HEAD
+    for j in range(1,4):
+        cost = []
+        for i in range(10000):
+            algo = Algorithm(j)
+            plot = Plots(algo.grid)
+            algo.random_cap()
+            # algo.k_means()
+            # algo.priority_first()
+            # print(plot.cost())
+            # cost_annealing = []
+            # for i in range(1000):
+            #     algo.random_hillclimber(False, True)
+            #     print(i/10)
+            #     cost_annealing.append(plot.cost())
+
+            algo.k_means()
+            algo.random_hillclimber()
+            # algo.arrr_starrr()
+
+            # print(plot.cost())
+            curr_cost = plot.cost()
+            cost.append(curr_cost)
+            if i%1 == 0:
+                print("check", i/1)
+            # for i in algo.grid.batteries:
+            #     print(i.capacity)
+        with open(f"text_k-means_hill{j}_10000.txt", 'w') as f:
+            for i in cost:
+                f.write(f"{i}\n")
+    plt.figure()
+    plt.hist(cost, bins=100)
+    print(min(cost))
+    # print(cost)
+    print("min =", min(cost))
+    print("max =", max(cost))
+=======
     # for j in range(1,4):
     #     cost = []
     #     for i in range(1000):
@@ -685,6 +722,7 @@ if __name__ == "__main__":
     # # print(cost)
     # print("min =", min(cost))
     # print("max =", max(cost))
+>>>>>>> bb25c0794756b79294ee3a4b8a166a6e416d8f5f
 
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
