@@ -44,6 +44,12 @@ The priority first algorithm connects houses to batteries based on the output of
 
 ![Priority first plot](/Presentation/Images/priftitel+cost.png)
 
+*A**
+
+The A* algorithm is an algorithm that renders the shortest distance between two plots in a graph. Houses are thus connected to batteries with the shortest possible routes. This algorithm checks per house, one by one.
+
+![A* algorithm using hillclimber](/Presentation/Images/arrrstarrr_random_hillclimb(E).png)
+
 **Iterative algorithms**
 
 *Hillclimber*
