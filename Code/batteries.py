@@ -102,7 +102,7 @@ class MedBattery():
     - Print method
     """
 
-    def __init__(self, x, y, connections):
+    def __init__(self, x, y):
         """
         Position, capacity, distances
         to all houses, connections list
