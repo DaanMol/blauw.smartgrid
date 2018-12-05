@@ -2,6 +2,7 @@ from houses import House
 from batteries import Battery, SmallBattery, MedBattery, LargeBattery
 import numpy as np
 
+SETTING = "advanced"
 
 class Grid():
     """
@@ -47,7 +48,10 @@ class Grid():
                     capacity = float(line[-1])
 
                     # add Battery to batteries_list
-                    batteries_list.append(LargeBattery(x, y))
+                    if SETTING == "advanced":
+                        batteries_list.append(LargeBattery(x, y))
+                    elif SETTING == "standard":
+                        batteries_list.append(Battery(x, y, capacity))
 
         # return list of Battery items
         return batteries_list
