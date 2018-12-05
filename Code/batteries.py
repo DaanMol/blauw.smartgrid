@@ -1,5 +1,11 @@
 import numpy as np
 
+# declare cost and capacity for the batteries
+STANDARD_BAT = {"cost": 5000}
+SMALL_BAT = {"capacity": 450, "cost":900}
+MEDIUM_BAT = {"capacity": 900, "cost":1350}
+LARGE_BAT = {"capacity": 1800, "cost": 1800}
+
 class Battery():
     """
     Class containing all information
@@ -24,7 +30,7 @@ class Battery():
         self.max_cap = capacity
         self.distances = []
         self.connections = []
-        self.cost = 5000
+        self.cost = STANDARD_BAT["cost"]
 
     def connect(self, house, connect=True):
         """
@@ -65,11 +71,11 @@ class SmallBattery():
         """
         self.x = x
         self.y = y
-        self.capacity = 450
-        self.max_cap = 450
+        self.capacity = SMALL_BAT["capacity"]
+        self.max_cap = SMALL_BAT["capacity"]
         self.distances = []
         self.connections = []
-        self.cost = 900
+        self.cost = SMALL_BAT["cost"]
 
     def connect(self, house, connect=True):
         """
@@ -110,11 +116,11 @@ class MedBattery():
         """
         self.x = x
         self.y = y
-        self.capacity = 900
-        self.max_cap = 900
+        self.capacity = MEDIUM_BAT["capacity"]
+        self.max_cap = MEDIUM_BAT["capacity"]
         self.distances = []
         self.connections = []
-        self.cost = 1350
+        self.cost = MEDIUM_BAT["cost"]
 
     def connect(self, house, connect=True):
         """
@@ -155,11 +161,11 @@ class LargeBattery():
         """
         self.x = x
         self.y = y
-        self.capacity = 1800
-        self.max_cap = 1800
+        self.capacity = LARGE_BAT["capacity"]
+        self.max_cap = LARGE_BAT["capacity"]
         self.distances = []
         self.connections = []
-        self.cost = 1800
+        self.cost = LARGE_BAT["cost"]
 
     def connect(self, house, connect=True):
         """
