@@ -248,10 +248,14 @@ class Plots():
 
         plt.title(f"total cost = {total_cost}")
 
-    def random_plt(self):
-        for i in range(1,4):
+    def random_plt(self, options):
+        average = []
+        minimum = []
+        opt = []
+        for j in range(25):
+            i = options[j]
             cost_list = []
-            with open(f"text_info_random{i}_10k.txt", "r") as f:
+            with open(f"output_runs/batt_conf[{i[0]}_{i[1]}_{i[2]}]_100.txt", "r") as f:
                 # text = f.read()
                 # cost_list.append(text)
                 text = f.read().split('\n')
@@ -265,28 +269,38 @@ class Plots():
                         cost_list.append(int(number))
                     # print(number, type(number))
             # bins = np.linspace(min(cost_list), max(cost_list))
-            plt.hist(cost_list, bins=30, alpha=0.5, label=f"Random Wijk {i}")
+            minimum.append(min(cost_list))
+            average.append(sum(cost_list)/len(cost_list))
+            opt.append(f"[{i[0]}_{i[1]}_{i[2]}]")
 
-
-            cost_list = []
-            with open(f"text_info_prior_hill{i}_1k.txt", "r") as f:
-                # text = f.read()
-                # cost_list.append(text)
-                text = f.read().split('\n')
-                for number in text:
-
-                    # number = number.replace(' ', '')
-                    # number = number.replace('\n', '')
-                    # number = number.replace('[', '')
-                    # number = number.replace(']', '')
-                    if number is not "":
-                        cost_list.append(int(number))
-                    # print(number, type(number))
-            # bins = np.linspace(min(cost_list), max(cost_list))
-            plt.hist(cost_list, bins=5, alpha=1, label=f"Hill Wijk {i}")
-
-        # plt.title("10k Random walk and 1k prior and hill")
-        # plt.xlabel("Cost")
-        # plt.ylabel("Frequency")
+            # plt.hist(end_list, bins=30, alpha=0.5, label=f"[{i[0]}_{i[1]}_{i[2]}]")
+            plt.scatter(min(cost_list), sum(cost_list)/len(cost_list), label=f"[{i[0]}_{i[1]}_{i[2]}]")
+            plt.text(min(cost_list) + 10, sum(cost_list)/len(cost_list) - 40, f"{i}")
+        plt.suptitle("100x randompositioning+k-means+hill for all possible battery configurations")
+        plt.title("notation: [small, medium, large] (number of batteries)")
+        plt.xlabel("min cost")
+        plt.ylabel("average cost")
+        plt.xlim(22400, 24000)
+        plt.ylim(23000, 25000)
         # plt.legend(loc='upper right')
+
+
+            # cost_list = []
+            # with open(f"text_info_prior_hill{i}_1k.txt", "r") as f:
+            #     # text = f.read()
+            #     # cost_list.append(text)
+            #     text = f.read().split('\n')
+            #     for number in text:
+            #
+            #         # number = number.replace(' ', '')
+            #         # number = number.replace('\n', '')
+            #         # number = number.replace('[', '')
+            #         # number = number.replace(']', '')
+            #         if number is not "":
+            #             cost_list.append(int(number))
+            #         # print(number, type(number))
+            # # bins = np.linspace(min(cost_list), max(cost_list))
+            # plt.hist(cost_list, bins=5, alpha=1, label=f"Hill Wijk {i}")
+
+
         # plt.show()
