@@ -6,6 +6,7 @@ import random
 import time
 import math
 import copy
+from batteries import MedBattery, LargeBattery, SmallBattery
 
 
 class Algorithm():
@@ -341,7 +342,7 @@ class Algorithm():
                         break
 
                     # if no battery can fit the house, add it to unused
-                    if count == 5:
+                    if count == len(batteries):
                         not_used.append(house)
 
             # reposition battery according to average xy
@@ -358,6 +359,11 @@ class Algorithm():
 
         if len(used) < len(houses):
             print('ficing cap brub')
+            # for i in self.grid.batteries:
+            #     print(i.capacity)
+            for i in not_used:
+                i.connection = None
+
             self.capacity_fixer(not_used)
 
     def splitter(self):
@@ -367,87 +373,100 @@ class Algorithm():
         """
         print("NOW SPLITTING")
         # split every battery
-        bat_count = 0
         # assign the original batteries to a variable so the program does not
         # run infinitely because the self.grid.batteries is extended
-        old_bats = copy.deepcopy(self.grid.batteries)
-        print(old_bats)
+        # old_bats = copy.deepcopy(self.grid.batteries)
+        start_grid = copy.deepcopy(self.grid)
+        best_grid = copy.deepcopy(self.grid)
+        splitted = 0
 
         # loop over the batteries in the old state (currently 1 cuz test)
         for i in range(0,5):
+
             print(i)
-            # calculate distances
-            self.grid.distances(self.grid.houses, self.grid.batteries)
-            # for house in
 
             # calculate the old cost of the cluster to compare later
-            curr_cost = old_bats[i].cost
-            for house in old_bats[i].connections:
+            # curr_cost = old_bats[i].cost
+            # for house in old_bats[i].connections:
+            #     curr_cost += house.distances[house.connection] * 9
+
+            current_battery = start_grid.batteries[i]
+
+            curr_cost = current_battery.cost
+            for house in current_battery.connections:
                 curr_cost += house.distances[house.connection] * 9
-            curr_cost += old_bats[i].cost
 
-            print("currcost", curr_cost)
+            print("current cost: ", curr_cost)
 
-            battery = old_bats[i]
-            bat_count += 1
+            # battery = old_bats[i]
 
             # create new battery objects with the new xy
-            sub_bat = MedBattery(battery.x + 1, battery.y + 1)
-            sub_bat2 = MedBattery(battery.x - 1, battery.y - 1)
-            old_bat = battery
+            sub_bat = MedBattery(current_battery.x + 1, current_battery.y + 1)
+            sub_bat2 = MedBattery(current_battery.x - 1, current_battery.y - 1)
+            # old_bat = battery
             # TODO give batteries the connections: split em from the original
                 # this is being done in kmeans i think
 
             # houses is now the houses in the battery cluster
             # SUMTING RONG
-            houses = battery.connections
+            houses = current_battery.connections
             # batteries is now the newly created batteries
             batteries = [sub_bat, sub_bat2]
             # calculate distances for the new batteries and the houses
             # do this at the beginning of kmeans??
             # self.grid.distances(houses, batteries)
-
+            self.grid.batteries.remove(self.grid.batteries[i - splitted])
             # add the new houses to the grid batteries list
             self.grid.batteries.append(sub_bat)
             self.grid.batteries.append(sub_bat2)
 
             # still need to remove the old one
             # removing old one V
-            self.grid.batteries.remove(self.grid.batteries[i])
+
 
             # calculate new cost but doesnt work cuz 2 new batteries
             # this function wont work either duh...
 
 
             # deepcopy the old gridstate to reverse if this doesnt save money
-            old_grid = copy.deepcopy(self.grid)
+            # old_grid = copy.deepcopy(self.grid)
 
             # run k-Means on the new 2 clusters
             self.k_means(houses, batteries)
 
+            if Plots(self.grid).cost() < Plots(best_grid).cost():
+                best_grid = copy.deepcopy(self.grid)
+                splitted += 1
 
-            # calculate new cost
-            new_cost = 0
-            # for battery in self.grid.batteries:
-            #     for house in battery.connections:
-            #         new_cost += house.distances[house.connection] * 9
-            #     new_cost += battery.cost
+            self.grid = copy.deepcopy(best_grid)
 
-            # split the battery in 2 batteries one level down
-            # do a k-means on them using only the first battery's population
-                # this needs work since some houses are double connected
-            # check if it's cheaper
-            # once more for the smalles battery
+    def more_or_less(self):
+        # empty batteries list
+        self.grid.batteries = []
+
+        # calculate needed capacity
+        total_output = 0
+        for house in self.grid.houses:
+            total_output += house.output
+
+        # place enough small batteries randomly on the grid
+        nr_small_batt = round(total_output / 450)  # capacity small battery
+        for i in range(nr_small_batt):
+
+            # random location
+            x = round(random.random() * 50)
+            y = round(random.random() * 50)
+
+            # add to list
+            self.grid.batteries.append(SmallBattery(x, y))
+
+        # use k means on the grid
+        self.k_means(self.grid.houses, self.grid.batteries)
+
+        # combine two random batteries and check for improvement
+        combiner()
 
     def combiner(self):
-        # place 17 small batteries: enough to reach capacity
-        # check if combining the two closest batteries costs less
-        # if so combine, else: next battery
-        # repeat untill all combinations are checked
-        # move up a battery level
-        # repeat untill last level is reached
-        # ???
-        # profit
         pass
 
     def temp_function(self, i, N, type):
@@ -578,7 +597,6 @@ class Algorithm():
                                                   end[0])) * cost_step
                 open_set[child][1] = g_new
 
-
     def make_path(self, parents, node):
         """Makes path from a star results"""
 
@@ -613,20 +631,43 @@ class Algorithm():
 
         return [best_algo, list_algo]
 
+    def possibilities_calculator(self):
+        output = 0
+        for house in self.grid.houses:
+            output += house.output
+        cap_kind = [450, 900, 1800]
+
+        mini = 0
+        medi = 0
+        largi = 0
+        options = 1
+
+        mini = round(output / cap_kind[0])
+
 # run
 if __name__ == "__main__":
     # create algorithm Object
     algo = Algorithm(1)
+    # algo.more_or_less()
+    # algo.random_cap()
+    # algo.k_means(algo.grid.houses, algo.grid.batteries)
+    # algo.random_hillclimber()
+    # algo.splitter()
+    # # final = algo.simulated_annealing(450)
+    # #
+    # plot = Plots(algo.grid)
+    # algo.random_hillclimber()
+    algo.possibilities_calculator()
 
-    algo.random_cap()
-
-    final = algo.simulated_annealing(450)
-
-    plot = Plots(final[0].grid)
-    with open(f"simulated_annealing1_450.txt", 'w') as f:
-            for i in final[1]:
-                f.write(f"{i}\n")
-    plot.x_or_y_first(False, "simulated_annealing")
+    # algo.k_means(algo.grid.houses, algo.grid.batteries)
+    # algo.random_hillclimber()
+    #
+    # for i in algo.grid.batteries:
+    #     print(i.capacity)
+    # with open(f"simulated_annealing1_450.txt", 'w') as f:
+    #         for i in final[1]:
+    #             f.write(f"{i}\n")
+    # plot.x_or_y_first(False, "simulated_annealing")
 
     # create bokeh object
     # bokeh = Bokeh(algo.grid)
@@ -650,43 +691,43 @@ if __name__ == "__main__":
 
     # algo.k_means()
     # algo.house_to_bat()
-<<<<<<< HEAD
-    for j in range(1,4):
-        cost = []
-        for i in range(10000):
-            algo = Algorithm(j)
-            plot = Plots(algo.grid)
-            algo.random_cap()
-            # algo.k_means()
-            # algo.priority_first()
-            # print(plot.cost())
-            # cost_annealing = []
-            # for i in range(1000):
-            #     algo.random_hillclimber(False, True)
-            #     print(i/10)
-            #     cost_annealing.append(plot.cost())
 
-            algo.k_means()
-            algo.random_hillclimber()
-            # algo.arrr_starrr()
+    # for j in range(1,4):
+    #     cost = []
+    #     for i in range(1000):
+    #         algo = Algorithm(j)
+    #         plot = Plots(algo.grid)
+    #         algo.random_cap()
+    #         # algo.k_means()
+    #         # algo.priority_first()
+    #         # print(plot.cost())
+    #         # cost_annealing = []
+    #         # for i in range(1000):
+    #         #     algo.random_hillclimber(False, True)
+    #         #     print(i/10)
+    #         #     cost_annealing.append(plot.cost())
+    #
+    #         # algo.k_means()
+    #         algo.random_hillclimber()
+    #         # algo.arrr_starrr()
+    #
+    #         # print(plot.cost())
+    #         curr_cost = plot.cost()
+    #         cost.append(curr_cost)
+    #         if i%10 == 0:
+    #             print("check", i/10)
+    #         # for i in algo.grid.batteries:
+    #         #     print(i.capacity)
+    #     with open(f"random_arrstarr{j}_10.txt", 'w') as f:
+    #         for i in cost:
+    #             f.write(f"{i}\n")
+    # plt.figure()
+    # plt.hist(cost, bins=100)
+    # print(min(cost))
+    # # print(cost)
+    # print("min =", min(cost))
+    # print("max =", max(cost))
 
-            # print(plot.cost())
-            curr_cost = plot.cost()
-            cost.append(curr_cost)
-            if i%1 == 0:
-                print("check", i/1)
-            # for i in algo.grid.batteries:
-            #     print(i.capacity)
-        with open(f"text_k-means_hill{j}_10000.txt", 'w') as f:
-            for i in cost:
-                f.write(f"{i}\n")
-    plt.figure()
-    plt.hist(cost, bins=100)
-    print(min(cost))
-    # print(cost)
-    print("min =", min(cost))
-    print("max =", max(cost))
-=======
     # for j in range(1,4):
     #     cost = []
     #     for i in range(1000):
@@ -722,7 +763,6 @@ if __name__ == "__main__":
     # # print(cost)
     # print("min =", min(cost))
     # print("max =", max(cost))
->>>>>>> bb25c0794756b79294ee3a4b8a166a6e416d8f5f
 
     # algo.random_hillclimber(100000)
     # plot = Plots(list)
