@@ -2,7 +2,9 @@ from houses import House
 from batteries import Battery, SmallBattery, MedBattery, LargeBattery
 import numpy as np
 
-SETTING = "advanced"
+# select"standard" for original batteries: 5000 cost and 1507-ish capacity
+# or select "advanced" to start with Large Batteries
+SETTING = "standard"
 
 class Grid():
     """

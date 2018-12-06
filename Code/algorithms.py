@@ -278,7 +278,7 @@ class Algorithm():
         while cap > 0:
             # temperature for annealing
             if annealing:
-                temperature = self.temp_function(len(cost_list), N, 'exp')
+                temperature = self.temp_function(len(cost_list), N, 'rate')
 
             cap -= 1;
             index_1 = random.randint(0, (len(self.grid.houses) - 1))
@@ -296,6 +296,8 @@ class Algorithm():
         # plot lineplot
         if lineplot:
             plt.plot(cost_list)
+            plt.ylabel("costs")
+            plt.xlabel("iterations")
             plt.title("hillclimber: cost vs iterations")
             # plt.plot(swapped_list)
 
@@ -472,14 +474,18 @@ class Algorithm():
     def temp_function(self, i, N, type):
         """
         Calculates temperature
-        Source:
+        Source: http://www.theprojectspot.com/tutorial-post/simulated-annealing-algorithm-for-beginners/6
         """
-        T_0 = 800
+        coolRate = i/N
+        # print(coolRate)
+        T_0 = 400
         T_N = 1
         if type == 'exp':
             T = T_0 * (T_N / T_0) ** (i / N)
         elif type == 'lin':
             T = T_0 - i * (T_0 - T_N) / N
+        elif type == 'rate':
+            T = T_0 * (1-coolRate)
         return T
 
     def agg_clust(self):
@@ -616,17 +622,15 @@ class Algorithm():
     def simulated_annealing(self, N):
         plot = Plots(self.grid)
         best_cost = plot.cost()
-        best_algo = copy.deepcopy(algo)
+        best_algo = copy.deepcopy(self.grid)
         list_algo = []
         for i in range(N):
-            current_algo = copy.deepcopy(best_algo)
-            plot = Plots(current_algo.grid)
             print(i, plot.cost())
-            current_algo.random_hillclimber(True, True)
+            self.random_hillclimber(True, True)
             list_algo.append(plot.cost())
             if plot.cost() < best_cost:
                 best_cost = plot.cost()
-                best_algo = copy.deepcopy(current_algo)
+                best_algo = copy.deepcopy(self.grid)
                 print(f"Better : {i} {best_cost} {len(list_algo)}")
 
         return [best_algo, list_algo]
@@ -648,16 +652,18 @@ class Algorithm():
 if __name__ == "__main__":
     # create algorithm Object
     algo = Algorithm(1)
+
     # algo.more_or_less()
-    # algo.random_cap()
+    algo.random_cap()
+    # algo.priority_first()
     # algo.k_means(algo.grid.houses, algo.grid.batteries)
     # algo.random_hillclimber()
     # algo.splitter()
-    # # final = algo.simulated_annealing(450)
+    algo.simulated_annealing(100)
     # #
-    # plot = Plots(algo.grid)
+    plot = Plots(algo.grid)
     # algo.random_hillclimber()
-    algo.possibilities_calculator()
+    # algo.possibilities_calculator()
 
     # algo.k_means(algo.grid.houses, algo.grid.batteries)
     # algo.random_hillclimber()
@@ -694,33 +700,41 @@ if __name__ == "__main__":
 
     # for j in range(1,4):
     #     cost = []
-    #     for i in range(1000):
+    #     for i in range(10):
     #         algo = Algorithm(j)
     #         plot = Plots(algo.grid)
-    #         algo.random_cap()
-    #         # algo.k_means()
-    #         # algo.priority_first()
-    #         # print(plot.cost())
-    #         # cost_annealing = []
-    #         # for i in range(1000):
-    #         #     algo.random_hillclimber(False, True)
-    #         #     print(i/10)
-    #         #     cost_annealing.append(plot.cost())
     #
-    #         # algo.k_means()
-    #         algo.random_hillclimber()
-    #         # algo.arrr_starrr()
-    #
-    #         # print(plot.cost())
-    #         curr_cost = plot.cost()
-    #         cost.append(curr_cost)
-    #         if i%10 == 0:
-    #             print("check", i/10)
-    #         # for i in algo.grid.batteries:
-    #         #     print(i.capacity)
-    #     with open(f"random_arrstarr{j}_10.txt", 'w') as f:
-    #         for i in cost:
-    #             f.write(f"{i}\n")
+
+            # algo.random_cap()
+            # old_cost = plot.cost()
+            # algo.k_means()
+            # algo.priority_first()
+            # print(plot.cost())
+            # cost_annealing = []
+            # for i in range(1000):
+            #     algo.random_hillclimber(False, True)
+            #     print(i/10)
+            #     cost_annealing.append(plot.cost())
+
+            # algo.k_means()
+            # algo.random_hillclimber()
+            # new_cost = 0
+            # for house in algo.grid.houses:
+            #     new_cost += algo.arrr_starrr(house, algo.grid.batteries[house.connection])[1]
+            # for battery in algo.grid.batteries:
+            #     new_cost += battery.cost
+
+            # print(plot.cost())
+        #     curr_cost = plot.cost()
+        #     cost_diff = old_cost - new_cost
+        #     cost.append(cost_diff)
+        #     if i%10 == 0:
+        #         print("check", i/10)
+        #     # for i in algo.grid.batteries:
+        #     #     print(i.capacity)
+        # with open(f"random_arrstarr{j}_test.txt", 'w') as f:
+        #     for i in cost:
+        #         f.write(f"{i}\n")
     # plt.figure()
     # plt.hist(cost, bins=100)
     # print(min(cost))
@@ -770,7 +784,7 @@ if __name__ == "__main__":
     """Plots"""
     # plots
     # plot.line_figure("hillclimber")
-    # plot.x_or_y_first(False, "hillclimber")
+    plot.x_or_y_first(False, "hillclimber")
     # plot.random_simulation(False, "hillclimber")
 
     # calculate cost

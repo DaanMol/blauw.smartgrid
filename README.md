@@ -29,7 +29,7 @@ Finding the solutions regarding each subproblem is not without problems. The fir
 
 The random algorithm connects houses to batteries at random. This gives a representation of possible solutions for the problem of grid 1. The graph has been run 10.000 times. The goal is to create algorithms that better the optimal outcome of this random walk.
 
-The random algorithm shows the distribution of random generated solutions. These offer an benchmark to compare other algorithms to.
+The random algorithm shows the distribution of random generated solutions. These offer a benchmark to compare other algorithms to. It also answers problem set A.
 
 ![Random plot](/Presentation/Images/rw100khisto.png)
 
@@ -41,19 +41,25 @@ A greedy algorithm is an algorithmic strategy that makes the optimal choice at e
 
 The proximity first algorithm connects houses to batteries based on the distance of the house to the battery. Houses who are closest are connected before houses that are farther away.
 
-![Proximity first plot](/Presentation/Images/proftitle+cost.png)
+Proximity first is a working heuristic because it suggests a solution to problem set A. By connecting the houses closest to the battery first, the cable cost decreases dramatically compared to the random solutions.
+
+![Proximity first plot](/Presentation/Images/priftitel+cost.png)
 
 *Priority first*
 
 The priority first algorithm connects houses to batteries based on the output of the houses. Houses whose output is high are connected before houses whose output is lower. The output differentiates from 20 to 70.
 
-![Priority first plot](/Presentation/Images/priftitel+cost.png)
+Priority first is a working heuristic because it suggests a solution to problem set A. Prioritizing houses farthest away from the second furthest battery prevents houses being connected to batteries far away because the closest battery has been filled up to it's capacity. This reduces cable length compared to the random walk and proximity first.
+
+![Priority first plot](/Presentation/Images/proftitle+cost.png)
 
 *A**
 
 The A* algorithm is an algorithm that renders the shortest distance between two plots in a graph. Houses are thus connected to batteries with the shortest possible routes. This algorithm checks per house, one by one.
 
 The algorithm answers problem set E: optimize the smart grid for all three districts, taking into account the new compensation scheme. This algorithm finds the best way to connect all houses to the batteries without putting cables under houses. This is done giving values to certain points; one step on the grid costs 9, one house costs 5000 and the batteries cost 10000 as cables can't run under or above batteries.
+
+A* is a proper heuristic because it suggests the best way to set up a grid without increasing the cost by enduring fees because cables are situated below houses. Due to the way routes are given a value, it is possible to see whether going around houses or tunnel under them is more profitable.
 
 ![A* algorithm using hillclimber](/Presentation/Images/arrrstarrr_random_hillclimb(E).png)
 
@@ -79,9 +85,9 @@ The simulated annealing is an answer to the problem the hillclimber leaves us wi
 
 *K-means*
 
-This is an algorithm that is useful just for the third goal of this project. The K-means algorithm is a cluster algorithm. It calculates the average of all the points in a cluster and moves the centroid to that average location. This continues until there is no more change in the clusters.  
+This is an algorithm that is useful from the third goal on of this project. The K-means algorithm is a cluster algorithm. It calculates the average of all the points in a cluster and moves the centroid to that average location. This continues until there is no more change in the clusters.  
 
-The K-means algorithm is a possible solution for problem set C: Move the batteries and try to achieve a better result. It answers the question of the optimal placement of the batteries.
+The K-means algorithm is a possible solution for problem set C: Move the batteries and try to achieve a better result. It calculates the local optimum for battery placement when the batteries are at the standard location or placed randomly.
 
 Shown below is an plot that represents ten runs of the K-means after which the hillclimber is run. It renders the relative quality of the solutions in regard to each other. The histogram renders the cost of different possible solutions.
 
