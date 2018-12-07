@@ -271,22 +271,26 @@ class Algorithm():
         swapped = 0
         plot = Plots(self.grid)
         cost_list = []
+        temp_list = []
         swapped_list = []
         N = cap
-
+        T_0 = 80
         # climb until nothing changes for 22500 iterations
         while cap > 0:
             # temperature for annealing
             if annealing:
-                temperature = self.temp_function(len(cost_list), N, 'rate')
+                temperature = self.temp_function(len(swapped_list), 300, 'exp', T_0)
+                T_0 = temperature[1]
+                temp_list.append(temperature[0])
 
             cap -= 1;
             index_1 = random.randint(0, (len(self.grid.houses) - 1))
             index_2 = random.randint(0, (len(self.grid.houses) - 1))
-            if self.profitable_swap(index_1, index_2, temperature):
+            if self.profitable_swap(index_1, index_2, temperature[0]):
                 swapped += 1
+                swapped_list.append(swapped)
             cost_list.append(plot.cost())
-                # swapped_list.append(swapped)
+
             if len(cost_list) > 2 and cost_list[-1] == cost_list[-2]:
                 continue
             else:
@@ -480,22 +484,24 @@ class Algorithm():
         # use k means on the grid
         self.k_means(self.grid.houses, self.grid.batteries)
 
-    def temp_function(self, i, N, type):
+    def temp_function(self, i, N, type, T_0):
         """
         Calculates temperature
         Source: http://www.theprojectspot.com/tutorial-post/simulated-annealing-algorithm-for-beginners/6
         """
+
         coolRate = i/N
         # print(coolRate)
-        T_0 = 400
         T_N = 1
+        # if i % (len(self.grid.houses) * (len(self.grid.houses) - 1) / 2) == 0:
+        #     T_0 *= 10
         if type == 'exp':
-            T = T_0 * (T_N / T_0) ** (i / N)
+            T = T_0 ** (1-(coolRate))
         elif type == 'lin':
             T = T_0 - i * (T_0 - T_N) / N
-        elif type == 'rate':
-            T = T_0 * (1-coolRate)
-        return T
+
+
+        return [T, T_0]
 
     def agg_clust(self):
         """
@@ -631,7 +637,7 @@ class Algorithm():
     def simulated_annealing(self, N):
         plot = Plots(self.grid)
         best_cost = plot.cost()
-        best_algo = copy.deepcopy(self.grid)
+        best_algo = copy.deepcopy(self)
         list_algo = []
         for i in range(N):
             print(i, plot.cost())
@@ -639,7 +645,7 @@ class Algorithm():
             list_algo.append(plot.cost())
             if plot.cost() < best_cost:
                 best_cost = plot.cost()
-                best_algo = copy.deepcopy(self.grid)
+                best_algo = copy.deepcopy(self)
                 print(f"Better : {i} {best_cost} {len(list_algo)}")
 
         return [best_algo, list_algo]
@@ -680,10 +686,13 @@ class Algorithm():
 if __name__ == "__main__":
     # create algorithm Object
     algo = Algorithm(1)
-    options = algo.possibilities_calculator()
-    print(options)
     plot = Plots(algo.grid)
-    plot.random_plt(options)
+    algo.random_cap()
+    stuff = algo.simulated_annealing(5)
+
+    with open(f"simulated_annealing{1}_100.txt", 'w') as f:
+        for i in stuff[1]:
+            f.write(f"{i}\n")
 
     # algo.more_or_less()
     # algo.random_cap()
