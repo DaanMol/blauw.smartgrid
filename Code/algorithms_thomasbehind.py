@@ -675,7 +675,7 @@ class Algorithm():
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    algo = Algorithm(1)
+    # algo = Algorithm(1)
     #
     # algo.random_cap()
     # algo.k_means(algo.grid.houses, algo.grid.batteries)
@@ -683,19 +683,26 @@ if __name__ == "__main__":
     # algo.splitter()
     # # final = algo.simulated_annealing(450)
     # #
-    plot = Plots(algo.grid)
+    # plot = Plots(algo.grid)
     # algo.random_hillclimber()
-    options = algo.possibilities_calculator()
-    # for option in options:
-    #     list_price = []
-    #     for i in range(100):
-    #         algo.battery_placer(option)
-    #         algo.random_hillclimber()
-    #         list_price.append(plot.cost())
-    #     with open(f"batt_conf{option}_100.txt", 'w') as f:
-    #         for j in list_price:
-    #             f.write(f"{j}\n")
-    plot.random_plt(options)
+    # for i in range(1,4):
+    for i in range(1,4):
+        algo = Algorithm(i)
+        options = algo.possibilities_calculator()
+        plot = Plots(algo.grid)
+        options.remove(options[1])
+        options.remove(options[1])
+
+        for option in options:
+            list_price = []
+            for j in range(400):
+                algo.battery_placer(option)
+                algo.random_hillclimber()
+                list_price.append(plot.cost())
+            with open(f"batt_conf_{i}_[{option[0]}_{option[1]}_{option[2]}]_400.txt", 'w') as f:
+                for k in list_price:
+                    f.write(f"{k}\n")
+    # plot.random_plt(options)
 
     # algo.k_means(algo.grid.houses, algo.grid.batteries)
     # algo.random_hillclimber()
@@ -815,7 +822,7 @@ if __name__ == "__main__":
     # print("cost =", plot.cost())
 
     # show plots
-    plt.show()
+    # plt.show()
 
     # plot.plot_histograms_bokeh()
     # plot.plot_grid_bokeh()
