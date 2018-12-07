@@ -651,17 +651,24 @@ class Algorithm():
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    algo = Algorithm(1)
+    # algo = Algorithm(1)
 
     # algo.more_or_less()
-    algo.random_cap()
+    # algo.random_cap()
     # algo.priority_first()
     # algo.k_means(algo.grid.houses, algo.grid.batteries)
     # algo.random_hillclimber()
     # algo.splitter()
-    algo.simulated_annealing(100)
+    for i in range(1,4):
+        algo = Algorithm(i)
+        algo.random_cap()
+        stuff = algo.simulated_annealing(1000)
+
+        with open(f"simulated_annealing{i}_1000.txt", 'w') as f:
+            for i in stuff[1]:
+                f.write(f"{i}\n")
     # #
-    plot = Plots(algo.grid)
+    # plot = Plots(algo.grid)
     # algo.random_hillclimber()
     # algo.possibilities_calculator()
 
@@ -784,14 +791,14 @@ if __name__ == "__main__":
     """Plots"""
     # plots
     # plot.line_figure("hillclimber")
-    plot.x_or_y_first(False, "hillclimber")
+    # plot.x_or_y_first(False, "hillclimber")
     # plot.random_simulation(False, "hillclimber")
 
     # calculate cost
     # print("cost =", plot.cost())
 
     # show plots
-    plt.show()
+    # plt.show()
 
     # plot.plot_histograms_bokeh()
     # plot.plot_grid_bokeh()
