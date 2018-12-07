@@ -106,6 +106,12 @@ The plots shown below are histograms of the 4 algorithms that are used to solve 
 ![District two step b](Presentation/Images/wijk1_stapb.png)
 ![District three step b](Presentation/Images/wijk1_stapb.png)
 
+# Step D exploration
+
+When we are allowed to use multiple different batteries the question arises what combination of batteries we should use. We tried tackling this problem by running several algorithms on each possible combination. The results are shown below.
+
+![Battery combination comparison](Presentation/Images/400randomconfpos_k_hill_wijk1_stapd.png)
+
 The images shown above are created using matplotlib.pylot and Bokeh.
 
 # Packages installed
