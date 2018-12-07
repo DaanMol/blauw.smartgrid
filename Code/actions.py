@@ -255,7 +255,7 @@ class Plots():
         for j in range(25):
             i = options[j]
             cost_list = []
-            with open(f"output_runs/batt_conf[{i[0]}_{i[1]}_{i[2]}]_100.txt", "r") as f:
+            with open(f"output_runs/batt_conf_400_1/batt_conf_1_[{i[0]}_{i[1]}_{i[2]}]_400.txt", "r") as f:
                 # text = f.read()
                 # cost_list.append(text)
                 text = f.read().split('\n')
@@ -269,14 +269,17 @@ class Plots():
                         cost_list.append(int(number))
                     # print(number, type(number))
             # bins = np.linspace(min(cost_list), max(cost_list))
+
+
             minimum.append(min(cost_list))
             average.append(sum(cost_list)/len(cost_list))
             opt.append(f"[{i[0]}_{i[1]}_{i[2]}]")
 
-            # plt.hist(end_list, bins=30, alpha=0.5, label=f"[{i[0]}_{i[1]}_{i[2]}]")
+
+            # plt.hist(cost_list, bins=100, alpha=0.5, label=f"[{i[0]}_{i[1]}_{i[2]}]")
             plt.scatter(min(cost_list), sum(cost_list)/len(cost_list), label=f"[{i[0]}_{i[1]}_{i[2]}]")
             plt.text(min(cost_list) + 10, sum(cost_list)/len(cost_list) - 40, f"{i}")
-        plt.suptitle("100x randompositioning+k-means+hill for all possible battery configurations")
+        plt.suptitle("400x randompositioning+k-means+hill for all possible battery configurations")
         plt.title("notation: [small, medium, large] (number of batteries)")
         plt.xlabel("min cost")
         plt.ylabel("average cost")
@@ -304,3 +307,5 @@ class Plots():
 
 
         # plt.show()
+if __name__ == '__main__':
+    print("leuk die main")

@@ -442,18 +442,13 @@ class Algorithm():
 
             self.grid = copy.deepcopy(best_grid)
 
-    def more_or_less(self):
+    def battery_placer(self, option):
         # empty batteries list
         self.grid.batteries = []
 
-        # calculate needed capacity
-        total_output = 0
-        for house in self.grid.houses:
-            total_output += house.output
-
-        # place enough small batteries randomly on the grid
-        nr_small_batt = round(total_output / 450)  # capacity small battery
-        for i in range(nr_small_batt):
+        # place batteries random on the grid
+        # small
+        for i in range(option[0]):
 
             # random location
             x = round(random.random() * 50)
@@ -462,14 +457,28 @@ class Algorithm():
             # add to list
             self.grid.batteries.append(SmallBattery(x, y))
 
+        # medium
+        for i in range(option[1]):
+
+            # random location
+            x = round(random.random() * 50)
+            y = round(random.random() * 50)
+
+            # add to list
+            self.grid.batteries.append(MedBattery(x, y))
+
+        # large
+        for i in range(option[2]):
+
+            # random location
+            x = round(random.random() * 50)
+            y = round(random.random() * 50)
+
+            # add to list
+            self.grid.batteries.append(LargeBattery(x, y))
+
         # use k means on the grid
         self.k_means(self.grid.houses, self.grid.batteries)
-
-        # combine two random batteries and check for improvement
-        combiner()
-
-    def combiner(self):
-        pass
 
     def temp_function(self, i, N, type):
         """
@@ -636,22 +645,45 @@ class Algorithm():
         return [best_algo, list_algo]
 
     def possibilities_calculator(self):
+        """
+        A function that calculates the least amount of battery
+        combinations that are possible, taking into account the capacity
+        """
+        # calculate the sum of all house outputs
         output = 0
         for house in self.grid.houses:
             output += house.output
+
+        # declare the battery capacities
+        # small, medium, large
         cap_kind = [450, 900, 1800]
+        options = []
+        max_num = [0, 0, 0]
 
-        mini = 0
-        medi = 0
-        largi = 0
-        options = 1
-
-        mini = round(output / cap_kind[0])
+        for i in range(len(cap_kind)):
+            max_num[i] = round(output / cap_kind[i])
+        i = 0
+        j = 0
+        k = 0
+        for i in range(max_num[2] + 1):
+            for j in range(max_num[1] + 1):
+                for k in range(max_num[0] + 1):
+                    total_cap = i * cap_kind[2] + j * cap_kind[1] + \
+                                k * cap_kind[0]
+                    if total_cap >= output and \
+                       total_cap < (output + cap_kind[0]) and \
+                       [k, j, i] not in options:
+                       options.append([k, j, i])
+        return options
 
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    # algo = Algorithm(1)
+    algo = Algorithm(1)
+    options = algo.possibilities_calculator()
+    print(options)
+    plot = Plots(algo.grid)
+    plot.random_plt(options)
 
     # algo.more_or_less()
     # algo.random_cap()
@@ -659,14 +691,14 @@ if __name__ == "__main__":
     # algo.k_means(algo.grid.houses, algo.grid.batteries)
     # algo.random_hillclimber()
     # algo.splitter()
-    for i in range(1,4):
-        algo = Algorithm(i)
-        algo.random_cap()
-        stuff = algo.simulated_annealing(1000)
-
-        with open(f"simulated_annealing{i}_1000.txt", 'w') as f:
-            for i in stuff[1]:
-                f.write(f"{i}\n")
+    # for i in range(1,4):
+    #     algo = Algorithm(i)
+    #     algo.random_cap()
+    #     stuff = algo.simulated_annealing(1000)
+    #
+    #     with open(f"simulated_annealing{i}_1000.txt", 'w') as f:
+    #         for i in stuff[1]:
+    #             f.write(f"{i}\n")
     # #
     # plot = Plots(algo.grid)
     # algo.random_hillclimber()
@@ -798,7 +830,7 @@ if __name__ == "__main__":
     # print("cost =", plot.cost())
 
     # show plots
-    # plt.show()
+    plt.show()
 
     # plot.plot_histograms_bokeh()
     # plot.plot_grid_bokeh()
