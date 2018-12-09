@@ -686,12 +686,16 @@ if __name__ == "__main__":
     # plot = Plots(algo.grid)
     # algo.random_hillclimber()
     # for i in range(1,4):
-    for i in range(1,4):
+    for i in range(2,4):
         algo = Algorithm(i)
         options = algo.possibilities_calculator()
         plot = Plots(algo.grid)
-        options.remove(options[1])
-        options.remove(options[1])
+        if i == 2:
+            options = options[9:]
+
+        else:
+            options.remove(options[1])
+            options.remove(options[1])
 
         for option in options:
             list_price = []
