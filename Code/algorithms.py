@@ -687,12 +687,12 @@ if __name__ == "__main__":
     # create algorithm Object
     algo = Algorithm(1)
     plot = Plots(algo.grid)
-    algo.random_cap()
-    stuff = algo.simulated_annealing(5)
-
-    with open(f"simulated_annealing{1}_100.txt", 'w') as f:
-        for i in stuff[1]:
-            f.write(f"{i}\n")
+    print(algo.possibilities_calculator())
+    # stuff = algo.simulated_annealing(5)
+    #
+    # with open(f"simulated_annealing{1}_100.txt", 'w') as f:
+    #     for i in stuff[1]:
+    #         f.write(f"{i}\n")
 
     # algo.more_or_less()
     # algo.random_cap()
