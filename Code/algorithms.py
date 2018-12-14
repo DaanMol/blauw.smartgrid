@@ -12,7 +12,7 @@ class Algorithm():
     Class containing algorithms.
     """
 
-    def __init__(self, district):
+    def __init__(self, district, setting):
         """
         Loading the grid information.
         Input: district number (district)
@@ -20,7 +20,7 @@ class Algorithm():
                 - List with houses objects
                 - List with battery objects
         """
-        self.grid = Grid(district)
+        self.grid = Grid(district, setting)
         self.previous = []
 
     def random_cap(self):
@@ -589,6 +589,10 @@ class Algorithm():
 
 # run
 if __name__ == "__main__":
+    algo = Algorithm(1, "standard")
+    algo.random_cap()
+    algo.random_hillclimber(True, True)
+
     # for i in range(2,4):
     #     algo = Algorithm(i)
     #     options = algo.possibilities_calculator()
@@ -768,7 +772,7 @@ if __name__ == "__main__":
     """Plots"""
     # plots
     # plot.line_figure("hillclimber")
-    plot.x_or_y_first(False, "hillclimber")
+    # plot.x_or_y_first(False, "hillclimber")
     # plot.random_simulation(False, "hillclimber")
 
     # calculate cost

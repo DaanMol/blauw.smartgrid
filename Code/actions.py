@@ -6,7 +6,6 @@ from bokeh.plotting import figure, output_file, show
 from bokeh.layouts import gridplot
 from bokeh.models import Legend
 from grid import Grid
-from actions import Plots
 
 
 class Plots():

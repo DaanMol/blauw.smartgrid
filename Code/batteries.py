@@ -1,10 +1,10 @@
 import numpy as np
 
 # declare cost and capacity for the batteries
-battery_classes = {"STANDARD": {"cost": 5000},
-                   "SMALL": {"capacity": 450, "cost": 900},
-                   "MEDIUM": {"capacity": 900, "cost": 1350},
-                   "LARGE": {"capacity": 1800, "cost": 1800}}
+CLASSES = {"STANDARD": {"cost": 5000},
+           "SMALL": {"capacity": 450, "cost": 900},
+           "MEDIUM": {"capacity": 900, "cost": 1350},
+           "LARGE": {"capacity": 1800, "cost": 1800}}
 
 
 class Battery():
@@ -26,15 +26,15 @@ class Battery():
         self.y = y
         self.distances = []
         self.connections = []
-        self.cost = battery_classes[battery_type].cost
+        self.cost = CLASSES[battery_type]["cost"]
 
         # get capacity from dictionary when not given
         if capacity:
             self.capacity = capacity
             self.max_cap = capacity
         else:
-            self.capacity = battery_classes[battery_type].capacity
-            self.max_cap = battery_classes[battery_type].capacity
+            self.capacity = CLASSES[battery_type]["capacity"]
+            self.max_cap = CLASSES[battery_type]["capacity"]
 
     def connect(self, house, connect=True):
         """

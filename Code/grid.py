@@ -1,10 +1,6 @@
 from houses import House
-from batteries import Battery, SmallBattery, MedBattery, LargeBattery
+from batteries import Battery
 import numpy as np
-
-# select "standard" for original batteries: 5000 cost and 1507-ish capacity
-# or select "advanced" to start with Large Batteries
-SETTING = "standard"
 
 
 class Grid():
@@ -13,19 +9,21 @@ class Grid():
     for the grid of the district
     """
 
-    def __init__(self, district):
+    def __init__(self, district, setting):
         """
+        Initialize the setting (standard or advanced)
+        for battery types.
         Create objects for Grid class:
         - batteries
         - houses
         And add distances to both classes
         with self.distances
         """
-        self.batteries = self.load_batteries(f"Huizen&Batterijen/" +
-                                             "wijk{district}_batterijen.txt")
-        self.houses = self.load_houses(f"Huizen&Batterijen/" +
-                                       "wijk{district}_huizen.csv")
+        self.setting = setting
+        self.batteries = self.load_batteries(f"Huizen&Batterijen/wijk{district}_batterijen.txt")
+        self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
         self.distances(self.houses, self.batteries)
+
 
     def load_batteries(self, filename):
         """
@@ -58,10 +56,11 @@ class Grid():
                     capacity = float(line[-1])
 
                     # add Battery to batteries_list
-                    if SETTING == "advanced":
-                        batteries_list.append(LargeBattery(x, y))
-                    elif SETTING == "standard":
-                        batteries_list.append(Battery(x, y, capacity))
+                    if self.setting == "advanced":
+                        batteries_list.append(Battery(x, y, "LARGE"))
+                    elif self.setting == "standard":
+                        batteries_list.append(Battery(x, y, "STANDARD",
+                                                      capacity))
 
         # return list of Battery items
         return batteries_list
