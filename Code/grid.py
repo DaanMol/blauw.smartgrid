@@ -6,6 +6,7 @@ import numpy as np
 # or select "advanced" to start with Large Batteries
 SETTING = "standard"
 
+
 class Grid():
     """
     Grid class, contains all information
@@ -20,8 +21,10 @@ class Grid():
         And add distances to both classes
         with self.distances.
         """
-        self.batteries = self.load_batteries(f"Huizen&Batterijen/wijk{district}_batterijen.txt")
-        self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
+        self.batteries = self.load_batteries(f"Huizen&Batterijen/" +
+                                             "wijk{district}_batterijen.txt")
+        self.houses = self.load_houses(f"Huizen&Batterijen/" +
+                                       "wijk{district}_huizen.csv")
         self.distances(self.houses, self.batteries)
 
     def load_batteries(self, filename):
