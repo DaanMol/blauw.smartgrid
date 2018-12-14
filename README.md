@@ -100,7 +100,7 @@ The plot beneath shows the relative quality of the random and priority first alg
 ![comparison between random and priority first with hillclimber](Presentation/Images/10kRand1kHill3.png)
 
 # District comparison
-The plots shown below are histograms of the 4 algorithms that are used to solve step b. Each aglorithm is run a thousand times, the algorithms run are: random walk, priority first with random hillclimber, random with simulated annealing and random with hillclimber.
+The plots shown below are histograms of the 4 algorithms that are used to solve step b. Each algorithm is run a thousand times, the algorithms run are: random walk, priority first with random hillclimber, random with simulated annealing and random with hillclimber.
 
 ![District one step b](Presentation/Images/wijk1_stapb.png)
 ![District two step b](Presentation/Images/wijk1_stapb.png)

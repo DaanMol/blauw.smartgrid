@@ -1,0 +1,1 @@
+The submaps batt_conf contain different configurations of batteries, necessary for step D. The file upload_output.txt renders the state space, upper bound, lower bound and leftover battery capacity of the three districts. The other files and maps all contain the output of several runs of our algorithms. The size of these files differ, as runs are done 10.000, 1.000 and 100 times.
