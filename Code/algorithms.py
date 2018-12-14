@@ -589,6 +589,30 @@ class Algorithm():
 
 # run
 if __name__ == "__main__":
+    # for i in range(2,4):
+    #     algo = Algorithm(i)
+    #     options = algo.possibilities_calculator()
+    #     plot = Plots(algo.grid)
+    #     if i == 2:
+    #         options = options[9:]
+    #
+    #     else:
+    #         options.remove(options[1])
+    #         options.remove(options[1])
+    #
+    #     for option in options:
+    #         list_price = []
+    #         for j in range(400):
+    #             algo.battery_placer(option)
+    #             algo.random_hillclimber()
+    #             list_price.append(plot.cost())
+    #         with open(f"batt_conf_{i}_[{option[0]}_{option[1]}_{option[2]}]_400.txt", 'w') as f:
+    #             for k in list_price:
+    #                 f.write(f"{k}\n")
+
+
+
+    
     # create algorithm Object
     # algo = Algorithm(1)
     # plot = Plots(algo.grid)
