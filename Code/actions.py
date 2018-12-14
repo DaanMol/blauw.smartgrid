@@ -317,7 +317,7 @@ class Plots():
 
         # plot random as histogram, upper en lower bound as a red line
         minima = []
-        for i in range(1, 2):
+        for i in range(1, 4):
             cost_list = []
             with open(f"output_runs/text_info_random{i}_10k.txt", "r") as f:
                 text = f.read().split('\n')
@@ -395,22 +395,16 @@ class Plots():
         plt.legend(loc='upper right')
         plt.show()
 
-    def comb_plotter():
+    def comb_plotter(options, num):
         """
         Plots the minimum and average cost
-        of every combination of batteries
+        of every combination of batteries for a single grid
         """
 
         # set variables
-        options = [[17, 0, 0], [15, 1, 0], [13, 2, 0], [11, 3, 0], [9, 4, 0],
-                   [7, 5, 0], [5, 6, 0], [3, 7, 0], [1, 8, 0], [13, 0, 1],
-                   [11, 1, 1], [9, 2, 1], [7, 3, 1], [5, 4, 1], [3, 5, 1],
-                   [1, 6, 1], [9, 0, 2], [7, 1, 2], [5, 2, 2], [3, 3, 2],
-                   [1, 4, 2], [5, 0, 3], [3, 1, 3], [1, 2, 3], [1, 0, 4]]
         average = []
         minimum = []
         opt = []
-        num = 2
 
         # iterate over all possible combinations
         for j in range(25):
