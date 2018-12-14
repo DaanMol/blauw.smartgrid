@@ -120,7 +120,7 @@ class Algorithm():
                 used.append(house)
                 break
 
-        # fix that sh*@!$
+        # fix the capacity if one ore more houses are left unconnected
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
 
@@ -310,17 +310,14 @@ class Algorithm():
             plt.ylabel("costs")
             plt.xlabel("iterations")
             plt.title("hillclimber: cost vs iterations")
-            # plt.plot(swapped_list)
 
     def k_means(self, houses, batteries):
         """
         Apply a K-means algorithm to the grid
-        Currently neglects the capacity of the battery
         """
         changes = 1
         iterations = 0
         old_connection = None
-        print("KMEANING")
         for i in range(100):
             iterations += 1
             changes = 0
@@ -376,78 +373,11 @@ class Algorithm():
 
             self.capacity_fixer(not_used)
 
-    def splitter(self):
-        """
-        Splits batteries into smaller ones to possibly
-        reduce the costs
-        """
-        print("NOW SPLITTING")
-        # split every battery
-        # assign the original batteries to a variable so the program does not
-        # run infinitely because the self.grid.batteries is extended
-        # old_bats = copy.deepcopy(self.grid.batteries)
-        start_grid = copy.deepcopy(self.grid)
-        best_grid = copy.deepcopy(self.grid)
-        splitted = 0
-
-        # loop over the batteries in the old state (currently 1 cuz test)
-        for i in range(0, 5):
-            print(i)
-
-            # calculate the old cost of the cluster to compare later
-            # curr_cost = old_bats[i].cost
-            # for house in old_bats[i].connections:
-            #     curr_cost += house.distances[house.connection] * 9
-
-            current_battery = start_grid.batteries[i]
-
-            curr_cost = current_battery.cost
-            for house in current_battery.connections:
-                curr_cost += house.distances[house.connection] * 9
-
-            print("current cost: ", curr_cost)
-
-            # battery = old_bats[i]
-
-            # create new battery objects with the new xy
-            sub_bat = MedBattery(current_battery.x + 1, current_battery.y + 1)
-            sub_bat2 = MedBattery(current_battery.x - 1, current_battery.y - 1)
-            # old_bat = battery
-            # TODO give batteries the connections: split em from the original
-            # this is being done in kmeans i think
-
-            # houses is now the houses in the battery cluster
-            # SUMTING RONG
-            houses = current_battery.connections
-            # batteries is now the newly created batteries
-            batteries = [sub_bat, sub_bat2]
-            # calculate distances for the new batteries and the houses
-            # do this at the beginning of kmeans??
-            # self.grid.distances(houses, batteries)
-            self.grid.batteries.remove(self.grid.batteries[i - splitted])
-            # add the new houses to the grid batteries list
-            self.grid.batteries.append(sub_bat)
-            self.grid.batteries.append(sub_bat2)
-
-            # still need to remove the old one
-            # removing old one V
-
-            # calculate new cost but doesnt work cuz 2 new batteries
-            # this function wont work either duh...
-
-            # deepcopy the old gridstate to reverse if this doesnt save money
-            # old_grid = copy.deepcopy(self.grid)
-
-            # run k-Means on the new 2 clusters
-            self.k_means(houses, batteries)
-
-            if Plots(self.grid).cost() < Plots(best_grid).cost():
-                best_grid = copy.deepcopy(self.grid)
-                splitted += 1
-
-            self.grid = copy.deepcopy(best_grid)
-
     def battery_placer(self, option):
+        """
+        Places a given set of batteries on a random location
+        """
+
         # empty batteries list
         self.grid.batteries = []
 
@@ -504,33 +434,11 @@ class Algorithm():
 
         return [T, T_0]
 
-    def agg_clust(self):
-        """
-        Bottom up clustering with a dendrogram
-        """
-        # create cluster dict
-        clusters = {}
-
-        # fill the dict with singleton clusters at each house xy
-        counter = 1
-        for house in self.grid.houses:
-            clusters[counter] = [house]
-            counter += 1
-
-        # while len(clusters) > 1:
-            # find closest pair of clusters
-            distances = []
-            for cluster in clusters:
-                x1 = clusters[cluster][0].x
-                y1 = clusters[cluster][0].y
-                for cluster2 in clusters:
-                    if cluster2 == cluster:
-                        continue
-                    x2 = cluster[cluster2][0].x
-                    y2 = cluster[cluster2][0].y
-
     def arrr_starrr(self, house_in, battery_in):
-        """a star"""
+        """
+        Implement an aglorithm that avoids cables running under houses
+        and lays a path around them
+        """
 
         # cost of stepping somewhere
         cost_step = 9
@@ -636,18 +544,20 @@ class Algorithm():
         return [x_values, y_values]
 
     def simulated_annealing(self, N):
+        """
+        Implements a simulated annealing algorithm to reach the global
+        minimum and avoid local minima
+        """
         plot = Plots(self.grid)
         best_cost = plot.cost()
         best_algo = copy.deepcopy(self)
         list_algo = []
         for i in range(N):
-            print(i, plot.cost())
             self.random_hillclimber(True, True)
             list_algo.append(plot.cost())
             if plot.cost() < best_cost:
                 best_cost = plot.cost()
                 best_algo = copy.deepcopy(self)
-                print(f"Better : {i} {best_cost} {len(list_algo)}")
 
         return [best_algo, list_algo]
 
