@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import random
 import math
 import copy
-from batteries import MedBattery, LargeBattery, SmallBattery
+from batteries import Battery
 
 
 class Algorithm():
@@ -386,7 +386,7 @@ class Algorithm():
             y = round(random.random() * 50)
 
             # add to list
-            self.grid.batteries.append(SmallBattery(x, y))
+            self.grid.batteries.append(Battery(x, y, "SMALL"))
 
         # medium
         for i in range(option[1]):
@@ -396,7 +396,7 @@ class Algorithm():
             y = round(random.random() * 50)
 
             # add to list
-            self.grid.batteries.append(MedBattery(x, y))
+            self.grid.batteries.append(Battery(x, y, "MEDIUM"))
 
         # large
         for i in range(option[2]):
@@ -406,7 +406,7 @@ class Algorithm():
             y = round(random.random() * 50)
 
             # add to list
-            self.grid.batteries.append(LargeBattery(x, y))
+            self.grid.batteries.append(Battery(x, y, "LARGE"))
 
         # use k means on the grid
         self.k_means(self.grid.houses, self.grid.batteries)
@@ -612,7 +612,7 @@ if __name__ == "__main__":
 
 
 
-    
+
     # create algorithm Object
     # algo = Algorithm(1)
     # plot = Plots(algo.grid)
