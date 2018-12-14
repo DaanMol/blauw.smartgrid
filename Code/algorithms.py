@@ -67,7 +67,7 @@ class Algorithm():
 
             # iterate over the sorted houses and add when output fits capacity
             for house in sorted_houses:
-                if not house in used and battery.capacity - house.output > 0:
+                if house not in used and battery.capacity - house.output > 0:
                     battery.connect(house)
                     battery.capacity -= house.output
                     used.append(house)
@@ -91,7 +91,8 @@ class Algorithm():
 
         # sort houses by the difference between two closest batteries
         for house in self.grid.houses:
-            difference = sorted(house.distances)[1] - sorted(house.distances)[0]
+            difference = sorted(house.distances)[1] - \
+                         sorted(house.distances)[0]
             relatives.append(difference)
         sorted_house = self.sort_zip(relatives, self.grid.houses, True)
 
@@ -156,17 +157,21 @@ class Algorithm():
 
                     # sort houses biggest battery big to small
                     # sort houses second biggest battery small to big
-                    sorted_house_1 = self.sort_zip(outputs_1, sorted_batt[0].connections, True)
-                    sorted_house_2 = self.sort_zip(outputs_2, battery.connections)
+                    sorted_house_1 = self.sort_zip(outputs_1,
+                                                   sorted_batt[0].connections,
+                                                   True)
+                    sorted_house_2 = self.sort_zip(outputs_2,
+                                                   battery.connections)
 
                     # check if swapping the houses is possible and creates
                     # enough space (incuded offset when needed)
                     for house_1 in sorted_house_1:
                         for house_2 in sorted_house_2:
                             output_diff = house_1.output - house_2.output
-                            if output_diff - (needed_space - offset - \
-                                              sorted_batt[0].capacity) > 0 and \
-                               battery.capacity - output_diff > 0:
+                            if (output_diff - (needed_space - offset -
+                                               sorted_batt[0].capacity) > 0
+                                    and battery.capacity -
+                                    output_diff > 0):
                                 self.grid.swap(house_1, house_2)
 
                                 # check if enough space
@@ -196,8 +201,8 @@ class Algorithm():
         smallest.
         """
         sorting = [x for (y, x) in sorted(zip(in1, in2),
-                                                 key=lambda pair: pair[0],
-                                                 reverse=reverse)]
+                                          key=lambda pair: pair[0],
+                                          reverse=reverse)]
         return sorting
 
     def profitable_swap(self, index_1, index_2, temperature=1):
@@ -249,7 +254,8 @@ class Algorithm():
 
         # simulated annealing
         random_number = random.random()
-        if temperature > 1 and math.exp(distance_change / temperature) > random_number:
+        if (temperature > 1 and math.exp(distance_change / temperature) >
+                random_number):
             self.grid.swap(house_1, house_2)
             self.previous = []
             return True
@@ -279,11 +285,12 @@ class Algorithm():
         while cap > 0:
             # temperature for annealing
             if annealing:
-                temperature = self.temp_function(len(swapped_list), 300, 'exp', T_0)
+                temperature = self.temp_function(len(swapped_list), 300, 'exp',
+                                                 T_0)
                 T_0 = temperature[1]
                 temp_list.append(temperature[0])
 
-            cap -= 1;
+            cap -= 1
             index_1 = random.randint(0, (len(self.grid.houses) - 1))
             index_2 = random.randint(0, (len(self.grid.houses) - 1))
             if self.profitable_swap(index_1, index_2, temperature[0]):
@@ -330,15 +337,15 @@ class Algorithm():
 
             for house in houses:
 
-                sorted_batteries = self.sort_zip(house.distances, batteries)
-                if not house.connection == batteries.index(sorted_batteries[0]):
+                sort_batteries = self.sort_zip(house.distances, batteries)
+                if not house.connection == batteries.index(sort_batteries[0]):
                     changes += 1
 
                 # select closest battery
                 # check if battery capacity is sufficient
                 # else select next closest battery
                 count = 0
-                for battery in sorted_batteries:
+                for battery in sort_batteries:
                     count += 1
                     if (battery.capacity - house.output) > 0:
                         battery.capacity -= house.output
@@ -364,9 +371,6 @@ class Algorithm():
             self.grid.distances(houses, batteries)
 
         if len(used) < len(houses):
-            print('ficing cap brub')
-            # for i in self.grid.batteries:
-            #     print(i.capacity)
             for i in not_used:
                 i.connection = None
 
@@ -387,8 +391,7 @@ class Algorithm():
         splitted = 0
 
         # loop over the batteries in the old state (currently 1 cuz test)
-        for i in range(0,5):
-
+        for i in range(0, 5):
             print(i)
 
             # calculate the old cost of the cluster to compare later
@@ -411,7 +414,7 @@ class Algorithm():
             sub_bat2 = MedBattery(current_battery.x - 1, current_battery.y - 1)
             # old_bat = battery
             # TODO give batteries the connections: split em from the original
-                # this is being done in kmeans i think
+            # this is being done in kmeans i think
 
             # houses is now the houses in the battery cluster
             # SUMTING RONG
@@ -429,10 +432,8 @@ class Algorithm():
             # still need to remove the old one
             # removing old one V
 
-
             # calculate new cost but doesnt work cuz 2 new batteries
             # this function wont work either duh...
-
 
             # deepcopy the old gridstate to reverse if this doesnt save money
             # old_grid = copy.deepcopy(self.grid)
@@ -487,19 +488,19 @@ class Algorithm():
     def temp_function(self, i, N, type, T_0):
         """
         Calculates temperature
-        Source: http://www.theprojectspot.com/tutorial-post/simulated-annealing-algorithm-for-beginners/6
+        Source: http://www.theprojectspot.com/tutorial-post/simulated-annealing
+                -algorithm-for-beginners/6
         """
 
         coolRate = i/N
         # print(coolRate)
         T_N = 1
-        # if i % (len(self.grid.houses) * (len(self.grid.houses) - 1) / 2) == 0:
+        # if i % (len(self.grid.houses) * (len(self.grid.houses) -1) / 2) == 0:
         #     T_0 *= 10
         if type == 'exp':
             T = T_0 ** (1-(coolRate))
         elif type == 'lin':
             T = T_0 - i * (T_0 - T_N) / N
-
 
         return [T, T_0]
 
@@ -679,15 +680,16 @@ class Algorithm():
                     if total_cap >= output and \
                        total_cap < (output + cap_kind[0]) and \
                        [k, j, i] not in options:
-                       options.append([k, j, i])
+                        options.append([k, j, i])
         return options
+
 
 # run
 if __name__ == "__main__":
     # create algorithm Object
-    algo = Algorithm(1)
-    plot = Plots(algo.grid)
-    print(algo.possibilities_calculator())
+    # algo = Algorithm(1)
+    # plot = Plots(algo.grid)
+    # print(algo.possibilities_calculator())
     # stuff = algo.simulated_annealing(5)
     #
     # with open(f"simulated_annealing{1}_100.txt", 'w') as f:
@@ -702,12 +704,19 @@ if __name__ == "__main__":
     # algo.splitter()
     # for i in range(1,4):
     #     algo = Algorithm(i)
-    #     algo.random_cap()
-    #     stuff = algo.simulated_annealing(1000)
+    #     algo.k_means(algo.grid.houses, algo.grid.batteries)
     #
-    #     with open(f"simulated_annealing{i}_1000.txt", 'w') as f:
-    #         for i in stuff[1]:
-    #             f.write(f"{i}\n")
+    #     #calculate distances * 9
+    #     cost = 0
+    #     for house in algo.grid.houses:
+    #         cost += (max(house.distances) * 9)
+    #     # add battery costs
+    #     for battery in algo.grid.batteries:
+    #         cost += battery.cost
+    #     print(cost)
+        # with open(f"simulated_annealing{i}_1000.txt", 'w') as f:
+        #     for i in stuff[1]:
+        #         f.write(f"{i}\n")
     # #
     # plot = Plots(algo.grid)
     # algo.random_hillclimber()
@@ -746,29 +755,29 @@ if __name__ == "__main__":
     # algo.k_means()
     # algo.house_to_bat()
 
-    # for j in range(1,4):
-    #     cost = []
-    #     for i in range(10):
+    # for j in range(1, 4):
+    #     # cost = []
+    #     # for i in range(10):
     #         algo = Algorithm(j)
-    #         plot = Plots(algo.grid)
+    # #         plot = Plots(algo.grid)
+    # #
     #
-
-            # algo.random_cap()
-            # old_cost = plot.cost()
-            # algo.k_means()
-            # algo.priority_first()
-            # print(plot.cost())
-            # cost_annealing = []
-            # for i in range(1000):
-            #     algo.random_hillclimber(False, True)
-            #     print(i/10)
-            #     cost_annealing.append(plot.cost())
-
-            # algo.k_means()
-            # algo.random_hillclimber()
-            # new_cost = 0
-            # for house in algo.grid.houses:
-            #     new_cost += algo.arrr_starrr(house, algo.grid.batteries[house.connection])[1]
+    #         # algo.random_cap()
+    #         # old_cost = plot.cost()
+    #         # algo.k_means()
+    #         # algo.priority_first()
+    #         # print(plot.cost())
+    #         # cost_annealing = []
+    #         # for i in range(1000):
+    #         #     algo.random_hillclimber(False, True)
+    #         #     print(i/10)
+    #         #     cost_annealing.append(plot.cost())
+    #
+    #         algo.k_means(algo.grid.houses, algo.grid.batteries)
+    #         algo.random_hillclimber()
+    #         # new_cost = 0
+    #         for house in algo.grid.houses:
+    #             algo.arrr_starrr(house,algo.grid.batteries[house.connection])
             # for battery in algo.grid.batteries:
             #     new_cost += battery.cost
 
@@ -832,7 +841,7 @@ if __name__ == "__main__":
     """Plots"""
     # plots
     # plot.line_figure("hillclimber")
-    # plot.x_or_y_first(False, "hillclimber")
+    plot.x_or_y_first(False, "hillclimber")
     # plot.random_simulation(False, "hillclimber")
 
     # calculate cost
