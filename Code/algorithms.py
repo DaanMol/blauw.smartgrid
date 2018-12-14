@@ -2,7 +2,6 @@ from grid import Grid
 from actions import Plots
 import matplotlib.pyplot as plt
 import random
-import time
 import math
 import copy
 from batteries import MedBattery, LargeBattery, SmallBattery
