@@ -10,7 +10,7 @@ SETTING = "standard"
 class Grid():
     """
     Grid class, contains all information
-    for the grid of the district.
+    for the grid of the district
     """
 
     def __init__(self, district):
@@ -19,7 +19,7 @@ class Grid():
         - batteries
         - houses
         And add distances to both classes
-        with self.distances.
+        with self.distances
         """
         self.batteries = self.load_batteries(f"Huizen&Batterijen/" +
                                              "wijk{district}_batterijen.txt")
@@ -33,7 +33,7 @@ class Grid():
         Read the file and get position
         and capacity information.
         Return list with the position and
-        capacity of batteries.
+        capacity of batteries
         """
         # make batteries list
         batteries_list = []
@@ -70,7 +70,7 @@ class Grid():
         """
         Open .csv file of houses.
         Read the file and get x,y,max.output info.
-        Return list with pos and max output.
+        Return list with pos and max output
         """
         # make houses list
         houses_list = []
@@ -99,7 +99,7 @@ class Grid():
         """
         Calculate distances between batteries and
         houses.
-        Update distances in House and Battery objects.
+        Update distances in House and Battery objects
         """
         # clear distances
         for house in houses:
