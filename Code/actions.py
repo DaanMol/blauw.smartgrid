@@ -16,12 +16,15 @@ class Plots():
 
     def line_figure(self, title):
         """
-        Plots display of improvements in cost
+        Plots houses and batteries in the grid connected through
+        eucledian distance
         """
 
         plt.figure()
         counter = 0
         colors = ['r', 'b', 'g', 'y', 'm']
+
+        # plot the x and y for each house and battery
         for battery in self.grid.batteries:
             x = []
             y = []
@@ -39,11 +42,14 @@ class Plots():
     def random_simulation(self, simulation, title):
         """
         Plots current configuration of the random grid
+        Connects a random path
         """
 
         counter = 0
         plt.figure()
         colors = ['r', 'b', 'g', 'y', 'm']
+
+        # plot each battery
         for battery in self.grid.batteries:
             plt.plot(battery.x, battery.y, marker='x', color=colors[counter],
                      markersize=10)
@@ -55,6 +61,7 @@ class Plots():
             plt.scatter(x, y, marker='p', color=colors[counter])
             counter += 1
 
+        # plot the connection
         counter = 0
         for battery in self.grid.batteries:
             for house in battery.connections:
@@ -80,6 +87,8 @@ class Plots():
                 plt.plot([curr_x, end_x], [curr_y, end_y],
                          color=colors[counter], linewidth=.3)
             counter += 1
+
+            # display the process in an animation
             if simulation:
                 plt.pause(1)
                 plt.draw()
@@ -97,6 +106,8 @@ class Plots():
         if x_first:
             counter = 0
             colors = ['r', 'b', 'g', 'y', 'm']
+
+            # draw each dot and connection
             for battery in self.grid.batteries:
                 x = []
                 y = []
@@ -111,6 +122,8 @@ class Plots():
                 plt.plot(battery.x, battery.y, marker='x',
                          color=colors[counter], markersize=10)
                 counter += 1
+
+        # draw each dot and connection
         else:
             counter = 0
             colors = ['r', 'b', 'g', 'y', 'm']
@@ -132,110 +145,10 @@ class Plots():
                 counter += 1
         plt.title(f"{title} algorithm. Cost: {self.cost()}")
 
-    def plot_histograms_bokeh(self):
-        """
-        Plot histograms using Bokeh
-        """
-
-        # histogram house output distribution
-        list = []
-        for house in self.grid.houses:
-            list.append(house.output)
-
-        hist, edges = np.histogram(list, bins=30)
-
-        # output to static HTML file
-        output_file("Graphs/Bokeh/histograms.html")
-
-        TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
-
-        p = figure(title="House output distribution", tools=TOOLS,
-                   background_fill_color="#fafafa", toolbar_location="below")
-        p.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
-               fill_color="navy", line_color="blue", alpha=1)
-
-        p.y_range.start = 0
-        p.legend.location = "center_right"
-        p.legend.background_fill_color = "#fefefe"
-        p.xaxis.axis_label = "output house"
-        p.yaxis.axis_label = "number of houses"
-        p.grid.grid_line_color = "white"
-
-        show(p)
-
-    def plot_grid_bokeh(self):
-        """
-        Make a picture of the Grid using Bokeh
-        """
-
-        # output to static HTML file
-        output_file("Graphs/Bokeh/layout_grid.html")
-
-        # add houses to image
-        x_h = []
-        y_h = []
-        for house in self.grid.houses:
-            x_h.append(house.x)
-            y_h.append(house.y)
-
-        # add batteries to image
-        x = []
-        y = []
-        for battery in self.grid.batteries:
-            x.append(battery.x)
-            y.append(battery.y)
-
-        TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
-
-        p = figure(title=(f"Grid: houses and batteries"),
-                   tools=TOOLS, background_fill_color="#fafafa",
-                   toolbar_location="right")
-        r0 = p.circle(x, y, color='red', size=10)
-        r1 = p.square(x_h, y_h, color='blue')
-
-        legend = Legend(items=[
-                        ('Battery', [r0]),
-                        ('House', [r1]),
-                        ],)
-
-        p.add_layout(legend, 'below')
-        p.legend.click_policy = "hide"
-        p.xaxis.axis_label = 'x position'
-        p.yaxis.axis_label = 'y position'
-
-        # show the results
-        show(p)
-
-    def plot_matrix_bokeh(self):
-        """
-        Plot matrixes using Bokeh
-        """
-
-        # output to static HTML file
-        output_file("Graphs/Bokeh/matrixes.html")
-
-        TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,\
-                 zoom_out,box_zoom,undo,redo, reset,tap,save,\
-                 box_select,poly_select,lasso_select"
-
-        colors = ["#%02x%02x%02x" % (int(r), int(g), 150) for r,
-                  g in zip(50+2*x, 30+2*y)]
-
-        p = figure(title=(f"Grid: house output and batteries (red)"),
-                   tools=TOOLS, toolbar_location="right")
-
-        matrix_house = np.zeros([51, 51])
-        matrix_battery = np.zeros([51, 51])
-        for i in self.grid.houses:
-            matrix_house[i[1]][i[0]] = i[2]
-        for i in self.grid.batteries:
-            p.scatter(i[0], i[1], fill_color=colors, fill_alpha=0.6,
-                      line_color=None)
-
-        p.xaxis.axis_label = 'x position'
-        p.yaxis.axis_label = 'y position'
-
     def cost(self):
+        """
+        Calcualte the cost for the current grid
+        """
         cost = 0
         for battery in self.grid.batteries:
             for house in battery.connections:
@@ -276,39 +189,6 @@ class Plots():
             plt.pause(0.000000001)
 
         plt.title(f"total cost = {total_cost}")
-
-    def random_plt(self, options):
-        """
-        plots configuration battery scatterplot
-        """
-        average = []
-        minimum = []
-        opt = []
-        for j in range(25):
-            i = options[j]
-            cost_list = []
-            with open(f"output_runs/batt_conf_400_1/batt_conf_1_\
-                      [{i[0]}_{i[1]}_{i[2]}]_400.txt", "r") as f:
-                text = f.read().split('\n')
-                for number in text:
-                    if number is not "":
-                        cost_list.append(int(number))
-
-            minimum.append(min(cost_list))
-            average.append(sum(cost_list)/len(cost_list))
-            opt.append(f"[{i[0]}_{i[1]}_{i[2]}]")
-
-            plt.scatter(min(cost_list), sum(cost_list)/len(cost_list),
-                        label=f"[{i[0]}_{i[1]}_{i[2]}]")
-            plt.text(min(cost_list) + 10, sum(cost_list) /
-                     len(cost_list) - 40, f"{i}")
-        plt.suptitle("400x randompositioning+k-means+hill for all\
-                     possible battery configurations")
-        plt.title("notation: [small, medium, large] (number of batteries)")
-        plt.xlabel("min cost")
-        plt.ylabel("average cost")
-        plt.xlim(22400, 24000)
-        plt.ylim(23000, 25000)
 
     def bench_plotter():
         """
@@ -426,6 +306,8 @@ class Plots():
                         label=f"[{i[0]}_{i[1]}_{i[2]}]")
             plt.text(min(cost_list) + 10, sum(cost_list) /
                      len(cost_list) - 40, f"{i}")
+
+        # set graph properties
         plt.suptitle(f"400x randompositioning+k-means+hill for all possible \
                      battery configurations (grid {num})")
         plt.title("notation: [small, medium, large] (number of batteries)")
