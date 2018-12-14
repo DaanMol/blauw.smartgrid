@@ -1,9 +1,7 @@
 from grid import Grid
 from actions import Plots
-# from bokeh import Bokeh
 import matplotlib.pyplot as plt
 import random
-import time
 import math
 import copy
 from batteries import MedBattery, LargeBattery, SmallBattery
@@ -45,7 +43,7 @@ class Algorithm():
                     used.append(house)
                     house.connect(self.grid.batteries.index(battery))
 
-        # fix that sh*@!$
+        # fix the capacity if one ore more houses are left unconnected
         not_used = set(used).symmetric_difference(set(self.grid.houses))
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
@@ -73,7 +71,7 @@ class Algorithm():
                     used.append(house)
                     house.connect(self.grid.batteries.index(battery))
 
-        # fix that sh*@!$
+        # fix the capacity if one ore more houses are left unconnected
         not_used = set(used).symmetric_difference(set(self.grid.houses))
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
@@ -259,9 +257,7 @@ class Algorithm():
             self.grid.swap(house_1, house_2)
             self.previous = []
             return True
-        # elif distance_change >= 0:
-        #     self.grid.swap(house_1, house_2)
-        #     return True
+
         return False
 
     def random_hillclimber(self, lineplot=False, annealing=False):
@@ -301,7 +297,6 @@ class Algorithm():
             if len(cost_list) > 2 and cost_list[-1] == cost_list[-2]:
                 continue
             else:
-                # N += 22350 - cap
                 cap = len(self.grid.houses) * (len(self.grid.houses) - 1)
 
         # plot lineplot
@@ -382,6 +377,7 @@ class Algorithm():
         self.grid.batteries = []
 
         # place batteries random on the grid
+
         # small
         for i in range(option[0]):
 
@@ -423,10 +419,7 @@ class Algorithm():
         """
 
         coolRate = i/N
-        # print(coolRate)
         T_N = 1
-        # if i % (len(self.grid.houses) * (len(self.grid.houses) -1) / 2) == 0:
-        #     T_0 *= 10
         if type == 'exp':
             T = T_0 ** (1-(coolRate))
         elif type == 'lin':
