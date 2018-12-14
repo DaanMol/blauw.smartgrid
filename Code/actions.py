@@ -6,6 +6,7 @@ from bokeh.plotting import figure, output_file, show
 from bokeh.layouts import gridplot
 from bokeh.models import Legend
 from grid import Grid
+from actions import Plots
 
 
 class Plots():
@@ -392,4 +393,49 @@ class Plots():
         plt.xlabel("Cost")
         plt.ylabel("Frequency")
         plt.legend(loc='upper right')
+        plt.show()
+
+    def comb_plotter():
+        """
+        Plots the minimum and average cost
+        of every combination of batteries
+        """
+
+        # set variables
+        options = [[17, 0, 0], [15, 1, 0], [13, 2, 0], [11, 3, 0], [9, 4, 0],
+                   [7, 5, 0], [5, 6, 0], [3, 7, 0], [1, 8, 0], [13, 0, 1],
+                   [11, 1, 1], [9, 2, 1], [7, 3, 1], [5, 4, 1], [3, 5, 1],
+                   [1, 6, 1], [9, 0, 2], [7, 1, 2], [5, 2, 2], [3, 3, 2],
+                   [1, 4, 2], [5, 0, 3], [3, 1, 3], [1, 2, 3], [1, 0, 4]]
+        average = []
+        minimum = []
+        opt = []
+        num = 2
+
+        # iterate over all possible combinations
+        for j in range(25):
+            i = options[j]
+            cost_list = []
+            with open(f"output_runs/batt_conf_400_{num}/batt_conf_{num}_\
+                      [{i[0]}_{i[1]}_{i[2]}]_400.txt", "r") as f:
+                text = f.read().split('\n')
+                for number in text:
+                    if number is not "":
+                        cost_list.append(int(number))
+
+            # append values to lists for plotcoordinates
+            minimum.append(min(cost_list))
+            average.append(sum(cost_list)/len(cost_list))
+            opt.append(f"[{i[0]}_{i[1]}_{i[2]}]")
+
+            plt.scatter(min(cost_list), sum(cost_list)/len(cost_list),
+                        label=f"[{i[0]}_{i[1]}_{i[2]}]")
+            plt.text(min(cost_list) + 10, sum(cost_list) /
+                     len(cost_list) - 40, f"{i}")
+        plt.suptitle(f"400x randompositioning+k-means+hill for all possible \
+                     battery configurations (grid {num})")
+        plt.title("notation: [small, medium, large] (number of batteries)")
+        plt.xlabel("min cost")
+        plt.ylabel("average cost")
+
         plt.show()
