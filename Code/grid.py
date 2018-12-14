@@ -2,7 +2,7 @@ from houses import House
 from batteries import Battery, SmallBattery, MedBattery, LargeBattery
 import numpy as np
 
-# select"standard" for original batteries: 5000 cost and 1507-ish capacity
+# select "standard" for original batteries: 5000 cost and 1507-ish capacity
 # or select "advanced" to start with Large Batteries
 SETTING = "standard"
 
@@ -15,7 +15,10 @@ class Grid():
     def __init__(self, district):
         """
         Create objects for Grid class:
-        batteries and houses.
+        - batteries
+        - houses
+        And add distances to both classes
+        with self.distances.
         """
         self.batteries = self.load_batteries(f"Huizen&Batterijen/wijk{district}_batterijen.txt")
         self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
@@ -24,8 +27,10 @@ class Grid():
     def load_batteries(self, filename):
         """
         Open .txt file of batteries.
-        Read the file and get pos and cap info.
-        Return list with pos and cap of batteries.
+        Read the file and get position
+        and capacity information.
+        Return list with the position and
+        capacity of batteries.
         """
         # make batteries list
         batteries_list = []
