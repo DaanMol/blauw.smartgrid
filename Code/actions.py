@@ -14,6 +14,10 @@ class Plots():
         self.grid = grid
 
     def line_figure(self, title):
+        """
+        Plots display of improvements in cost
+        """
+
         plt.figure()
         counter = 0
         colors = ['r', 'b', 'g', 'y', 'm']
@@ -26,16 +30,22 @@ class Plots():
                 plt.plot([house.x, battery.x], [house.y, battery.y],
                          color=colors[counter], linewidth=.25)
             plt.scatter(x, y, marker='p', color=colors[counter])
-            plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+            plt.plot(battery.x, battery.y, marker='x', color=colors[counter],
+                     markersize=10)
             counter += 1
         plt.title(f"{title} algorithm. Cost: {self.cost()}")
 
     def random_simulation(self, simulation, title):
+        """
+        Plots current configuration of the random grid
+        """
+
         counter = 0
         plt.figure()
         colors = ['r', 'b', 'g', 'y', 'm']
         for battery in self.grid.batteries:
-            plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+            plt.plot(battery.x, battery.y, marker='x', color=colors[counter],
+                     markersize=10)
             x = []
             y = []
             for house in battery.connections:
@@ -66,13 +76,22 @@ class Plots():
                         plt.plot([curr_x, curr_x + x_step], [curr_y, curr_y],
                                  color=colors[counter], linewidth=.3)
                         curr_x = curr_x + x_step
-                plt.plot([curr_x, end_x], [curr_y, end_y], color=colors[counter], linewidth=.3)
+                plt.plot([curr_x, end_x], [curr_y, end_y],
+                         color=colors[counter], linewidth=.3)
             counter += 1
             if simulation:
                 plt.pause(1)
                 plt.draw()
 
     def x_or_y_first(self, x_first, title):
+        """
+        Plot of connections with either the x coordinate
+        going down until it reaches the y coordinate, after
+        which the straigth line continues to its destination,
+        or straight line goes over the y coordinate and continues
+        to the destination following a straight line on the x coordinate
+        """
+
         plt.figure()
         if x_first:
             counter = 0
@@ -88,7 +107,8 @@ class Plots():
                     plt.plot([battery.x, battery.x], [house.y, battery.y],
                              color=colors[counter], linewidth=.3)
                 plt.scatter(x, y, marker='p', color=colors[counter])
-                plt.plot(battery.x, battery.y, marker='x', color=colors[counter], markersize=10)
+                plt.plot(battery.x, battery.y, marker='x',
+                         color=colors[counter], markersize=10)
                 counter += 1
         else:
             counter = 0
@@ -106,10 +126,10 @@ class Plots():
                     plt.plot([house.x, battery.x], [battery.y, battery.y],
                              color=col, linewidth=.3)
                 plt.scatter(x, y, marker='p', color=col)
-                plt.plot(battery.x, battery.y, marker='x', color=col, markersize=10)
+                plt.plot(battery.x, battery.y, marker='x', color=col,
+                         markersize=10)
                 counter += 1
         plt.title(f"{title} algorithm. Cost: {self.cost()}")
-
 
     def plot_histograms_bokeh(self):
         """
@@ -167,9 +187,10 @@ class Plots():
         TOOLS = "hover,save,pan,box_zoom,reset,wheel_zoom"
 
         p = figure(title=(f"Grid: houses and batteries"),
-                   tools=TOOLS, background_fill_color="#fafafa", toolbar_location="right")
-        r0 = p.circle(x,y, color='red', size=10)
-        r1 = p.square(x_h,y_h, color='blue')
+                   tools=TOOLS, background_fill_color="#fafafa",
+                   toolbar_location="right")
+        r0 = p.circle(x, y, color='red', size=10)
+        r1 = p.square(x_h, y_h, color='blue')
 
         legend = Legend(items=[
                         ('Battery', [r0]),
@@ -177,7 +198,7 @@ class Plots():
                         ],)
 
         p.add_layout(legend, 'below')
-        p.legend.click_policy="hide"
+        p.legend.click_policy = "hide"
         p.xaxis.axis_label = 'x position'
         p.yaxis.axis_label = 'y position'
 
@@ -188,13 +209,16 @@ class Plots():
         """
         Plot matrixes using Bokeh
         """
+
         # output to static HTML file
         output_file("Graphs/Bokeh/matrixes.html")
 
-        TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,zoom_out,box_zoom,undo,redo,\
-                 reset,tap,save,box_select,poly_select,lasso_select"
+        TOOLS = "hover,crosshair,pan,wheel_zoom,zoom_in,\
+                 zoom_out,box_zoom,undo,redo, reset,tap,save,\
+                 box_select,poly_select,lasso_select"
 
-        colors = ["#%02x%02x%02x" % (int(r), int(g), 150) for r, g in zip(50+2*x, 30+2*y)]
+        colors = ["#%02x%02x%02x" % (int(r), int(g), 150) for r,
+                  g in zip(50+2*x, 30+2*y)]
 
         p = figure(title=(f"Grid: house output and batteries (red)"),
                    tools=TOOLS, toolbar_location="right")
@@ -219,6 +243,10 @@ class Plots():
         return cost
 
     def arrr_starrr_graph(self):
+        """
+        Plots grid for A* algorithm
+        """
+
         plt.figure()
         colors = ['r', 'b', 'g', 'y', 'm']
         total_cost = 0
@@ -249,63 +277,119 @@ class Plots():
         plt.title(f"total cost = {total_cost}")
 
     def random_plt(self, options):
+        """
+        plots configuration battery scatterplot
+        """
         average = []
         minimum = []
         opt = []
         for j in range(25):
             i = options[j]
             cost_list = []
-            with open(f"output_runs/batt_conf_400_1/batt_conf_1_[{i[0]}_{i[1]}_{i[2]}]_400.txt", "r") as f:
-                # text = f.read()
-                # cost_list.append(text)
+            with open(f"output_runs/batt_conf_400_1/batt_conf_1_\
+                      [{i[0]}_{i[1]}_{i[2]}]_400.txt", "r") as f:
                 text = f.read().split('\n')
                 for number in text:
-
-                    # number = number.replace(' ', '')
-                    # number = number.replace('\n', '')
-                    # number = number.replace('[', '')
-                    # number = number.replace(']', '')
                     if number is not "":
                         cost_list.append(int(number))
-                    # print(number, type(number))
-            # bins = np.linspace(min(cost_list), max(cost_list))
-
 
             minimum.append(min(cost_list))
             average.append(sum(cost_list)/len(cost_list))
             opt.append(f"[{i[0]}_{i[1]}_{i[2]}]")
 
-
-            # plt.hist(cost_list, bins=100, alpha=0.5, label=f"[{i[0]}_{i[1]}_{i[2]}]")
-            plt.scatter(min(cost_list), sum(cost_list)/len(cost_list), label=f"[{i[0]}_{i[1]}_{i[2]}]")
-            plt.text(min(cost_list) + 10, sum(cost_list)/len(cost_list) - 40, f"{i}")
-        plt.suptitle("400x randompositioning+k-means+hill for all possible battery configurations")
+            plt.scatter(min(cost_list), sum(cost_list)/len(cost_list),
+                        label=f"[{i[0]}_{i[1]}_{i[2]}]")
+            plt.text(min(cost_list) + 10, sum(cost_list) /
+                     len(cost_list) - 40, f"{i}")
+        plt.suptitle("400x randompositioning+k-means+hill for all\
+                     possible battery configurations")
         plt.title("notation: [small, medium, large] (number of batteries)")
         plt.xlabel("min cost")
         plt.ylabel("average cost")
         plt.xlim(22400, 24000)
         plt.ylim(23000, 25000)
-        # plt.legend(loc='upper right')
 
+    def bench_plotter():
+        """
+        Plots benchmark histogram of all algorithms
+        """
 
-            # cost_list = []
-            # with open(f"text_info_prior_hill{i}_1k.txt", "r") as f:
-            #     # text = f.read()
-            #     # cost_list.append(text)
-            #     text = f.read().split('\n')
-            #     for number in text:
-            #
-            #         # number = number.replace(' ', '')
-            #         # number = number.replace('\n', '')
-            #         # number = number.replace('[', '')
-            #         # number = number.replace(']', '')
-            #         if number is not "":
-            #             cost_list.append(int(number))
-            #         # print(number, type(number))
-            # # bins = np.linspace(min(cost_list), max(cost_list))
-            # plt.hist(cost_list, bins=5, alpha=1, label=f"Hill Wijk {i}")
+        # plot random as histogram, upper en lower bound as a red line
+        minima = []
+        for i in range(1, 2):
+            cost_list = []
+            with open(f"output_runs/text_info_random{i}_10k.txt", "r") as f:
+                text = f.read().split('\n')
+                counter = 0
+                for number in text:
+                    counter += 1
+                    if number is not "":
+                        cost_list.append(int(number))
+                    if counter == 1000:
+                        break
+            minim = min(cost_list)
+            minima.append(minim)
+            maxim = max(cost_list)
+            print("random:", minim, maxim)
+            plt.axvline(x=53188, color='r')
+            plt.axvline(x=103030, color="r")
+            plt.hist(cost_list, bins=20, alpha=0.5, label=f"Random walk")
 
+            # plot histogram of priority and hillclimber
+            cost_list = []
+            with open(f"output_runs/text_info_prior_hill{i}_1k.txt", "r") as f:
+                text = f.read().split('\n')
+                for number in text:
+                    if number is not "":
+                        cost_list.append(int(number))
+            minim = min(cost_list)
+            minima.append(minim)
+            maxim = max(cost_list)
+            print("prior hill:", minim, maxim)
+            plt.hist(cost_list, bins=20, alpha=0.5, label=f"Priority + Hill")
 
-        # plt.show()
-if __name__ == '__main__':
-    print("leuk die main")
+            # plot histogram of simulated annealing
+            cost_list = []
+            with open(f"output_runs/simulated_annealing{i}_1000.txt",
+                      "r") as f:
+                text = f.read().split('\n')
+                for number in text:
+                    if number is not "":
+                        cost_list.append(int(number))
+            minim = min(cost_list)
+            minima.append(minim)
+            maxim = max(cost_list)
+            print("random+anneal:", minim, maxim)
+            plt.hist(cost_list, bins=20, alpha=0.5,
+                     label=f"Random + sim anneal")
+
+            # plot histogram of random plus hillclimber
+            cost_list = []
+            with open(f"output_runs/random_hill{i}_1000.txt", "r") as f:
+                text = f.read().split('\n')
+                for number in text:
+                    if number is not "":
+                        cost_list.append(int(number))
+            minim = min(cost_list)
+            minima.append(minim)
+            maxim = max(cost_list)
+            print("random+hill:", minim, maxim)
+            plt.hist(cost_list, bins=100, alpha=0.5,
+                     label=f"Random + Hillclimber")
+
+            # plot histogram of kmeans plus hillclimber
+            cost_list = []
+            with open(f"output_runs/text_k-means_hill{i}_1000.txt", "r") as f:
+                text = f.read().split('\n')
+                for number in text:
+                    if number is not "":
+                        cost_list.append(int(number))
+            plt.hist(cost_list, bins=20, alpha=0.5,
+                     label=f"Kmean and hill {i}")
+        totalmin = min(minima)
+        plt.axvline(x=totalmin, color="g")
+        plt.title(f"4 algorithms Wijk {i}, lowest cost: {totalmin}")
+        plt.xlabel("Cost")
+        plt.ylabel("Frequency")
+        plt.legend(loc='upper right')
+        plt.show()
