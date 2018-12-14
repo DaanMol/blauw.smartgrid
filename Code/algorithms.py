@@ -45,7 +45,7 @@ class Algorithm():
                     used.append(house)
                     house.connect(self.grid.batteries.index(battery))
 
-        # fix that sh*@!$
+        # fix the capacity if one ore more houses are left unconnected
         not_used = set(used).symmetric_difference(set(self.grid.houses))
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
@@ -73,7 +73,7 @@ class Algorithm():
                     used.append(house)
                     house.connect(self.grid.batteries.index(battery))
 
-        # fix that sh*@!$
+        # fix the capacity if one ore more houses are left unconnected
         not_used = set(used).symmetric_difference(set(self.grid.houses))
         if len(not_used) > 0:
             self.capacity_fixer(not_used)
