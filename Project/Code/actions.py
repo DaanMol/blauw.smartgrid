@@ -216,7 +216,8 @@ class Plots():
 
             # plot histogram of priority and hillclimber
             cost_list = []
-            with open(f"output_runs/text_info_prior_hill{i}_1k.txt", "r") as f:
+            with open(f"../output_runs/text_info_prior_hill{i}_\
+                      1k.txt", "r") as f:
                 text = f.read().split('\n')
                 for number in text:
                     if number is not "":
@@ -229,7 +230,7 @@ class Plots():
 
             # plot histogram of simulated annealing
             cost_list = []
-            with open(f"output_runs/simulated_annealing{i}_1000.txt",
+            with open(f"../output_runs/simulated_annealing{i}_1000.txt",
                       "r") as f:
                 text = f.read().split('\n')
                 for number in text:
@@ -244,7 +245,7 @@ class Plots():
 
             # plot histogram of random plus hillclimber
             cost_list = []
-            with open(f"output_runs/random_hill{i}_1000.txt", "r") as f:
+            with open(f"../output_runs/random_hill{i}_1000.txt", "r") as f:
                 text = f.read().split('\n')
                 for number in text:
                     if number is not "":
@@ -258,7 +259,8 @@ class Plots():
 
             # plot histogram of kmeans plus hillclimber
             cost_list = []
-            with open(f"output_runs/text_k-means_hill{i}_1000.txt", "r") as f:
+            with open(f"../output_runs/text_k-means_hill{i}_\
+                      1000.txt", "r") as f:
                 text = f.read().split('\n')
                 for number in text:
                     if number is not "":
@@ -288,7 +290,7 @@ class Plots():
         for j in range(25):
             i = options[j]
             cost_list = []
-            with open(f"output_runs/batt_conf_400_{num}/batt_conf_{num}_\
+            with open(f"../output_runs/batt_conf_400_{num}/batt_conf_{num}_\
                       [{i[0]}_{i[1]}_{i[2]}]_400.txt", "r") as f:
                 text = f.read().split('\n')
                 for number in text:
