@@ -99,7 +99,7 @@ if __name__ == '__main__':
         For the new battery types (step d-e): "advanced"
     """
 
-    # VUL IN (als het niet voor zichzelf spreekt, uitleg boven ;))
+    # SET SETTINGS
     districts = [1, 2, 3]
     start_condition = 1
     iterative_algorithm = 0
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     option = [1, 0, 4]
     x_first = False
 
-    # yo let hier niet op
+    # the code below enables user friendliness and is not to be changed
     for i in districts:
         title = f'District {i}: '
         algo = Algorithm(i, setting)
