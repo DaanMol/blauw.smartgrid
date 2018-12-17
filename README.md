@@ -1,6 +1,9 @@
 # blauw.smartgrid
 Smart grid project van groep blauw: Thomas Reus, Daan Molleman en Harmke Vliek
 
+# User guide
+To run our algorithms, go to the map Code in the map Project. The file run.py enables the user to set variables according to which algorithm has to be run. The explanation regarding the variable change can be found in the main of this file.
+
 # Description
 The git is separated into two folders. The first one is Project, in which our code resides. The second one is Presentation. This map contains images, powerpoints and the UML diagram that represents the data structure of the code.
 
