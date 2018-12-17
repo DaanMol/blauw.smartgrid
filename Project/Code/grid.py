@@ -19,11 +19,17 @@ class Grid():
         And add distances to both classes
         with self.distances
         """
-        self.setting = setting
-        self.batteries = self.load_batteries(f"Huizen&Batterijen/wijk{district}_batterijen.txt")
-        self.houses = self.load_houses(f"Huizen&Batterijen/wijk{district}_huizen.csv")
-        self.distances(self.houses, self.batteries)
+        # import files
+        batt_file = f"Huizen&Batterijen/wijk{district}_batterijen.txt"
+        house_file = f"Huizen&Batterijen/wijk{district}_huizen.csv"
 
+        # variables
+        self.setting = setting
+        self.batteries = self.load_batteries(batt_file)
+        self.houses = self.load_houses(house_file)
+
+        # load distances into objects
+        self.distances(self.houses, self.batteries)
 
     def load_batteries(self, filename):
         """
