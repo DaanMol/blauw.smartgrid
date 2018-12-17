@@ -321,7 +321,7 @@ class Algorithm():
             # calculate old distances
             self.grid.distances(houses, batteries)
 
-            # clear battery connectoins
+            # clear battery connections
             for battery in batteries:
                 battery.connections = []
                 battery.capacity = battery.max_cap
@@ -352,15 +352,55 @@ class Algorithm():
             # reposition battery according to average xy
             for battery in batteries:
                 x, y = 0, 0
+                used_battloc = []
+
                 for house in battery.connections:
                     x += house.x
                     y += house.y
-                battery.x = round(x / len(battery.connections))
-                battery.y = round(y / len(battery.connections))
+                x = round(x / len(battery.connections))
+                y = round(y / len(battery.connections))
+
+                # random location + location free check
+                house_on_spot = True
+                while house_on_spot:
+                    broken = False
+
+                    # check if coordinates already taken
+                    if [x, y] in used_battloc:
+                        broken = True
+                        break
+
+                    # check if house on location
+                    for house in self.grid.houses:
+                        if broken:
+                            break
+                        if [house.x, house.y] == [x, y]:
+                            house_on_spot = True
+                            broken = True
+                            break
+
+                    # place battery when location free
+                    if not broken:
+                        house_on_spot = False
+                        used_battloc.append([x, y])
+                        battery.x = x
+                        battery.y = y
+                    else:
+                        # move battery slighty
+                        choices = [1, -1, 0]
+                        x_step = random.choice(choices)
+                        y_step = random.choice(choices)
+                        x += x_step
+                        y += y_step
+                        if x > 50 or x < 0:
+                            x -= 2 * x_step
+                        elif y > 50 or y < 0:
+                            y -= 2 * y_step
 
             # calculate new distances
             self.grid.distances(houses, batteries)
 
+        # if not all houses connected, make space
         if len(used) < len(houses):
             for i in not_used:
                 i.connection = None
@@ -369,46 +409,63 @@ class Algorithm():
 
     def battery_placer(self, option):
         """
-        Places a given set of batteries on a random location
+        Places a given set of batteries on random locations
         """
 
         # empty batteries list
         self.grid.batteries = []
 
-        # place batteries random on the grid
+        # list for used coordinates batteries
+        used = []
 
-        # small
-        for i in range(option[0]):
-
-            # random location
-            x = round(random.random() * 50)
-            y = round(random.random() * 50)
-
-            # add to list
-            self.grid.batteries.append(Battery(x, y, "SMALL"))
-
-        # medium
-        for i in range(option[1]):
-
-            # random location
-            x = round(random.random() * 50)
-            y = round(random.random() * 50)
-
-            # add to list
-            self.grid.batteries.append(Battery(x, y, "MEDIUM"))
-
-        # large
-        for i in range(option[2]):
-
-            # random location
-            x = round(random.random() * 50)
-            y = round(random.random() * 50)
-
-            # add to list
-            self.grid.batteries.append(Battery(x, y, "LARGE"))
+        # place batteries random on the grid for small, medium and large
+        battery_kinds = ["SMALL", "MEDIUM", "LARGE"]
+        for i in range(len(option)):
+            used = self.place_battery_kind(option[i], battery_kinds[i], used)
 
         # use k means on the grid
         self.k_means(self.grid.houses, self.grid.batteries)
+
+    def place_battery_kind(self, number, kind, used):
+        """
+        Place "number" times "kind" battery on
+        the grid (when place not taken yet)
+        """
+
+        for i in range(number):
+
+            # random location + location free check
+            house_on_spot = True
+            while house_on_spot:
+                broken = False
+
+                # the random coordinates
+                x = round(random.random() * 50)
+                y = round(random.random() * 50)
+
+                # check if coordinates already taken
+                if [x, y] in used:
+                    broken = True
+                    break
+
+                # check if house on location
+                for house in self.grid.houses:
+                    if broken:
+                        break
+                    if [house.x, house.y] == [x, y]:
+                        house_on_spot = True
+                        broken = True
+                        break
+
+                # place battery when location free
+                if not broken:
+                    house_on_spot = False
+                    used.append([x, y])
+
+            # add to list
+            self.grid.batteries.append(Battery(x, y, kind))
+
+        return used
 
     def temp_function(self, i, N, type, T_0):
         """
