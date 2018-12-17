@@ -8,6 +8,8 @@ from batteries import Battery
 USER GUIDE
 
 In main, enter the settings to run an algorithm
+Regarding user friendliness, the explanation of the settings is put in the
+docstring of the main.
 
 """
 
@@ -99,14 +101,14 @@ if __name__ == '__main__':
 
     # VUL IN (als het niet voor zichzelf spreekt, uitleg boven ;))
     districts = [1, 2, 3]
-    start_condition = 3
+    start_condition = 1
     iterative_algorithm = 0
     additional_algorithm = 0
     plotter = 1
     setting = "standard"
 
     # special conditions
-    lineplot = True
+    lineplot = False
     option = [1, 0, 4]
     x_first = False
 
