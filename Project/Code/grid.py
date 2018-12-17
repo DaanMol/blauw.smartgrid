@@ -20,8 +20,8 @@ class Grid():
         with self.distances
         """
         # import files
-        batt_file = f"Huizen&Batterijen/wijk{district}_batterijen.txt"
-        house_file = f"Huizen&Batterijen/wijk{district}_huizen.csv"
+        batt_file = f"../Huizen&Batterijen/wijk{district}_batterijen.txt"
+        house_file = f"../Huizen&Batterijen/wijk{district}_huizen.csv"
 
         # variables
         self.setting = setting

@@ -198,7 +198,7 @@ class Plots():
         minima = []
         for i in range(1, 4):
             cost_list = []
-            with open(f"output_runs/text_info_random{i}_10k.txt", "r") as f:
+            with open(f"../output_runs/text_info_random{i}_10k.txt", "r") as f:
                 text = f.read().split('\n')
                 counter = 0
                 for number in text:
