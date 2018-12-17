@@ -22,9 +22,15 @@ def priority_first():
     algo.priority_first()
 
 def hillclimber(lineplot):
+    if lineplot:
+        plt.figure()
+        plt.title(f"District {i}")
     algo.random_hillclimber(lineplot)
 
-def simulated_annealing(lineplot):
+def simulated_annealing(lineplot, i):
+    if lineplot:
+        plt.figure()
+        plt.title(f"District {i}")
     algo.random_hillclimber(lineplot, annealing=True)
 
 def k_means():
@@ -82,30 +88,33 @@ if __name__ == '__main__':
         For the new battery types (step d-e): "advanced"
     """
 
+    # VUL IN (als het niet voor zichzelf spreekt, uitleg boven ;))
     districts = [1, 2, 3]
-    iterative_algorithm = 0
     start_condition = 1
+    iterative_algorithm = 1
     additional_algorithm = 0
+    plotter = 1
     setting = "standard"
 
     # special conditions
-    lineplot=False
+    lineplot=True
     option = [1, 0, 4]
     x_first=False
 
+    # yo let hier niet op
     for i in districts:
-        title = ''
+        title = f'District {i}: '
         algo = Algorithm(i, setting)
         plot = Plots(algo.grid)
 
         # start conditions
-        if iterative_algorithm in [0, 1, 2]
+        if iterative_algorithm in [0, 1, 2]:
             if start_condition == 0:
                 print("please fill in a start condition")
                 break
             elif start_condition == 1:
                 random()
-                title += 'Random start'
+                title += 'Random connection'
             elif start_condition == 2:
                 priority_first()
                 title += 'Priority first'
@@ -120,7 +129,7 @@ if __name__ == '__main__':
                 hillclimber(lineplot)
                 title += ' + hillclimber'
             elif iterative_algorithm == 2:
-                simulated_annealing(lineplot)
+                simulated_annealing(lineplot, i)
                 title += ' + simulated annealing'
 
         elif iterative_algorithm == 3:
