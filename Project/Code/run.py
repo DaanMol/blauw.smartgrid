@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     Start condition (when using Algorithms(1, 2 and 3)):
         1: Random
-        2:Priority
+        2: Priority
         3: Proximity
 
     Iterative Algorithm:
