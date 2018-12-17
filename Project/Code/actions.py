@@ -7,6 +7,11 @@ from bokeh.layouts import gridplot
 from bokeh.models import Legend
 from grid import Grid
 
+colors = ['#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231',
+          '#911eb4', '#46f0f0', '#f032e6', '#bcf60c', '#fabebe',
+          '#008080', '#e6beff', '#9a6324', '#fffac8', '#800000',
+          '#aaffc3', '#808000', '#ffd8b1', '#000075', '#808080',
+          '#000000']
 
 class Plots():
 
@@ -21,7 +26,6 @@ class Plots():
 
         plt.figure()
         counter = 0
-        colors = ['r', 'b', 'g', 'y', 'm']
 
         # plot the x and y for each house and battery
         for battery in self.grid.batteries:
@@ -46,7 +50,6 @@ class Plots():
 
         counter = 0
         plt.figure()
-        colors = ['r', 'b', 'g', 'y', 'm']
 
         # plot each battery
         for battery in self.grid.batteries:
@@ -104,7 +107,6 @@ class Plots():
         plt.figure()
         if x_first:
             counter = 0
-            colors = ['r', 'b', 'g', 'y', 'm']
 
             # draw each dot and connection
             for battery in self.grid.batteries:
@@ -125,10 +127,8 @@ class Plots():
         # draw each dot and connection
         else:
             counter = 0
-            colors = ['r', 'b', 'g', 'y', 'm']
             for battery in self.grid.batteries:
-                c = list(np.random.choice(range(256), size=3))
-                col = random.choice(colors)
+                col = colors[counter]
                 x = []
                 y = []
                 for house in battery.connections:
@@ -161,7 +161,6 @@ class Plots():
         """
 
         plt.figure()
-        colors = ['r', 'b', 'g', 'y', 'm']
         total_cost = 0
 
         # plot batteries
