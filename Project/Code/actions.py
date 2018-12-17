@@ -188,7 +188,7 @@ class Plots():
 
         plt.title(f"total cost = {total_cost}")
 
-    def bench_plotter():
+    def bench_plotter(self):
         """
         Plots benchmark histogram of all algorithms
         """
