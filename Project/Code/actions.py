@@ -40,9 +40,9 @@ class Plots():
             plt.plot(battery.x, battery.y, marker='x', color=colors[counter],
                      markersize=10)
             counter += 1
-        plt.title(f"{title} algorithm. Cost: {self.cost()}")
+        plt.title(f"{title}. Cost: {self.cost()}")
 
-    def random_simulation(self, simulation, title):
+    def random_simulation(self, title, simulation=False):
         """
         Plots current configuration of the random grid
         Connects a random path
@@ -142,7 +142,7 @@ class Plots():
                 plt.plot(battery.x, battery.y, marker='x', color=col,
                          markersize=10)
                 counter += 1
-        plt.title(f"{title} algorithm. Cost: {self.cost()}")
+        plt.title(f"{title}. Cost: {self.cost()}")
 
     def cost(self):
         """
