@@ -11,31 +11,46 @@ In main, enter the settings to run an algorithm
 
 """
 
+
 # run the random algorhithm
 def random():
     algo.random_cap()
 
+
 def proximity_first():
     algo.proximity_first()
+
 
 def priority_first():
     algo.priority_first()
 
+
 def hillclimber(lineplot):
+    if lineplot:
+        plt.figure()
+        plt.title(f"District {i}")
     algo.random_hillclimber(lineplot)
 
-def simulated_annealing(lineplot):
+
+def simulated_annealing(lineplot, i):
+    if lineplot:
+        plt.figure()
+        plt.title(f"District {i}")
     algo.random_hillclimber(lineplot, annealing=True)
+
 
 def k_means():
     algo.k_means(algo.grid.houses, algo.grid.batteries)
 
+
 def battery_placer(options):
     algo.battery_placer(options)
 
+
 def A_star():
     for house in algo.grid.houses:
-        house.path = algo.arrr_starrr(house, algo.grid.batteries[house.connection])
+        house.path = algo.arrr_starrr(house,
+                                      algo.grid.batteries[house.connection])
     plot.arrr_starrr_graph()
 
 
@@ -49,63 +64,66 @@ if __name__ == '__main__':
         List with 1, 2 and/or 3 (districts 1 2 and 3)
 
     Start condition (when using Algorithms(1, 2 and 3)):
-        Random: 1
-        Priority: 2
-        Proximity: 3
+        1: Random
+        2:Priority
+        3: Proximity
 
     Iterative Algorithm:
-        To just generate a starting condition: 0
-        Hillclimber: 1
+        0: To just generate a starting condition
+        1: Hillclimber
             special conidtions: lineplot=True
-        Simulated annealing: 2
+        2: Simulated annealing
             special conditions: lineplot=True
-        K-means: 3
-        Battery placer: 4
+        3: K-means
+        4: Battery placer
             special condition: option
             Format: [#small batteries, #medium batteries, #large batteries]
 
     Additional algorithm:
-        Hillclimber: 1
+        1: Hillclimber
             special conidtions: lineplot=True
-        Simulated annealing: 2
+        2: Simulated annealing
             special conditions: lineplot=True
-        A Star: 3
+        3: A Star
 
     Plotter:
-        X or Y first (manhattan): 1
+        1: X or Y first (manhattan)
             special condition: x_first = True or False
-        Straight lines (euclidian): 2
-        Random paths (manhattan): 3
+        2: Straight lines (euclidian)
+        3: Random paths (manhattan)
 
     Setting:
         For the original batteries (step a-c): "standard"
         For the new battery types (step d-e): "advanced"
     """
 
+    # VUL IN (als het niet voor zichzelf spreekt, uitleg boven ;))
     districts = [1, 2, 3]
+    start_condition = 3
     iterative_algorithm = 0
-    start_condition = 1
     additional_algorithm = 0
+    plotter = 1
     setting = "standard"
 
     # special conditions
-    lineplot=False
+    lineplot = True
     option = [1, 0, 4]
-    x_first=False
+    x_first = False
 
+    # yo let hier niet op
     for i in districts:
-        title = ''
+        title = f'District {i}: '
         algo = Algorithm(i, setting)
         plot = Plots(algo.grid)
 
         # start conditions
-        if iterative_algorithm in [0, 1, 2]
+        if iterative_algorithm in [0, 1, 2]:
             if start_condition == 0:
                 print("please fill in a start condition")
                 break
             elif start_condition == 1:
                 random()
-                title += 'Random start'
+                title += 'Random connection'
             elif start_condition == 2:
                 priority_first()
                 title += 'Priority first'
@@ -120,7 +138,7 @@ if __name__ == '__main__':
                 hillclimber(lineplot)
                 title += ' + hillclimber'
             elif iterative_algorithm == 2:
-                simulated_annealing(lineplot)
+                simulated_annealing(lineplot, i)
                 title += ' + simulated annealing'
 
         elif iterative_algorithm == 3:
